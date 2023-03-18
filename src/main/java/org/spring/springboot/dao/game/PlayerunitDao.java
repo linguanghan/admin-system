@@ -1,0 +1,46 @@
+package org.spring.springboot.dao.game;
+
+import generator.PlayerunitExample;
+import org.apache.ibatis.annotations.Param;
+import org.spring.springboot.domain.game.Playerunit;
+
+import java.util.List;
+
+public interface PlayerunitDao {
+    long countByExample(PlayerunitExample example);
+
+    int deleteByExample(PlayerunitExample example);
+
+    int deleteByPrimaryKey(Long id);
+
+    int insert(Playerunit record);
+
+    int insertSelective(Playerunit record);
+
+    List<Playerunit> selectByExample(PlayerunitExample example);
+
+    Playerunit selectByPrimaryKey(Long id);
+
+    int updateByExampleSelective(@Param("record") Playerunit record, @Param("example") PlayerunitExample example);
+
+    int updateByExample(@Param("record") Playerunit record, @Param("example") PlayerunitExample example);
+
+    int updateByPrimaryKeySelective(Playerunit record);
+
+    int updateByPrimaryKey(Playerunit record);
+
+    /*--------------以下为自定义查询----------------*/
+    // 绘本
+    Integer findNumBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+    List<Playerunit> findBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+    // List<DayPlayer> findRegisterNumGroupbyDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
+    // 用户购买特定版本
+    Integer findPurchaseNumBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+    List<Playerunit> findPurchaseBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
+    // 特定版本
+    Integer findVersionNumBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+    List<Playerunit> findVersionBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
+}

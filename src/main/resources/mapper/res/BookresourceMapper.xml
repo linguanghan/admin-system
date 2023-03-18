@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="org.spring.springboot.dao.res">-->
+<mapper namespace="org.spring.springboot.dao.res.BookresourceDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.res.Bookresource">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bookId" jdbcType="BIGINT" property="bookId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="release" jdbcType="TINYINT" property="release"/>
+        <result column="video" jdbcType="TINYINT" property="video"/>
+        <result column="version" jdbcType="VARCHAR" property="version"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id,bookId,`name`,`release`,video,`version`
+	</sql>
+
+    <select id="fetchBookresourceInfos" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from BookResource
+    </select>
+
+    <select id="fetchBookresourceInfosByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from BookResource b
+        where b.name like concat('%',#{name,jdbcType=VARCHAR},'%')
+    </select>
+
+    <select id="fetchBookresourceInfosByBookId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from BookResource b
+        where b.bookId like concat('%',#{bookId,jdbcType=VARCHAR},'%')
+    </select>
+
+    <select id="searchBooklist" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from BookResource b
+        where b.bookId like concat('%',#{keyword,jdbcType=VARCHAR},'%')
+        or b.name like concat('%',#{keyword,jdbcType=VARCHAR},'%')
+    </select>
+
+    <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into
+		BookResource(id,bookId,`name`,`release`,video,`version`)
+		values
+		(#{id},#{bookId},#{name},#{release},#{video},#{version})
+	</insert>
+
+    <update id="updateBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource">
+        update
+        BookResource
+        set
+        <if test="bookId!=null">
+            bookId = #{bookId},
+        </if>
+        <if test="name!=null">
+            `name` = #{name},
+        </if>
+        <if test="release!=null">
+            `release` = #{release,jdbcType=INTEGER},
+        </if>
+        <if test="video!=null">
+            video = #{video,jdbcType=INTEGER},
+        </if>
+        <if test="version!=null">
+            version = #{version}
+        </if>
+        where
+        id = #{id}
+    </update>
+
+    <delete id="deleteBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource">
+		delete from
+		BookResource
+		where
+		bookId = #{bookId}
+	</delete>
+</mapper>
