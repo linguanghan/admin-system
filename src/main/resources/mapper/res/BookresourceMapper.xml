@@ -38,7 +38,10 @@
     </select>-->
 
     <select id="fetchBookresourceInfosByBookId" resultMap="BaseResultMap">
-        select id,bookId,`name`,`release`,video,`version` from BookResource b where b.bookId = #{bookId}
+        select
+            id,bookId,`name`,`release`,video,`version`
+        from BookResource b
+        where b.bookId = #{bookId}
     </select>
 
     <select id="searchBooklist" resultMap="BaseResultMap">
