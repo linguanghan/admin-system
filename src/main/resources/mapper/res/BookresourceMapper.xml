@@ -30,11 +30,15 @@
         where b.name like concat('%',#{name,jdbcType=VARCHAR},'%')
     </select>
 
-    <select id="fetchBookresourceInfosByBookId" resultMap="BaseResultMap">
+    <!--<select id="fetchBookresourceInfosByBookId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from BookResource b
         where b.bookId like concat('%',#{bookId,jdbcType=VARCHAR},'%')
+    </select>-->
+
+    <select id="fetchBookresourceInfosByBookId" resultMap="BaseResultMap">
+        select id,bookId,`name`,`release`,video,`version` from BookResource b where b.bookId = #{bookId}
     </select>
 
     <select id="searchBooklist" resultMap="BaseResultMap">
@@ -78,7 +82,7 @@
 
     <delete id="deleteBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource">
 		delete from
-		BookResource
+		    BookResource
 		where
 		bookId = #{bookId}
 	</delete>
