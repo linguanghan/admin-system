@@ -26,8 +26,7 @@ public class FeedbackCtrl {
     // 接口路径：/feedback/selectAllPageQuery??pageNum=1&pageSize=50
     // 分页查询
     @RequestMapping(value = "/selectAllPageQuery", method = RequestMethod.GET)
-    public PageInfo<Feedback> selectAllPageQuery(@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize){
-        return feedbackService.selectAllPageQuery(pageNum, pageSize);
+    public AjaxResult selectAllPageQuery(@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize){
+        return AjaxResult.successResult(feedbackService.selectAllPageQuery(pageNum, pageSize));
     }
-
 }
