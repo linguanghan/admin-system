@@ -19,8 +19,11 @@ public class PlayerAgentInfoCtrl {
     }
 
     // 更改state状态
-    @RequestMapping(value = "/update/state", method = RequestMethod.POST)
-    public AjaxResult updateAgentState(@RequestBody PlayerAgentInfo playerAgentInfo){
+    @RequestMapping(value = "/update/state", method = RequestMethod.GET)
+    public AjaxResult updateAgentState(@RequestParam("id") String id, @RequestParam("state") String state){
+        PlayerAgentInfo playerAgentInfo = new PlayerAgentInfo();
+        playerAgentInfo.setId(Long.parseLong(id));
+        playerAgentInfo.setState(Integer.parseInt(state));
         playerAgentInfoService.updateAgentState(playerAgentInfo);
         return AjaxResult.emptySuccessResult();
     }
