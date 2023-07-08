@@ -1,16 +1,22 @@
 package org.spring.springboot.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.enums.SysCodeEnum;
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayerunitDao;
 import org.spring.springboot.domain.game.Playerunit;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -89,20 +95,25 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
-    public List<Playerunit> findDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findDetailBetweenDate(PageParamVo vo) {
+
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
             start = df.parse(t).getTime() / 1000;
             end = df.parse(e).getTime() / 1000;
-        } catch (ParseException pe) {
+        } catch (Exception pe) {
             LOGGER.error(pe.getMessage(), pe);
         }
-
-        return playerunitDao.findBetweenDate(start, end);
+        List<Playerunit> playerUnits = playerunitDao.findBetweenDate(start, end);
+        if (CollectionUtils.isEmpty(playerUnits)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        List<Playerunit> playerUnitsPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerUnits);
+        return Result.buildSuccess().add("data", playerUnitsPage).add("total", playerUnits.size());
     }
 
     @Override
@@ -163,10 +174,10 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
-    public List<Playerunit> findPurchaseDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findPurchaseDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -176,7 +187,12 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             LOGGER.error(pe.getMessage(), pe);
         }
 
-        return playerunitDao.findPurchaseBetweenDate(start, end);
+        List<Playerunit> playerUnits = playerunitDao.findPurchaseBetweenDate(start, end);
+        if(CollectionUtils.isEmpty(playerUnits)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        List<Playerunit> playerUnitsPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerUnits);
+        return Result.buildSuccess().add("data", playerUnitsPage).add("total", playerUnits.size());
     }
 
     @Override
@@ -237,10 +253,10 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
-    public List<Playerunit> findVersionDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findVersionDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -250,7 +266,13 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             LOGGER.error(pe.getMessage(), pe);
         }
 
-        return playerunitDao.findVersionBetweenDate(start, end);
+        List<Playerunit> playerUnits = playerunitDao.findVersionBetweenDate(start, end);
+        if(CollectionUtils.isEmpty(playerUnits)) {
+            return Result.buildSuccess().add("data", playerUnits).add("total", 0);
+        }
+        List<Playerunit> playerUnitsPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerUnits);
+
+        return Result.buildSuccess().add("data", playerUnitsPage).add("total", playerUnits.size());
     }
 
 }

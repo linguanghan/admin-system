@@ -1,6 +1,8 @@
 package org.spring.springboot.service;
 
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.Playerunit;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;
@@ -16,17 +18,17 @@ public interface PlayerunitService {
     Integer findPlayunitNum(Date dateTime);
     Integer findNumBetweenDate(Date startTime, Date endTime);
     List<Playerunit> findDetail(Date dateTime);
-    List<Playerunit> findDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findDetailBetweenDate(PageParamVo vo);
 
     // 用户购买特定版本
     Integer findPurchasePlayunitNum(Date dateTime);
     Integer findPurchaseNumBetweenDate(Date startTime, Date endTime);
     List<Playerunit> findPurchaseDetail(Date dateTime);
-    List<Playerunit> findPurchaseDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findPurchaseDetailBetweenDate(PageParamVo vo);
 
     // 特定版本查询
     Integer findVersionPlayunitNum(Date dateTime);
     Integer findVersionNumBetweenDate(Date startTime, Date endTime);
     List<Playerunit> findVersionDetail(Date dateTime);
-    List<Playerunit> findVersionDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findVersionDetailBetweenDate(PageParamVo vo);
 }

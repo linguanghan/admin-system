@@ -1,6 +1,12 @@
 package org.spring.springboot.controller;
 
+import cn.hutool.json.JSONUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
+import org.spring.springboot.common.enums.SysCodeEnum;
+import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -21,6 +27,8 @@ import java.util.Date;
 @RestController
 @RequestMapping("player/unit")
 public class PlayerunitCtrl {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlayerunitCtrl.class);
     @Autowired
     private PlayerunitService playerunitService;
 
@@ -43,9 +51,19 @@ public class PlayerunitCtrl {
     }
 
     // 查询该日期范围绘本数据详情
-    @RequestMapping(value = "/huiben/rangedate/detail", method = RequestMethod.GET)
-    public AjaxResult findDetailBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
-        return AjaxResult.successResult(playerunitService.findDetailBetweenDate(startTime, endTime));
+    @RequestMapping(value = "/huiben/rangedate/detail")
+    public Result<?> findDetailBetweenDate(PageParamVo vo) {
+        if (vo == null
+                || vo.getEndTime() == null
+                || vo.getStartTime() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            return playerunitService.findDetailBetweenDate(vo);
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#findDetailBetweenDate error vo is {}", JSONUtil.toJsonStr(vo), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     // 查询该日期用户购买特定版本数据
@@ -67,9 +85,19 @@ public class PlayerunitCtrl {
     }
 
     // 查询该日期范围用户购买特定版本数据详情
-    @RequestMapping(value = "/purchase/rangedate/detail", method = RequestMethod.GET)
-    public AjaxResult findPurchaseDetailBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
-        return AjaxResult.successResult(playerunitService.findPurchaseDetailBetweenDate(startTime, endTime));
+    @RequestMapping(value = "/purchase/rangedate/detail")
+    public Result<?> findPurchaseDetailBetweenDate(PageParamVo vo) {
+        if (vo == null
+                || vo.getEndTime() == null
+                || vo.getStartTime() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            return playerunitService.findPurchaseDetailBetweenDate(vo);
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#findPurchaseDetailBetweenDate error vo is {}", JSONUtil.toJsonStr(vo), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     // 查询该日期特定版本数据
@@ -91,9 +119,19 @@ public class PlayerunitCtrl {
     }
 
     // 查询该日期范围特定版本数据详情
-    @RequestMapping(value = "/version/rangedate/detail", method = RequestMethod.GET)
-    public AjaxResult findVersionDetailBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
-        return AjaxResult.successResult(playerunitService.findVersionDetailBetweenDate(startTime, endTime));
+    @RequestMapping(value = "/version/rangedate/detail")
+    public Result<?> findVersionDetailBetweenDate(PageParamVo vo) {
+        if (vo == null
+                || vo.getEndTime() == null
+                || vo.getStartTime() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            return playerunitService.findVersionDetailBetweenDate(vo);
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#findVersionDetailBetweenDate error vo is {}", JSONUtil.toJsonStr(vo), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     @InitBinder

@@ -1,16 +1,21 @@
 package org.spring.springboot.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayervideoDao;
 import org.spring.springboot.domain.game.Playervideo;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayervideoService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -89,10 +94,10 @@ public class PalyervideoServiceImpl implements PlayervideoService {
     }
 
     @Override
-    public List<Playervideo> findDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -101,7 +106,11 @@ public class PalyervideoServiceImpl implements PlayervideoService {
         } catch (ParseException pe) {
             LOGGER.error(pe.getMessage(), pe);
         }
-
-        return playervidoDao.findBetweenDate(start, end);
+        List<Playervideo> playerVideos = playervidoDao.findBetweenDate(start, end);
+        if(CollectionUtils.isEmpty(playerVideos)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        List<Playervideo> playerVideoPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerVideos);
+        return Result.buildSuccess().add("data", playerVideoPage).add("total", playerVideos.size());
     }
 }

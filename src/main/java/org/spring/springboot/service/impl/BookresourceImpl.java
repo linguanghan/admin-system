@@ -30,6 +30,7 @@ public class BookresourceImpl implements BookresourceService {
 
     @Override
     public List<Bookresource> fetchList() {
+
         return bookresourceDao.fetchBookresourceInfos();
     }
 
