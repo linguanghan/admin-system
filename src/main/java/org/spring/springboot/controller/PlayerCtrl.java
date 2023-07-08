@@ -1,6 +1,14 @@
 package org.spring.springboot.controller;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
+import org.spring.springboot.common.enums.SysCodeEnum;
+import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.Player;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -11,6 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 玩家接口
@@ -21,12 +30,15 @@ import java.util.Date;
 @RestController
 @RequestMapping("player")
 public class PlayerCtrl {
+    private static final  Logger logger = LoggerFactory.getLogger(PlayerCtrl.class);
     @Autowired
     private PlayerService playerService;
 
     // 查询该日期注册人数
     @RequestMapping(value = "/register/num", method = RequestMethod.GET)
     public AjaxResult findRegisterNum(@RequestParam Date dateTime) {
+
+
         return AjaxResult.successResult(playerService.findRegisterNum(dateTime));
     }
 
@@ -43,9 +55,19 @@ public class PlayerCtrl {
     }
 
     // 查询该日期范围注册人员详情
-    @RequestMapping(value = "/register/rangedate/detail", method = RequestMethod.GET)
-    public AjaxResult findRegisterDetailBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
-        return AjaxResult.successResult(playerService.findRegisterDetailBetweenDate(startTime, endTime));
+    @RequestMapping("/register/rangedate/detail")
+    public Result<?> findRegisterDetailBetweenDate(PageParamVo vo) {
+        if (vo == null
+                || vo.getEndTime() == null
+                || vo.getStartTime() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            return playerService.findRegisterDetailBetweenDate(vo);
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#findRegisterDetailBetweenDate error vo is {}", JSONUtil.toJsonStr(vo), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     // 查询该日期范围注册人数--按天归类
@@ -75,9 +97,19 @@ public class PlayerCtrl {
     }
 
     // 查询该日期范围活跃人员详情
-    @RequestMapping(value = "/active/rangedate/detail", method = RequestMethod.GET)
-    public AjaxResult findActiveDetailBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
-        return AjaxResult.successResult(playerService.findActiveDetailBetweenDate(startTime, endTime));
+    @RequestMapping(value = "/active/rangedate/detail")
+    public Result<?> findActiveDetailBetweenDate(PageParamVo vo) {
+        if (vo == null
+                || vo.getEndTime() == null
+                || vo.getStartTime() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            return playerService.findActiveDetailBetweenDate(vo);
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#findActiveDetailBetweenDate error vo is {}", JSONUtil.toJsonStr(vo), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     // 查询该日期范围活跃人数--按天归类

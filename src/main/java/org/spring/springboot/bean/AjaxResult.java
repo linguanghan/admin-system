@@ -13,6 +13,7 @@ public class AjaxResult {
     private static final Integer ERROR =3;
 
     private static final String SUCCESS_MSG ="success";
+    private static final String FAIL_MSG ="fail";
 
     private int code;
     private Object data;
@@ -38,6 +39,13 @@ public class AjaxResult {
         AjaxResult result = new AjaxResult();
         result.setCode(SUCCESS);
         result.setData(SUCCESS_MSG);
+        return result;
+    }
+
+    public static AjaxResult failResult(){
+        AjaxResult result = new AjaxResult();
+        result.setCode(FAILURE);
+        result.setData(FAIL_MSG);
         return result;
     }
 

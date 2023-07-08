@@ -1,10 +1,13 @@
 package org.spring.springboot.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayerDao;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.DayPlayer;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerService;
 import org.spring.springboot.util.DateUtil;
 import org.springframework.stereotype.Service;
@@ -91,10 +94,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<Player> findRegisterDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findRegisterDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -103,8 +106,13 @@ public class PlayerServiceImpl implements PlayerService {
         } catch (ParseException pe) {
             LOGGER.error(pe.getMessage(), pe);
         }
+        List<Player> playerList = playerDao.findRegistersBetweenDate(start, end);
+        List<Player> playerListPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerList);
+        if (CollectionUtils.isEmpty(playerList)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        return Result.buildSuccess().add("data", playerListPage).add("total", playerList.size());
 
-        return playerDao.findRegistersBetweenDate(start, end);
     }
 
     @Override
@@ -202,10 +210,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<Player> findActiveDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findActiveDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -215,7 +223,12 @@ public class PlayerServiceImpl implements PlayerService {
             LOGGER.error(pe.getMessage(), pe);
         }
 
-        return playerDao.findActiveBetweenDate(start, end);
+        List<Player> playerList = playerDao.findActiveBetweenDate(start, end);
+        if(CollectionUtils.isEmpty(playerList)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        List<Player> playerListPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerList);
+        return Result.buildSuccess().add("data", playerListPage).add("total", playerList.size());
     }
 
     @Override
