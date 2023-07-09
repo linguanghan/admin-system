@@ -1,13 +1,16 @@
 package org.spring.springboot.controller;
 
+import cn.hutool.json.JSONUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
+import org.spring.springboot.common.enums.SysCodeEnum;
+import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.vo.PageBookParamVO;
 import org.spring.springboot.domain.res.Bookresource;
 import org.spring.springboot.service.BookresourceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Description
@@ -18,13 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("book/resource")
 public class BookresourceCtrl {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookresourceCtrl.class);
     @Autowired
     private BookresourceService bookresourceService;
 
     // 查询书本列表
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public AjaxResult findBooklist() {
-        return AjaxResult.successResult(bookresourceService.fetchList());
+    @RequestMapping(value = "/list")
+    public Result<?> findBooklist(PageBookParamVO vo) {
+        try {
+            return bookresourceService.fetchList(vo);
+        }catch (Exception e) {
+            logger.error("BookresourceCtrl#findBooklist error vo is{}", JSONUtil.toJsonStr(vo), e);
+            return Result.buildFailure(SysCodeEnum.SysError);
+        }
     }
 
     // 查询书本列表--按名称搜索

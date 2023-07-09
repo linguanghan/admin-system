@@ -1,14 +1,20 @@
 package org.spring.springboot.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.res.BookresourceDao;
+import org.spring.springboot.domain.game.vo.PageBookParamVO;
 import org.spring.springboot.domain.res.Bookresource;
 import org.spring.springboot.service.BookresourceService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,9 +35,22 @@ public class BookresourceImpl implements BookresourceService {
     private BookresourceDao bookresourceDao;
 
     @Override
-    public List<Bookresource> fetchList() {
+    public Result<?> fetchList(PageBookParamVO vo) {
+        List<Bookresource> bookResources = Collections.emptyList();
+        if (StringUtils.isEmpty(vo.getBookName()) && StringUtils.isEmpty(vo.getBookId())) {
+            bookResources = bookresourceDao.fetchBookresourceInfos();
+        }
 
-        return bookresourceDao.fetchBookresourceInfos();
+        if (!StringUtils.isEmpty(vo.getBookName()) && StringUtils.isEmpty(vo.getBookId())) {
+            bookResources = bookresourceDao.fetchBookresourceInfosByName(vo.getBookName());
+        }
+
+        if(StringUtils.isEmpty(vo.getBookName()) && !StringUtils.isEmpty(vo.getBookId())) {
+            bookResources = bookresourceDao.fetchBookresourceInfosByBookId(vo.getBookId());
+        }
+
+        return Result.buildSuccess().add("data", ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), bookResources)).add("total", bookResources.size());
+
     }
 
     @Override
