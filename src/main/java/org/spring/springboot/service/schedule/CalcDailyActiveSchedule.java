@@ -32,7 +32,7 @@ public class CalcDailyActiveSchedule {
     @Resource
     private DailyActiveUserLogService dailyActiveUserLogService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 15 0 * * ?")
     private void calcDailyActiveUser() {
 
         //1、获取昨天的开始时间和结束时间的时间戳
@@ -68,8 +68,8 @@ public class CalcDailyActiveSchedule {
         DateTime yesterday = DateUtil.offsetDay(now, -1);
         DateTime beginOfYesterday = DateUtil.beginOfDay(yesterday);
         DateTime endOfYesterday = DateUtil.endOfDay(yesterday);
-        long beginOfYesterdayTime = beginOfYesterday.getTime();
-        long endOfYesterdayTime = endOfYesterday.getTime();
+        long beginOfYesterdayTime = beginOfYesterday.getTime() / 1000;
+        long endOfYesterdayTime = endOfYesterday.getTime() / 1000;
         Map<String, Long> yesterdayMap = new HashMap<>();
         yesterdayMap.put("beginOfYesterdayTime", beginOfYesterdayTime);
         yesterdayMap.put("endOfYesterdayTime", endOfYesterdayTime);
