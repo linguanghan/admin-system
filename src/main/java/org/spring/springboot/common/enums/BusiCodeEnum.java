@@ -1,7 +1,8 @@
 package org.spring.springboot.common.enums;
 
 public enum BusiCodeEnum {
-    ;
+
+    ParamError("1", "参数错误");
     private String code;
     private String msg;
 

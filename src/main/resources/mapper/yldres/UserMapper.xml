@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="org.spring.springboot.dao.res">-->
+<mapper namespace="org.spring.springboot.dao.yldres.UserDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.user.UserPO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="userName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="role" jdbcType="INTEGER" property="role"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="loginTime" jdbcType="VARCHAR" property="loginTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id,`username`,`password`, `role`, `phone`, `loginTime`
+	</sql>
+
+    <select id="fetchUseByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        <where>
+            <if test="userName != null">
+                username = #{userName}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="saveUser" parameterType="org.spring.springboot.domain.user.UserPO" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into
+            `user`(id,`username`,`password`, `role`, `phone`)
+		values
+		(#{id},#{username},#{password},#{role},#{phone})
+	</insert>
+
+</mapper>
