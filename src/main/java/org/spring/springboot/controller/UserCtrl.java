@@ -54,12 +54,12 @@ public class UserCtrl {
             log.error("UserCtrl#login error userVO is{} ,e", JSONUtil.toJsonStr(userVO), e);
         }
 
-        return Result.buildFailure(SysCodeEnum.BusinessError);
+        return Result.buildFailure(BusiCodeEnum.LoginError);
 
     }
 
     @JwtIgnore
-    @RequestMapping(value = "/login")
+    @RequestMapping(value = "/register")
     public Result<?> register(@RequestBody UserRegisterVO registerVO, HttpServletResponse response){
         //...参数合法性验证
         if(registerVO == null) {
@@ -87,7 +87,7 @@ public class UserCtrl {
             log.error("UserCtrl#login error userVO is{} ,e", JSONUtil.toJsonStr(registerVO), e);
         }
 
-        return Result.buildFailure(SysCodeEnum.BusinessError);
+        return Result.buildFailure(BusiCodeEnum.RegisterError);
 
     }
 
