@@ -1,4 +1,4 @@
-package org.spring.springboot.domain.yldres;
+package org.spring.springboot.domain.yldres.active;
 
 /**
  * TODO
@@ -7,7 +7,7 @@ package org.spring.springboot.domain.yldres;
  * @version 1.0
  * @date 2023-07-22 14:30
  */
-public class DailyActiveUserLogPO {
+public class DailyActiveUserLogVO {
     /**
      * 自增主鍵
      */

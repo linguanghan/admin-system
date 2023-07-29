@@ -1,17 +1,15 @@
 package org.spring.springboot.controller;
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.yldres.DailyActiveUserLogPO;
-import org.spring.springboot.domain.yldres.DailyActiveUserLogQuery;
-import org.spring.springboot.domain.yldres.DailyActiveUserLogVO;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
 import org.spring.springboot.service.DailyActiveUserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +40,7 @@ public class DailyActiveUserLogCtrl {
      * 分页查询日活记录
      * @author 13540
      * @date 2023-07-22 15:05 
-     * @return java.util.List<org.spring.springboot.domain.yldres.DailyActiveUserLogPO>
+     * @return java.util.List<org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO>
      */
     @RequestMapping(value = "/fetchDailyActiveUserLogByPage", method = RequestMethod.POST)
     public Result<?> fetchDailyActiveUserLogByPage(DailyActiveUserLogQuery query){

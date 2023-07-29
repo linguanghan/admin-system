@@ -1,17 +1,21 @@
-package org.spring.springboot.domain.yldres;
+package org.spring.springboot.domain.yldres.func;
+
+import java.io.Serializable;
 
 /**
  * TODO
  *
  * @author 13540
  * @version 1.0
- * @date 2023-07-22 14:39
+ * @date 2023-07-29 13:37
  */
-public class DailyActiveUserLogQuery {
+public class FuncBundleVersionLogQuery implements Serializable {
+
+    private static final long serialVersionUID = -8641013681049477229L;
     /**
-     * 統計日期
+     * 关键字
      */
-    private String countTime;
+    private String keyWord;
     /**
      * 頁數
      */
@@ -26,12 +30,12 @@ public class DailyActiveUserLogQuery {
      */
     private Integer pageSize = 10;
 
-    public String getCountTime() {
-        return countTime;
+    public String getKeyWord() {
+        return keyWord;
     }
 
-    public void setCountTime(String countTime) {
-        this.countTime = countTime;
+    public void setKeyWord(String keyWords) {
+        this.keyWord = keyWords;
     }
 
     public Integer getPageNo() {
@@ -59,3 +63,5 @@ public class DailyActiveUserLogQuery {
         this.pageSize = pageSize;
     }
 }
+
+

@@ -1,10 +1,9 @@
 package org.spring.springboot.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
-import org.spring.springboot.domain.yldres.DailyActiveUserLogPO;
-import org.spring.springboot.domain.yldres.DailyActiveUserLogQuery;
-import org.spring.springboot.domain.yldres.DailyActiveUserLogVO;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
 import org.spring.springboot.service.DailyActiveUserLogService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

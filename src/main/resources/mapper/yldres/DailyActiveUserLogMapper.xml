@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--<mapper namespace="org.spring.springboot.dao.res">-->
 <mapper namespace="org.spring.springboot.dao.yldres.DailyActiveUserLogDao">
-    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.DailyActiveUserLogPO">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="active_count" jdbcType="BIGINT" property="activeCount"/>
         <result column="count_time" jdbcType="VARCHAR" property="countTime"/>
@@ -14,7 +14,7 @@
 		id,`active_count`,`count_time`
 	</sql>
 
-    <select id="fetchDailyActiveUserLogByPage" parameterType="org.spring.springboot.domain.yldres.DailyActiveUserLogQuery" resultMap="BaseResultMap">
+    <select id="fetchDailyActiveUserLogByPage" parameterType="org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `daily_active_user_log`
@@ -38,7 +38,7 @@
     </select>
 
 
-    <insert id="saveDailyActiveUserLog" parameterType="org.spring.springboot.domain.yldres.DailyActiveUserLogPO" useGeneratedKeys="true"
+    <insert id="saveDailyActiveUserLog" parameterType="org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO" useGeneratedKeys="true"
             keyProperty="id">
 		insert into
             `daily_active_user_log`(`id`,`active_count`,`count_time`)
