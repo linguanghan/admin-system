@@ -35,4 +35,8 @@ public class UserPO {
      * 登录时间
      */
     private Integer loginTime;
+    /**
+     * 头像
+     */
+    private String avatar;
 }

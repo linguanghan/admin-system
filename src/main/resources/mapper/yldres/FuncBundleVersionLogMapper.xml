@@ -83,4 +83,11 @@
             `func_bundle_vertion_log`
 		where id = #{id}
 	</delete>
+
+    <select id="searchFuncBundleVersionLogByIdx" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `func_bundle_vertion_log` b
+        where b.idx = #{idx}
+    </select>
 </mapper>

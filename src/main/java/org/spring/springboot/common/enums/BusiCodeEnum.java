@@ -2,11 +2,15 @@ package org.spring.springboot.common.enums;
 
 public enum BusiCodeEnum {
 
-    ParamError("1", "参数错误"),
+    PARAM_ERROR("1", "参数错误"),
 
-    LoginError("2", "登录失败"),
+    BUSINESS_ERROR("2", "业务异常"),
 
-    RegisterError("3", "注册失败");
+    LOGIN_ERROR("3", "登录失败"),
+
+    REGISTER_ERROR("4", "注册失败"),
+
+    LOGIN_OUT_OF_TIME("5", "登录过期，请重新登录");
     private String code;
     private String msg;
 

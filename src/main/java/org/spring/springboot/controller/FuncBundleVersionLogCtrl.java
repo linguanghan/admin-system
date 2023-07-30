@@ -3,6 +3,8 @@ package org.spring.springboot.controller;
 import cn.hutool.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.anno.JwtIgnore;
+import org.spring.springboot.common.enums.BusiCodeEnum;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery;
@@ -20,7 +22,7 @@ import java.util.List;
  * TODO
  *
  * @author 13540
- * @version 1.0
+ * @version 1.0 功能版本记录
  * @date 2023-07-29 13:24
  */
 @RestController
@@ -32,8 +34,15 @@ public class FuncBundleVersionLogCtrl {
     @Resource
     private FuncBundleVersionLogService funcBundleVersionLogService;
 
+    /**
+     *
+     * 根据关键字keu分页查询功能版本记录
+     * @author 13540
+     * @date 2023-07-30 18:14 
+     * @return org.spring.springboot.common.result.Result<?>
+     */
     @RequestMapping(value = "/searchFuncBundleVersionLogByKeyWord")
-    public Result<?>  searchFuncBundleVersionLogByKeyWord(@RequestBody FuncBundleVersionLogQuery funcBundleVersionLogQuery){
+    public Result<?>  searchFuncBundleVersionLogByKeyWord(FuncBundleVersionLogQuery funcBundleVersionLogQuery){
         if(funcBundleVersionLogQuery == null) {
             return Result.buildFailure(SysCodeEnum.ParamError);
         }
@@ -46,7 +55,15 @@ public class FuncBundleVersionLogCtrl {
         return Result.buildSuccess().add("data", funcBundleVersionLogVOS).add("total", total);
 
     }
+    
 
+    /**
+     *
+     * 更新功能版本记录
+     * @author 13540
+     * @date 2023-07-30 18:15 
+     * @return org.spring.springboot.common.result.Result<?>
+     */
     @RequestMapping(value = "/updateFuncBundleVersionLog")
     public Result<?>  updateFuncBundleVersionLog(@RequestBody FuncBundleVersionLogVO funcBundleVersionLogVO){
         if(funcBundleVersionLogVO == null) {
@@ -66,6 +83,13 @@ public class FuncBundleVersionLogCtrl {
 
     }
 
+    /**
+     *
+     * 根据id删除功能版本记录
+     * @author 13540
+     * @date 2023-07-30 18:15
+     * @return org.spring.springboot.common.result.Result<?>
+     */
     @RequestMapping(value = "/deleteFuncBundleVersionLogById")
     public Result<?>  deleteFuncBundleVersionLogById(@RequestParam("id") Long id){
         if(id == null || id <= 0) {
@@ -84,6 +108,13 @@ public class FuncBundleVersionLogCtrl {
         return Result.buildFailure(SysCodeEnum.BusinessError);
     }
 
+    /**
+     *
+     * 保存功能版本记录
+     * @author 13540
+     * @date 2023-07-30 18:15
+     * @return org.spring.springboot.common.result.Result<?>
+     */
     @RequestMapping(value = "/saveFuncBundleVersionLog")
     public Result<?> saveFuncBundleVersionLog(@RequestBody FuncBundleVersionLogVO funcBundleVersionLogVO) {
         if (funcBundleVersionLogVO == null) {
@@ -101,5 +132,34 @@ public class FuncBundleVersionLogCtrl {
 
         return Result.buildFailure(SysCodeEnum.BusinessError);
     }
+
+
+    /**
+     *
+     * 根据idx查询功能版本记录
+     * @author 13540
+     * @date 2023-07-30 18:15 
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @JwtIgnore
+    @RequestMapping(value = "/searchFuncBundleVersionLogByIdx")
+    public Result<?> searchFuncBundleVersionLogByIdx(@RequestParam("idx") Long idx) {
+        if(idx == null || idx <=0 ) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+
+        try {
+            FuncBundleVersionLogVO funcBundleVersionLogVO = funcBundleVersionLogService.searchFuncBundleVersionLogByIdx(idx);
+            if (funcBundleVersionLogVO != null) {
+                return Result.buildSuccess().add("data", funcBundleVersionLogVO);
+            }
+        }catch (Exception e) {
+            logger.error("FuncBundleVersionLogCtrl#searchFuncBundleVersionLogByIdx error idx is{}, e "
+                    , idx, e);
+        }
+        return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, "没有查到该数据");
+
+    }
+
 
 }

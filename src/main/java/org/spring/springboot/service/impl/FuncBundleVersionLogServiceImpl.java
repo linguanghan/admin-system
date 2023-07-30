@@ -48,13 +48,13 @@ public class FuncBundleVersionLogServiceImpl implements FuncBundleVersionLogServ
 
     }
 
-
+    @Override
     public Integer searchFuncBundleVersionLogByKeyWordCount(FuncBundleVersionLogQuery funcBundleVersionLogQuery) {
         return funcBundleVersionLogDao.searchFuncBundleVersionLogByKeyWordCount(funcBundleVersionLogQuery);
     }
 
 
-
+    @Override
     public boolean updateFuncBundleVersionLog(FuncBundleVersionLogVO funcBundleVersionLogVO) {
         if(funcBundleVersionLogVO == null) {
             return false;
@@ -67,11 +67,13 @@ public class FuncBundleVersionLogServiceImpl implements FuncBundleVersionLogServ
         return update != null && update > 0;
     }
 
+    @Override
     public boolean deleteFuncBundleVersionLog(Long id) {
         Integer delete = funcBundleVersionLogDao.deleteFuncBundleVersionLog(id);
         return delete != null && delete > 0;
     }
 
+    @Override
     public boolean saveFuncBundleVersionLog(FuncBundleVersionLogVO funcBundleVersionLogVO) {
         if(funcBundleVersionLogVO == null) {
             return false;
@@ -82,5 +84,16 @@ public class FuncBundleVersionLogServiceImpl implements FuncBundleVersionLogServ
         funcBundleVersionLogPO.setCreateTime(createTime);
         funcBundleVersionLogDao.saveFuncBundleVersionLog(funcBundleVersionLogPO);
         return funcBundleVersionLogPO.getId() != null && funcBundleVersionLogPO.getId() > 0;
+    }
+
+    @Override
+    public FuncBundleVersionLogVO searchFuncBundleVersionLogByIdx(Long idx){
+        if(idx == null) {
+            return null;
+        }
+        FuncBundleVersionLogPO funcBundleVersionLogPO = funcBundleVersionLogDao.searchFuncBundleVersionLogByIdx(idx);
+        FuncBundleVersionLogVO funcBundleVersionLogVO = new FuncBundleVersionLogVO();
+        BeanUtils.copyProperties(funcBundleVersionLogPO, funcBundleVersionLogVO);
+        return funcBundleVersionLogVO;
     }
 }

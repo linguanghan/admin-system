@@ -24,5 +24,5 @@ public interface FuncBundleVersionLogDao {
 
     void saveFuncBundleVersionLog(FuncBundleVersionLogPO bookInfo);
 
-
+    FuncBundleVersionLogPO searchFuncBundleVersionLogByIdx(@Param("idx") Long idx);
 }

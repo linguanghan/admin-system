@@ -2,18 +2,15 @@ package org.spring.springboot.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import org.spring.springboot.dao.yldres.UserDao;
-import org.spring.springboot.domain.user.UserPO;
-import org.spring.springboot.domain.user.UserRegisterVO;
-import org.spring.springboot.domain.user.UserToken;
-import org.spring.springboot.domain.user.UserVO;
+import org.spring.springboot.domain.user.*;
 import org.spring.springboot.service.UserService;
 import org.spring.springboot.util.JwtTokenUtil;
+import org.spring.springboot.util.RSAUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * TODO
@@ -30,21 +27,21 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean login(UserVO userVO, HttpServletResponse response) {
+    public String login(UserVO userVO, HttpServletResponse response) throws Exception{
         //1、用户、密码验证
         UserPO userPO = userDao.fetchUseByUserName(userVO.getUserName());
         if (userPO.getPassword() == null) {
-            return false;
+            return null;
         }
-        if (!userPO.getPassword().equals(userVO.getPassword())) {
-            return false;
+        if (!RSAUtil.decrypt(userPO.getPassword()).equals(RSAUtil.decrypt(userVO.getPassword()))) {
+            return null;
         }
         //2、创建token，并将token放在响应头
         UserToken userToken = new UserToken();
         BeanUtils.copyProperties(userPO,userToken);
         String token = JwtTokenUtil.createToken(JSONObject.toJSONString(userToken));
         response.setHeader(JwtTokenUtil.AUTH_HEADER_KEY, token);
-        return true;
+        return token;
     }
 
 
@@ -54,6 +51,14 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(registerVO, userPO);
         Integer save = userDao.saveUser(userPO);
         return save != null && save > 0;
+    }
+
+    @Override
+    public UserInfo getUserInfoByName(String username){
+        UserPO userPO = userDao.fetchUseByUserName(username);
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(userPO, userInfo);
+        return userInfo;
     }
 
 

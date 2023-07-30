@@ -57,7 +57,7 @@ public class RSAUtil {
 
     public static void main(String[] args) throws Exception{
 
-        String encrypt = RSAUtil.encrypt("123456");
+        String encrypt = RSAUtil.encrypt("admin123");
         String decrypt = RSAUtil.decrypt(encrypt);
         System.out.println(encrypt);
         System.out.println(decrypt);

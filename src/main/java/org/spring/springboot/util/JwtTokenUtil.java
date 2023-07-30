@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import org.spring.springboot.common.enums.BusiCodeEnum;
+import org.spring.springboot.common.exception.ServiceException;
 
 import java.util.Date;
 
@@ -16,7 +18,7 @@ import java.util.Date;
  */
 public class JwtTokenUtil {
     //定义token返回头部
-    public static final String AUTH_HEADER_KEY = "Authorization";
+    public static final String AUTH_HEADER_KEY = "accessToken";
 
     //token前缀
     public static final String TOKEN_PREFIX = "Bearer ";
@@ -56,9 +58,9 @@ public class JwtTokenUtil {
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
         }catch (TokenExpiredException e) {
-            throw new Exception("token已失效，请重新登录", e);
+            throw new ServiceException(BusiCodeEnum.LOGIN_OUT_OF_TIME);
         }catch (JWTVerificationException e) {
-            throw new Exception("token验证失败！",e);
+            throw new ServiceException(BusiCodeEnum.LOGIN_ERROR);
         }
     }
 

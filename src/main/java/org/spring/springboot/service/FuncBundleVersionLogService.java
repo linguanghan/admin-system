@@ -19,4 +19,6 @@ public interface FuncBundleVersionLogService {
 
     boolean saveFuncBundleVersionLog(FuncBundleVersionLogVO funcBundleVersionLogVO);
 
+    FuncBundleVersionLogVO searchFuncBundleVersionLogByIdx(Long idx);
+
 }

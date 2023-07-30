@@ -1,6 +1,6 @@
 package org.spring.springboot.service;
 
-import org.spring.springboot.common.anno.JwtIgnore;
+import org.spring.springboot.domain.user.UserInfo;
 import org.spring.springboot.domain.user.UserRegisterVO;
 import org.spring.springboot.domain.user.UserVO;
 
@@ -10,11 +10,16 @@ public interface UserService {
     /**
      * 登录
      */
-    boolean login(UserVO userVO, HttpServletResponse response);
+    String login(UserVO userVO, HttpServletResponse response) throws Exception;
 
     /**
      * 注冊
      */
     boolean register(UserRegisterVO userVO, HttpServletResponse response);
 
+
+    /**
+     * 获取信息
+     */
+    UserInfo getUserInfoByName(String username);
 }
