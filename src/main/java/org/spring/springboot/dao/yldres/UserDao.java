@@ -32,5 +32,5 @@ public interface UserDao {
      */
     Integer saveUser(UserPO userPO);
 
-    UserPO fetchUserById(Integer id);
+    UserPO fetchUserById(@Param("id") Integer id);
 }

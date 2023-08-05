@@ -1,6 +1,7 @@
 package org.spring.springboot.config;
 
 import org.spring.springboot.config.interceptor.AuthenticationInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -31,8 +32,13 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
                 .exposedHeaders("Server","Content-Length", "Authorization", "Access-Token", "Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
     }
 
+    @Bean
+    public AuthenticationInterceptor getAuthenticationInterceptor() {
+        return new AuthenticationInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/**").excludePathPatterns("/static/**");
+        registry.addInterceptor(getAuthenticationInterceptor()).addPathPatterns("/**").excludePathPatterns("/static/**");
     }
 }

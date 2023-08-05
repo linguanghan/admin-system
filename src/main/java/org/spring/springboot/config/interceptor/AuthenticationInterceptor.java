@@ -7,11 +7,13 @@ import org.spring.springboot.domain.user.*;
 import org.spring.springboot.service.UserService;
 import org.spring.springboot.util.JwtTokenUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
@@ -24,9 +26,10 @@ import java.lang.reflect.Method;
  * @date 2023-07-29 15:55
  */
 @Slf4j
+@Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @Override
@@ -72,5 +75,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         UserHolderParam userHolderParam = new UserHolderParam();
         BeanUtils.copyProperties(userPO, userHolderParam);
         UserHolder.setUser(userHolderParam);
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        UserHolder.clearUser();
     }
 }

@@ -15,7 +15,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-		id,`username`,`password`, `role`, `phone`, `loginTime`, `avatar`
+		`id`,`username`,`password`, `role`, `phone`, `loginTime`, `avatar`
 	</sql>
 
     <select id="fetchUseByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -29,12 +29,13 @@
         </where>
     </select>
 
-    <select id="fetchUserById" resultType="org.spring.springboot.domain.user.UserPO">
+    <select id="fetchUserById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
         <include refid="Base_Column_List"/>
         from `user`
         <where>
-            <if test="userName != null">
-                id = #{id}
+            <if test="id != null">
+                `id` = #{id}
             </if>
         </where>
     </select>
