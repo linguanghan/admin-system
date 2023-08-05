@@ -31,4 +31,6 @@ public interface UserDao {
      * @return java.lang.Integer
      */
     Integer saveUser(UserPO userPO);
+
+    UserPO fetchUserById(Integer id);
 }

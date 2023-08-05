@@ -1,9 +1,13 @@
 package org.spring.springboot.config.interceptor;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.spring.springboot.common.anno.JwtIgnore;
+import org.spring.springboot.domain.user.*;
+import org.spring.springboot.service.UserService;
 import org.spring.springboot.util.JwtTokenUtil;
-import org.springframework.http.HttpMethod;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,6 +25,10 @@ import java.lang.reflect.Method;
  */
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private UserService userService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 从http请求头中取出token
@@ -45,8 +53,24 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
         //验证，并获取token内部信息
-        JwtTokenUtil.verifyToken(token);
+        String tokenStr = JwtTokenUtil.verifyToken(token);
+        //设置登录态的用户信息
+        setUserHolderFromToken(tokenStr);
         return true;
     }
 
+    /**
+     *
+     * 设置登录态的用户信息
+     * @author 13540
+     * @date 2023-08-05 11:19 
+     * @return void
+     */
+    private void setUserHolderFromToken(String tokenStr) {
+        UserToken userToken = JSON.parseObject(tokenStr, UserToken.class);
+        UserPO userPO = userService.getUserInfoById(userToken.getId());
+        UserHolderParam userHolderParam = new UserHolderParam();
+        BeanUtils.copyProperties(userPO, userHolderParam);
+        UserHolder.setUser(userHolderParam);
+    }
 }

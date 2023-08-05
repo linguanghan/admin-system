@@ -29,6 +29,16 @@
         </where>
     </select>
 
+    <select id="fetchUserById" resultType="org.spring.springboot.domain.user.UserPO">
+        <include refid="Base_Column_List"/>
+        from `user`
+        <where>
+            <if test="userName != null">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
 
     <insert id="saveUser" parameterType="org.spring.springboot.domain.user.UserPO" useGeneratedKeys="true"
             keyProperty="id">
