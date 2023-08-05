@@ -3,11 +3,13 @@ package org.spring.springboot.service.impl;
 import cn.hutool.core.collection.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayerDao;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.DayPlayer;
 import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.user.UserHolder;
 import org.spring.springboot.service.PlayerService;
 import org.spring.springboot.util.DateUtil;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Integer findRegisterNum(Date dateTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return 0;
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         if (null == dateTime) {
             dateTime = new Date();
@@ -117,6 +122,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<DayPlayer> findRegisterNumGroupbyDate(Date startTime, Date endTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
         String e = df.format(endTime);
@@ -153,6 +161,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Integer findActiveNum(Date dateTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return 0;
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         if (null == dateTime) {
             dateTime = new Date();
@@ -233,6 +244,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
         String e = df.format(endTime);
