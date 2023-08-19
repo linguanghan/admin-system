@@ -2,7 +2,7 @@ package org.spring.springboot.service;
 
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.vo.PageBookParamVO;
-import org.spring.springboot.domain.res.Bookresource;
+import org.spring.springboot.domain.yldres.Bookresource;
 
 import java.util.List;
 

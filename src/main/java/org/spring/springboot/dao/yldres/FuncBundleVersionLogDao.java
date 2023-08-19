@@ -1,7 +1,6 @@
 package org.spring.springboot.dao.yldres;
 
 import org.apache.ibatis.annotations.Param;
-import org.spring.springboot.domain.res.Bookresource;
 import org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO;
 import org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery;
 

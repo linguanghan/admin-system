@@ -5,12 +5,11 @@ import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.dao.res.BookresourceDao;
+import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.domain.game.vo.PageBookParamVO;
-import org.spring.springboot.domain.res.Bookresource;
+import org.spring.springboot.domain.yldres.Bookresource;
 import org.spring.springboot.service.BookresourceService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;

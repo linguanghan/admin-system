@@ -7,7 +7,7 @@ import org.spring.springboot.bean.AjaxResult;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.vo.PageBookParamVO;
-import org.spring.springboot.domain.res.Bookresource;
+import org.spring.springboot.domain.yldres.Bookresource;
 import org.spring.springboot.service.BookresourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

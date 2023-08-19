@@ -1,7 +1,7 @@
-package org.spring.springboot.dao.res;
+package org.spring.springboot.dao.yldres;
 
 import org.apache.ibatis.annotations.Param;
-import org.spring.springboot.domain.res.Bookresource;
+import org.spring.springboot.domain.yldres.Bookresource;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--<mapper namespace="org.spring.springboot.dao.res">-->
-<mapper namespace="org.spring.springboot.dao.res.BookresourceDao">
-    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.res.Bookresource">
+<mapper namespace="org.spring.springboot.dao.yldres.BookresourceDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.Bookresource">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="bookId" jdbcType="BIGINT" property="bookId"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
@@ -52,7 +52,7 @@
         or b.name like concat('%',#{keyword,jdbcType=VARCHAR},'%')
     </select>
 
-    <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource" useGeneratedKeys="true"
+    <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
             keyProperty="id">
 		insert into
 		BookResource(id,bookId,`name`,`release`,video,`version`)
@@ -60,7 +60,7 @@
 		(#{id},#{bookId},#{name},#{release},#{video},#{version})
 	</insert>
 
-    <update id="updateBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource">
+    <update id="updateBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource">
         update
         BookResource
         set
@@ -83,7 +83,7 @@
         id = #{id}
     </update>
 
-    <delete id="deleteBookInfo" parameterType="org.spring.springboot.domain.res.Bookresource">
+    <delete id="deleteBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource">
 		delete from
 		    BookResource
 		where
