@@ -1,4 +1,4 @@
-package org.spring.springboot.domain.game;
+package org.spring.springboot.domain.game.playerunit;
 
 import java.io.Serializable;
 

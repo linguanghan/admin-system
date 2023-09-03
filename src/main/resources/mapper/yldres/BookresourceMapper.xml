@@ -51,6 +51,19 @@
         where b.bookId like concat('%',#{keyword,jdbcType=VARCHAR},'%')
         or b.name like concat('%',#{keyword,jdbcType=VARCHAR},'%')
     </select>
+    <select id="batchQueryBookResourceInfosByIds"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from BookResource
+        <trim prefix="where">
+            bookId in
+            <foreach collection="bookIdx" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </trim>
+
+    </select>
 
     <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
             keyProperty="id">

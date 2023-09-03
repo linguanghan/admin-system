@@ -4,12 +4,18 @@ import cn.hutool.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
+import org.spring.springboot.bean.Option;
+import org.spring.springboot.common.anno.JwtIgnore;
+import org.spring.springboot.common.enums.BusiCodeEnum;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.playerunit.PlayerRechargeOperateVO;
+import org.spring.springboot.domain.game.playerunit.PlayerRechargeQuery;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -17,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 绘本每日数据、用户购买特定版本
@@ -133,6 +140,82 @@ public class PlayerunitCtrl {
         }
         return Result.buildFailure(SysCodeEnum.SysError);
     }
+
+    /**
+     *
+     * 根据用户id获取购买的书本option列表
+     * @author 13540
+     * @date 2023-09-03 11:03 
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @RequestMapping(value = "/getPlayerUnitOptionListByPid")
+    public Result<?> getPlayerUnitOptionListByPid(Long pid) {
+        if(pid == null) {
+            return Result.buildFailure(SysCodeEnum.BusinessError);
+        }
+
+        try {
+            List<Option> playerUnitOptions = playerunitService.getPlayerUnitOptionListByPid(pid);
+            return Result.buildSuccess().add("data", playerUnitOptions);
+
+        }catch (Exception e) {
+            logger.info("PlayerCtrl#getPlayerUnitOptionListByPid error pid is {}", pid, e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+    }
+
+
+    /**
+     *
+     * 充值记录条件查询
+     * @param query
+     * @author 13540
+     * @date 2023-09-03 15:33
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @JwtIgnore
+    @RequestMapping(value = "/queryRechargeByPage")
+    public Result<?> queryRechargeByPage(PlayerRechargeQuery query) {
+        try {
+            return playerunitService.queryRechargeByPage(query);
+        }catch (Exception e) {
+            logger.info("PlayerCtrl#queryRechargeByPage error query is {}", JSONUtil.toJsonStr(query), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+
+    }
+
+    /**
+     *
+     * 订单转移
+     * @author 13540
+     * @date 2023-09-03 17:31
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @RequestMapping(value = "/changeRecharge")
+    public Result<?> changeRecharge(PlayerRechargeOperateVO playerRechargeOperateVO) {
+        if(playerRechargeOperateVO == null
+                || playerRechargeOperateVO.getOriginPid() == null
+                || playerRechargeOperateVO.getTargetPid() == null
+                || playerRechargeOperateVO.getBookIdx() == null
+        ){
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            String errorMess = playerunitService.changeRecharge(playerRechargeOperateVO);
+            if(StringUtils.isEmpty(errorMess)) {
+                return Result.buildSuccess();
+            }
+            return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, errorMess);
+        }catch (Exception e) {
+            logger.info("PlayerCtrl#changeRecharge error playerRechargeOperateVO is {}", JSONUtil.toJsonStr(playerRechargeOperateVO), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+
+    }
+
+
+
 
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {

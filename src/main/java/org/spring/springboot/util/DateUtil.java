@@ -11,6 +11,12 @@ import java.util.*;
  */
 public class DateUtil {
 
+    private static final String LENGTH_13 = "LENGTH_13";
+
+    private static final String LENGTH_10 = "LENGTH_10";
+
+
+
     /**
      * 获取两个日期之间的所有日期 (年月日)
      * @param start
@@ -42,6 +48,27 @@ public class DateUtil {
         }
 
         return result;
+    }
+
+    /**
+     * 时间戳转时间字符串
+     *
+     * @return java.lang.String
+     * @author 13540
+     * @date 2023-09-03 17:05
+     */
+    public static Date timeStampToDate(Integer timeStamp, String type) {
+
+        if (timeStamp == null) {
+            return new Date();
+        }
+        if (LENGTH_13.equals(type)) {
+            return new Date(timeStamp);
+        }
+        if (LENGTH_10.equals(type)) {
+            return new Date(timeStamp * 1000L);
+        }
+        return new Date();
     }
 
     public static void main(String[] args) {

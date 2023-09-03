@@ -26,5 +26,15 @@ public interface BookresourceDao {
 
     void saveBookInfo(Bookresource bookInfo);
 
+    /**
+     *
+     * 批量查询书本信息
+     * @param bookIdx
+     * @author 13540
+     * @date 2023-09-03 14:59
+     * @return java.util.List<org.spring.springboot.domain.yldres.Bookresource>
+     */
+    List<Bookresource> batchQueryBookResourceInfosByIds(@Param("bookIdx") List<Long> bookIdx);
+
 
 }
