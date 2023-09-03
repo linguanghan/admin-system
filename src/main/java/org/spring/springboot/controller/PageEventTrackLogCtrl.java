@@ -2,6 +2,7 @@ package org.spring.springboot.controller;
 import cn.hutool.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.anno.JwtIgnore;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.yldres.page.PageEventTrackLogQuery;
@@ -39,6 +40,7 @@ public class PageEventTrackLogCtrl {
      * @date 2023-08-13 16:28 
      * @return org.spring.springboot.common.result.Result<?>
      */
+    @JwtIgnore
     @RequestMapping("/searchPageEventTrackLogByPage")
     public Result<?> searchPageEventTrackLogByPage(PageEventTrackLogQuery pageEventTrackLogQuery) {
         if(pageEventTrackLogQuery == null) {
@@ -68,6 +70,7 @@ public class PageEventTrackLogCtrl {
      * @date 2023-08-13 16:35 
      * @return org.spring.springboot.common.result.Result<?>
      */
+    @JwtIgnore
     @RequestMapping("savePageEventTrackLog")
     public Result<?> savePageEventTrackLog(@RequestParam("log") String log){
         if(StringUtils.isEmpty(log)) {
