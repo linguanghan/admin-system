@@ -321,7 +321,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     @Override
     public Result<?> queryRechargeByPage(PlayerRechargeQuery query) {
         // 1、查询参数都不传递的时候不查询
-        if(query.getPid() == null && query.getOrderId() == null && query.getStartTime() == null && query.getEndTime() == null) {
+        if(query.getPid() == null && StringUtils.isEmpty(query.getOrderId()) && query.getStartTime() == null && query.getEndTime() == null) {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
@@ -341,6 +341,11 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
         if(query.getPid() != null && !StringUtils.isEmpty(query.getOrderId())) {
             pids = ListUtils.retainAll(Collections.singletonList(query.getPid()), pidList);
+        }
+
+        // 没有交集直接返回空
+        if(CollectionUtils.isEmpty(pids)) {
+            return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
         // 3、根据时间、pid联合查询充值记录
@@ -393,19 +398,23 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     @Override
     @Transactional
     public String changeRecharge(PlayerRechargeOperateVO playerRechargeOperateVO) {
-        // 1、校验原始账号有没有该本书
+        // 1、校验不能转给自己
+        if(playerRechargeOperateVO.getOriginPid().equals(playerRechargeOperateVO.getTargetPid())) {
+            return "原始账号和目标账号不能相同！";
+        }
+        // 2、校验原始账号有没有该本书
         Playerunit playerunit = new Playerunit();
         playerunit.setPid(playerRechargeOperateVO.getOriginPid());
         List<Playerunit> originPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
         if(CollectionUtils.isEmpty(originPlayerUnits)) {
-            return "该账号没有该书的转移权限";
+            return "该账号没有该书的转移权限！";
         }
         List<Integer> originBookIds = originPlayerUnits.stream().map(Playerunit::getBookidx).collect(Collectors.toList());
         if(!originBookIds.contains(playerRechargeOperateVO.getBookIdx())) {
             return "该账号没有该书的转移权限";
         }
 
-        // 2、查询目标账号有没有该本书
+        // 3、查询目标账号有没有该本书
         playerunit.setPid(playerRechargeOperateVO.getTargetPid());
         playerunit.setBookidx(playerRechargeOperateVO.getBookIdx());
         List<Playerunit> targetPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
@@ -418,7 +427,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerunit.setPid(playerRechargeOperateVO.getOriginPid());
         playerunit.setBookidx(playerRechargeOperateVO.getBookIdx());
         List<Playerunit> newOriginPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
-        // 3、更新新书
+        // 4、更新新书
         for (Playerunit newOriginPlayerUnit : newOriginPlayerUnits) {
             newOriginPlayerUnit.setPid(playerRechargeOperateVO.getTargetPid());
             playerunitDao.updateByPrimaryKey(newOriginPlayerUnit);

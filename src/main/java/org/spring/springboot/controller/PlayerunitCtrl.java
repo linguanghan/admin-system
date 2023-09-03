@@ -173,7 +173,6 @@ public class PlayerunitCtrl {
      * @date 2023-09-03 15:33
      * @return org.spring.springboot.common.result.Result<?>
      */
-    @JwtIgnore
     @RequestMapping(value = "/queryRechargeByPage")
     public Result<?> queryRechargeByPage(PlayerRechargeQuery query) {
         try {
