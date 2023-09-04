@@ -398,11 +398,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     @Override
     @Transactional
     public String changeRecharge(PlayerRechargeOperateVO playerRechargeOperateVO) {
-        // 1、校验不能转给自己
-        if(playerRechargeOperateVO.getOriginPid().equals(playerRechargeOperateVO.getTargetPid())) {
-            return "原始账号和目标账号不能相同！";
-        }
-        // 2、校验原始账号有没有该本书
+        // 1、校验原始账号有没有该本书
         Playerunit playerunit = new Playerunit();
         playerunit.setPid(playerRechargeOperateVO.getOriginPid());
         List<Playerunit> originPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
@@ -414,11 +410,13 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             return "该账号没有该书的转移权限";
         }
 
-        // 3、查询目标账号有没有该本书
+        // 2、查询目标账号有没有该本书
         playerunit.setPid(playerRechargeOperateVO.getTargetPid());
         playerunit.setBookidx(playerRechargeOperateVO.getBookIdx());
         List<Playerunit> targetPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
-        if(!CollectionUtils.isEmpty(targetPlayerUnits)) {
+
+        // 3、目标账号与原账号不同，并且目标账号有该书的时候删除目标账号的书
+        if(!CollectionUtils.isEmpty(targetPlayerUnits) && !playerRechargeOperateVO.getOriginPid().equals(playerRechargeOperateVO.getTargetPid())) {
             for (Playerunit targetPlayerUnit : targetPlayerUnits) {
                 playerunitDao.deleteByPrimaryKey(targetPlayerUnit.getId());
             }

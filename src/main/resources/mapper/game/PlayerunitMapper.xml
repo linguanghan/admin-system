@@ -637,6 +637,7 @@
           bookIdx = #{bookidx} and
         </if>
     </trim>
+    order by bookIdx
   </select>
 
   <select id="queryRechargeByPage" resultMap="BaseResultMap">
@@ -657,7 +658,7 @@
         </foreach>
       </if>
     </trim>
-    order by id
+    order by bookIdx
     limit #{startRow}, #{pageSize}
 
   </select>
