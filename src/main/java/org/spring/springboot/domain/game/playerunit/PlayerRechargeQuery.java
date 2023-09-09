@@ -48,8 +48,18 @@ public class PlayerRechargeQuery {
      */
     private Integer pageSize = 20;
 
+
     public Integer getStartRow() {
         this.startRow = (pageNo - 1) * pageSize;
         return startRow;
     }
+
+    /**
+     * 下单时间
+     */
+    private Long orderTime;
+    /**
+     * 是否解锁
+     */
+    private Integer unlock;
 }

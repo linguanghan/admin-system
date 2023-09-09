@@ -46,9 +46,20 @@ public interface PlayerunitDao {
     //根据用户id查询购买的书本
     List<Playerunit> findPlayerUnitByExample(Playerunit playerunit);
 
-    List<Playerunit> queryRechargeByPage(@Param("startTime") Long startTime, @Param("endTime") Long endTime, @Param("pidList") List<Long> pidList, @Param("startRow") Integer startRow, @Param("pageSize") Integer pageSize );
+    List<Playerunit> queryRechargeByPage(@Param("startTime") Long startTime,
+                                         @Param("endTime") Long endTime,
+                                         @Param("pidList") List<Long> pidList,
+                                         @Param("startRow") Integer startRow,
+                                         @Param("pageSize") Integer pageSize,
+                                         @Param("orderTime") Long orderTime,
+                                         @Param("unlock") Integer unlock);
 
-    Integer queryRechargeByPageCount(@Param("startTime") Long startTime, @Param("endTime") Long endTime, @Param("pidList") List<Long> pidList);
+
+    Integer queryRechargeByPageCount(@Param("startTime") Long startTime,
+                                     @Param("endTime") Long endTime,
+                                     @Param("pidList") List<Long> pidList,
+                                     @Param("orderTime") Long orderTime,
+                                     @Param("unlock") Integer unlock);
 
 
 }

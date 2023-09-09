@@ -35,4 +35,16 @@ public class PlayerRechargeVO {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+    /**
+     * 是否锁住 1=>解锁 、 0=>锁住
+     */
+    private Integer unlock;
+    /**
+     * 用户名
+     */
+    private String playerName;
+    /**
+     * 剩余使用时间 月
+     */
+    private String remainTime;
 }

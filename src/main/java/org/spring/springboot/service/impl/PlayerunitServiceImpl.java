@@ -8,9 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
+import org.spring.springboot.dao.game.PlayerDao;
 import org.spring.springboot.dao.game.PlayerRechargeDao;
 import org.spring.springboot.dao.game.PlayerunitDao;
 import org.spring.springboot.dao.yldres.BookresourceDao;
+import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.playerunit.*;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.domain.yldres.Bookresource;
@@ -49,6 +51,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
     @Resource
     private BookresourceDao bookresourceDao;
+
+    @Resource
+    private PlayerDao playerDao;
 
     private static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String time_start_suffix = " 00:00:00";
@@ -329,9 +334,15 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         List<Long> pidList = new ArrayList<>();
         List<Long> pids = new ArrayList<>();
         // 2、订单号不为空的时候再Recharge表根据订单查询pid
-        if (orderId != null) {
+        if (!StringUtils.isEmpty(orderId)) {
             List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRechargeInfoByOrderId(orderId);
-            pidList = playerRechargePOS.stream().map(PlayerRechargePO::getPid).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(playerRechargePOS)) {
+                pidList = playerRechargePOS.stream().map(PlayerRechargePO::getPid).collect(Collectors.toList());
+                if (NumberUtil.isNumber(playerRechargePOS.get(0).getUpdateTime())) {
+                    query.setOrderTime(Long.parseLong(playerRechargePOS.get(0).getUpdateTime()) / 1000);
+                }
+            }
+
         }
         if(query.getPid() != null && StringUtils.isEmpty(query.getOrderId())) {
             pids = Collections.singletonList(query.getPid());
@@ -350,42 +361,69 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
         // 3、根据时间、pid联合查询充值记录
         Map<String, Long> timeChangeMap = getTimeChangeMap(Arrays.asList(query.getStartTime(), query.getEndTime()), Arrays.asList("startTime", "endTime"));
-        List<Playerunit> playerunits = playerunitDao.queryRechargeByPage(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getStartRow(), query.getPageSize());
-        Integer total = playerunitDao.queryRechargeByPageCount(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids);
+        List<Playerunit> playerunits = playerunitDao.queryRechargeByPage(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getStartRow(), query.getPageSize(), query.getOrderTime(), query.getUnlock());
+        Integer total = playerunitDao.queryRechargeByPageCount(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getOrderTime(), query.getUnlock());
 
         if(CollectionUtils.isEmpty(playerunits)) {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
-        //4、VO转化
+        //4、查询相关信息
         List<Long> bookIds = playerunits.stream().map(playerunit -> Long.parseLong(String.valueOf(playerunit.getBookidx()))).collect(Collectors.toList());
         List<Bookresource> bookresources = bookresourceDao.batchQueryBookResourceInfosByIds(bookIds);
         Map<Long, Bookresource> bookresourceMap = new HashMap<>();
         if(!CollectionUtils.isEmpty(bookresources)) {
             bookresourceMap = bookresources.stream().collect(Collectors.toMap(Bookresource::getBookId, v -> v, (k1, k2) -> k1));
         }
+        Map<Long, Player> playerMap = new HashMap<>();
+        List<Long> ids = playerunits.stream().map(Playerunit::getPid).collect(Collectors.toList());
+        List<Player> players = playerDao.batchQueryPlayerInfosById(ids);
+        if (!CollectionUtils.isEmpty(players)) {
+            playerMap = players.stream().collect(Collectors.toMap(Player::getId, v -> v, (k1, k2) -> k1));
+        }
 
+        // 5、VO转化
         final Map<Long, Bookresource> finalBookresourceMap = bookresourceMap;
-        List<PlayerRechargeVO> playerRechargeVOS = playerunits.stream().map(playerunit -> {
-            PlayerRechargeVO playerRechargeVO = new PlayerRechargeVO();
-            playerRechargeVO.setPid(playerunit.getPid());
-            playerRechargeVO.setBookType(playerunit.getBooktype());
-            Date date = DateUtil.timeStampToDate(playerunit.getCreatetime(), LENGTH_10);
-            playerRechargeVO.setCreateTime(date);
-            Integer bookidx = playerunit.getBookidx();
-            if (bookidx != null) {
-                playerRechargeVO.setBookIdx(playerunit.getBookidx());
-                long bookIndexLong = Long.parseLong(String.valueOf(bookidx));
-                if(finalBookresourceMap.get(bookIndexLong) == null){
-                    System.out.println("11212=" + bookIndexLong);
-                    return playerRechargeVO;
-                }
+        final Map<Long, Player> finalPlayerMap = playerMap;
+        List<PlayerRechargeVO> playerRechargeVOS = playerunits.stream().map(playerunit -> mapsToPlayerRechargeVO(playerunit, finalBookresourceMap, finalPlayerMap)).collect(Collectors.toList());
+        return Result.buildSuccess().add("data", playerRechargeVOS).add("total", total);
+    }
+
+
+    /**
+     *
+     * VO转化
+     * @param playerunit
+     * @param finalBookresourceMap
+     * @param finalPlayerMap
+     * @author 13540
+     * @date 2023-09-09 14:42 
+     * @return org.spring.springboot.domain.game.playerunit.PlayerRechargeVO
+     */
+    private PlayerRechargeVO mapsToPlayerRechargeVO(Playerunit playerunit, Map<Long, Bookresource> finalBookresourceMap, Map<Long, Player> finalPlayerMap) {
+        PlayerRechargeVO playerRechargeVO = new PlayerRechargeVO();
+        playerRechargeVO.setPid(playerunit.getPid());
+        playerRechargeVO.setBookType(playerunit.getBooktype());
+        Date date = DateUtil.timeStampToDate(playerunit.getCreatetime(), LENGTH_10);
+        playerRechargeVO.setCreateTime(date);
+        playerRechargeVO.setUnlock(playerunit.getUnit3());// unit3 = 1：解锁、0：锁住
+        playerRechargeVO.setRemainTime(String.valueOf(playerunit.getPeriod()));
+
+        Integer bookidx = playerunit.getBookidx();
+        if (bookidx != null) {
+            playerRechargeVO.setBookIdx(playerunit.getBookidx());
+            long bookIndexLong = Long.parseLong(String.valueOf(bookidx));
+            // 书名填充
+            if(finalBookresourceMap.get(bookIndexLong) != null){
                 playerRechargeVO.setBookName(finalBookresourceMap.get(bookIndexLong).getName());
             }
+            // 用户名填充
+            if(finalPlayerMap.get(playerunit.getPid()) != null) {
+                playerRechargeVO.setPlayerName(finalPlayerMap.get(playerunit.getPid()).getName());
+            }
+        }
 
-            return playerRechargeVO;
-        }).collect(Collectors.toList());
-        return Result.buildSuccess().add("data", playerRechargeVOS).add("total", total);
+        return playerRechargeVO;
     }
 
     /**

@@ -636,6 +636,7 @@
         <if test="bookidx!=null">
           bookIdx = #{bookidx} and
         </if>
+       unit3 = 1 and
     </trim>
     order by bookIdx
   </select>
@@ -656,11 +657,18 @@
         <foreach collection="pidList" item="item" index="index" open="(" separator="," close=")">
           #{item}
         </foreach>
+        and
+      </if>
+      <if test="orderTime != null">
+        createTime &gt;= #{orderTime} - 5 and
+        createTime &lt;= #{orderTime} + 5 and
+      </if>
+      <if test="unlock != null">
+        unit3 = #{unlock}
       </if>
     </trim>
     order by bookIdx
     limit #{startRow}, #{pageSize}
-
   </select>
 
   <select id="queryRechargeByPageCount" resultType="java.lang.Integer">
@@ -678,6 +686,14 @@
         <foreach collection="pidList" item="item" index="index" open="(" separator="," close=")">
           #{item}
         </foreach>
+        and
+      </if>
+      <if test="orderTime != null">
+        createTime &gt;= #{orderTime} - 5 and
+        createTime &lt;= #{orderTime} + 5 and
+      </if>
+      <if test="unlock != null">
+        unit3 = #{unlock}
       </if>
     </trim>
   </select>

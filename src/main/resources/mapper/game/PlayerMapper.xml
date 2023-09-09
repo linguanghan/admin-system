@@ -733,6 +733,18 @@
     ) tmp group by timedate
   </select>
 
+    <select id="batchQueryPlayerInfosById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from player
+        <trim prefix="where">
+            id in
+            <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </trim>
+    </select>
+
     <!--<select id="findPlyersBetweenTime" resultMap="BaseResultMap">-->
         <!--select-->
         <!--<include refid="Base_Column_List"/>-->

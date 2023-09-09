@@ -39,12 +39,6 @@ public interface PlayerDao {
     List<Player> findActiveBetweenDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
     List<DayPlayer> findActiveNumGroupbyDate(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
 
-
-    List<Player> findPlyersBetweenTime(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
-
-    Integer findPlyersBetweenTimeNum(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
-
-    List<DayPlayer> findPlyersHistoryNumLast30Days(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
-
+    List<Player> batchQueryPlayerInfosById(@Param("ids") List<Long> ids);
 
 }
