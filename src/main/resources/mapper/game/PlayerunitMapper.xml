@@ -636,7 +636,10 @@
         <if test="bookidx!=null">
           bookIdx = #{bookidx} and
         </if>
-       unit3 = 1 and
+        <if test="unit3">
+          unit3 = #{unit3} and
+        </if>
+
     </trim>
     order by bookIdx
   </select>

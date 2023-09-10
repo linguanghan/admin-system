@@ -3,6 +3,7 @@ package org.spring.springboot.service.impl;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.unit.DataUnit;
 import cn.hutool.core.util.NumberUtil;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,15 @@ import org.spring.springboot.dao.game.PlayerDao;
 import org.spring.springboot.dao.game.PlayerRechargeDao;
 import org.spring.springboot.dao.game.PlayerunitDao;
 import org.spring.springboot.dao.yldres.BookresourceDao;
+import org.spring.springboot.dao.yldres.ChangeRechargeRecordDao;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.playerunit.*;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.domain.yldres.Bookresource;
+import org.spring.springboot.domain.yldres.recharge.ChangeRechargeRecordPO;
 import org.spring.springboot.service.PlayerunitService;
 import org.spring.springboot.util.DateUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -54,6 +58,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
     @Resource
     private PlayerDao playerDao;
+
+    @Resource
+    private ChangeRechargeRecordDao changeRechargeRecordDao;
 
     private static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String time_start_suffix = " 00:00:00";
@@ -309,6 +316,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     public List<Option> getPlayerUnitOptionListByPid(Long pid) {
         Playerunit playerunit = new Playerunit();
         playerunit.setPid(pid);
+        playerunit.setUnit3(1);
         List<Playerunit> playerUnitByPid = playerunitDao.findPlayerUnitByExample(playerunit);
         if(CollectionUtils.isEmpty(playerUnitByPid)) {
             return Collections.emptyList();
@@ -440,6 +448,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         // 1、校验原始账号有没有该本书
         Playerunit playerunit = new Playerunit();
         playerunit.setPid(playerRechargeOperateVO.getOriginPid());
+        playerunit.setUnit3(1);
         List<Playerunit> originPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
         if(CollectionUtils.isEmpty(originPlayerUnits)) {
             return "该账号没有该书的转移权限！";
@@ -452,23 +461,49 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         // 2、查询目标账号有没有该本书
         playerunit.setPid(playerRechargeOperateVO.getTargetPid());
         playerunit.setBookidx(playerRechargeOperateVO.getBookIdx());
+        playerunit.setUnit3(0);
         List<Playerunit> targetPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
 
+        List<ChangeRechargeOperateInfo> changeRechargeOperateInfos = new ArrayList<>();
         // 3、目标账号与原账号不同，并且目标账号有该书的时候删除目标账号的书
         if(!CollectionUtils.isEmpty(targetPlayerUnits) && !playerRechargeOperateVO.getOriginPid().equals(playerRechargeOperateVO.getTargetPid())) {
             for (Playerunit targetPlayerUnit : targetPlayerUnits) {
+                // 记录删除
+                Playerunit playerunitInfo = playerunitDao.selectByPrimaryKey(targetPlayerUnit.getId());
+                ChangeRechargeOperateInfo changeRechargeOperateInfo = new ChangeRechargeOperateInfo();
+                changeRechargeOperateInfo.setOperateType("DELETE");
+                changeRechargeOperateInfo.setOperateObj(playerunitInfo);
+                changeRechargeOperateInfos.add(changeRechargeOperateInfo);
+                // 操作删除
                 playerunitDao.deleteByPrimaryKey(targetPlayerUnit.getId());
             }
         }
 
         playerunit.setPid(playerRechargeOperateVO.getOriginPid());
         playerunit.setBookidx(playerRechargeOperateVO.getBookIdx());
+        playerunit.setUnit3(1);
         List<Playerunit> newOriginPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
         // 4、更新新书
         for (Playerunit newOriginPlayerUnit : newOriginPlayerUnits) {
+            // 记录更新前的值
+            ChangeRechargeOperateInfo changeRechargeOperateInfo = new ChangeRechargeOperateInfo();
+            Playerunit playerunitRecordInfo = new Playerunit();
+            BeanUtils.copyProperties(newOriginPlayerUnit, playerunitRecordInfo);
+            changeRechargeOperateInfo.setOperateType("UPDATE");
+            changeRechargeOperateInfo.setOperateObj(playerunitRecordInfo);
+            changeRechargeOperateInfos.add(changeRechargeOperateInfo);
+
+            // 更新新书
             newOriginPlayerUnit.setPid(playerRechargeOperateVO.getTargetPid());
             playerunitDao.updateByPrimaryKey(newOriginPlayerUnit);
         }
+
+        // 5、记录转移历史
+        ChangeRechargeRecordPO changeRechargeRecordPO = new ChangeRechargeRecordPO();
+        changeRechargeRecordPO.setChangeInfo(JSON.toJSONString(playerRechargeOperateVO));
+        changeRechargeRecordPO.setOperateInfo(JSON.toJSONString(changeRechargeOperateInfos));
+        changeRechargeRecordPO.setCreateTime(System.currentTimeMillis()  / 1000);
+        changeRechargeRecordDao.saveBookInfo(changeRechargeRecordPO);
         return null;
     }
 
