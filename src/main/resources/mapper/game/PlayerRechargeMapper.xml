@@ -32,4 +32,20 @@
     </trim>
   </select>
 
+  <select id="batchQueryPlayerRechargeInfByUpdateTimeAndPid"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from playerrecharge
+    <trim prefix="where" suffixOverrides="and">
+      1 = 1 and
+      <if test="playerRechargePOS != null">
+        <foreach collection="playerRechargePOS" item="item" index="index" open="("  close=")">
+        or (updatetime &gt; #{item.updateTime} - 5 and updatetime &lt; #{item.updateTime} + 5 and pid = #{item.pid})
+        </foreach>
+        and
+      </if>
+    </trim>
+  </select>
+
 </mapper>

@@ -402,6 +402,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
      */
     private PlayerRechargeVO mapsToPlayerRechargeVO(Playerunit playerunit, Map<Long, Bookresource> finalBookresourceMap, Map<Long, Player> finalPlayerMap) {
         PlayerRechargeVO playerRechargeVO = new PlayerRechargeVO();
+        playerRechargeVO.setId(playerunit.getId());
         playerRechargeVO.setPid(playerunit.getPid());
         playerRechargeVO.setBookType(playerunit.getBooktype());
         Date date = DateUtil.timeStampToDate(playerunit.getCreatetime(), LENGTH_10);
@@ -469,6 +470,14 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             playerunitDao.updateByPrimaryKey(newOriginPlayerUnit);
         }
         return null;
+    }
+
+    @Override
+    public Integer updateUnlockStatus(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setId(playerRechargeUnLockQuery.getId());
+        playerunit.setUnit3(playerRechargeUnLockQuery.getUnlock());
+        return playerunitDao.updateByPrimaryKeySelective(playerunit);
     }
 
     /**

@@ -537,7 +537,7 @@
         unit20 = #{unit20,jdbcType=INTEGER},
       </if>
       <if test="period != null">
-        period = #{period,jdbcType=INTEGER},
+        `period` = #{period,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

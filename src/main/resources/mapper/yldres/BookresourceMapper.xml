@@ -11,10 +11,11 @@
         <result column="release" jdbcType="TINYINT" property="release"/>
         <result column="video" jdbcType="TINYINT" property="video"/>
         <result column="version" jdbcType="VARCHAR" property="version"/>
+        <result column="bookType" jdbcType="INTEGER" property="bookType"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-		id,bookId,`name`,`release`,video,`version`
+		id,bookId,`name`,`release`,video,`version`,`bookType`
 	</sql>
 
     <select id="fetchBookresourceInfos" resultMap="BaseResultMap">
@@ -39,7 +40,7 @@
 
     <select id="fetchBookresourceInfosByBookId" resultMap="BaseResultMap">
         select
-            id,bookId,`name`,`release`,video,`version`
+            <include refid="Base_Column_List"/>
         from BookResource b
         where b.bookId = #{bookId}
     </select>
@@ -68,30 +69,35 @@
     <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
             keyProperty="id">
 		insert into
-		BookResource(id,bookId,`name`,`release`,video,`version`)
+		BookResource(id,bookId,`name`,`release`,video,`version`,`bookType`)
 		values
-		(#{id},#{bookId},#{name},#{release},#{video},#{version})
+		(#{id},#{bookId},#{name},#{release},#{video},#{version},#{bookType})
 	</insert>
 
     <update id="updateBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource">
         update
         BookResource
-        set
-        <if test="bookId!=null">
-            bookId = #{bookId},
-        </if>
-        <if test="name!=null">
-            `name` = #{name},
-        </if>
-        <if test="release!=null">
-            `release` = #{release,jdbcType=INTEGER},
-        </if>
-        <if test="video!=null">
-            video = #{video,jdbcType=INTEGER},
-        </if>
-        <if test="version!=null">
-            version = #{version}
-        </if>
+        <trim prefix="set" suffixOverrides=",">
+            <if test="bookId!=null">
+                bookId = #{bookId},
+            </if>
+            <if test="name!=null">
+                `name` = #{name},
+            </if>
+            <if test="release!=null">
+                `release` = #{release,jdbcType=INTEGER},
+            </if>
+            <if test="video!=null">
+                `video` = #{video,jdbcType=INTEGER},
+            </if>
+            <if test="version!=null">
+                `version` = #{version},
+            </if>
+            <if test="bookType!=null">
+                `bookType` = #{bookType},
+            </if>
+        </trim>
+
         where
         id = #{id}
     </update>

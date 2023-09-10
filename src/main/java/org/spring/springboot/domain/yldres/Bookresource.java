@@ -20,6 +20,8 @@ public class Bookresource {
     private Integer video;
     private String version;
 
+    private Integer bookType;
+
     public Long getId() {
         return id;
     }
@@ -68,6 +70,14 @@ public class Bookresource {
         this.version = version;
     }
 
+    public Integer getBookType() {
+        return bookType;
+    }
+
+    public void setBookType(Integer bookType) {
+        this.bookType = bookType;
+    }
+
     @Override
     public String toString() {
         return "Bookresource{" +
@@ -77,6 +87,7 @@ public class Bookresource {
                 ", release=" + release +
                 ", video=" + video +
                 ", version='" + version + '\'' +
+                ", bookType='" + bookType + '\'' +
                 '}';
     }
 }

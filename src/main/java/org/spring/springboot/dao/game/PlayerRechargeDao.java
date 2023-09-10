@@ -9,4 +9,6 @@ public interface PlayerRechargeDao {
 
     List<PlayerRechargePO> queryPlayerRechargeInfoByOrderId(@Param("orderId") String orderId);
 
+    List<PlayerRechargePO> batchQueryPlayerRechargeInfByUpdateTimeAndPid(@Param("playerRechargePOS") List<PlayerRechargePO> playerRechargePOS);
+
 }

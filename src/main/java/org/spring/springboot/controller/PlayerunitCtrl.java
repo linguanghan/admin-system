@@ -11,6 +11,7 @@ import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.playerunit.PlayerRechargeOperateVO;
 import org.spring.springboot.domain.game.playerunit.PlayerRechargeQuery;
+import org.spring.springboot.domain.game.playerunit.PlayerRechargeUnLockQuery;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,6 +214,34 @@ public class PlayerunitCtrl {
 
     }
 
+
+    /**
+     *
+     * 加减锁
+     * @author 13540
+     * @date 2023-09-10 13:12 
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @RequestMapping("/updateUnlockStatus")
+    public Result<?> updateUnlockStatus(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        if(playerRechargeUnLockQuery == null
+                || playerRechargeUnLockQuery.getId() == null
+                || playerRechargeUnLockQuery.getUnlock() == null
+        ){
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            Integer updateNum = playerunitService.updateUnlockStatus(playerRechargeUnLockQuery);
+            if(updateNum == null || updateNum <=0) {
+                return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, "更新失败！");
+            }
+            return Result.buildSuccess();
+        }catch (Exception e) {
+            logger.info("PlayerCtrl#updateUnlockStatus error playerRechargeUnLockQuery is {}", JSONUtil.toJsonStr(playerRechargeUnLockQuery), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+
+    }
 
 
 

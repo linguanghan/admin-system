@@ -15,6 +15,10 @@ import java.util.Date;
 @Data
 public class PlayerRechargeVO {
     /**
+     * 主键id
+     */
+    private Long id;
+    /**
      * 角色ID[用户账号]
      */
     private Long pid;
