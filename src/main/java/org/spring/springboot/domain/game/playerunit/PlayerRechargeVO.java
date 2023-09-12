@@ -51,4 +51,14 @@ public class PlayerRechargeVO {
      * 剩余使用时间 月
      */
     private String remainTime;
+    /**
+     * 剩余使用时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date deadLineTime;
+    
+    /**
+     * 是否展示加解锁
+     */
+    private Integer unlockShow;
 }

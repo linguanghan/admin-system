@@ -1,7 +1,6 @@
 package org.spring.springboot.service.impl;
 
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.io.unit.DataUnit;
 import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.ListUtils;
@@ -28,7 +27,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -217,7 +215,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
 
         List<Playerunit> playerUnits = playerunitDao.findPurchaseBetweenDate(start, end);
-        if(CollectionUtils.isEmpty(playerUnits)) {
+        if (CollectionUtils.isEmpty(playerUnits)) {
             return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
         }
         List<Playerunit> playerUnitsPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerUnits);
@@ -296,7 +294,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
 
         List<Playerunit> playerUnits = playerunitDao.findVersionBetweenDate(start, end);
-        if(CollectionUtils.isEmpty(playerUnits)) {
+        if (CollectionUtils.isEmpty(playerUnits)) {
             return Result.buildSuccess().add("data", playerUnits).add("total", 0);
         }
         List<Playerunit> playerUnitsPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerUnits);
@@ -306,11 +304,11 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
 
     /**
-     *
      * 根据用户id获取购买的书本option列表
+     *
+     * @return java.util.List<org.spring.springboot.bean.OptionList>
      * @author 13540
      * @date 2023-09-03 10:54
-     * @return java.util.List<org.spring.springboot.bean.OptionList>
      */
     @Override
     public List<Option> getPlayerUnitOptionListByPid(Long pid) {
@@ -318,7 +316,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerunit.setPid(pid);
         playerunit.setUnit3(1);
         List<Playerunit> playerUnitByPid = playerunitDao.findPlayerUnitByExample(playerunit);
-        if(CollectionUtils.isEmpty(playerUnitByPid)) {
+        if (CollectionUtils.isEmpty(playerUnitByPid)) {
             return Collections.emptyList();
         }
 
@@ -334,7 +332,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     @Override
     public Result<?> queryRechargeByPage(PlayerRechargeQuery query) {
         // 1、查询参数都不传递的时候不查询
-        if(query.getPid() == null && StringUtils.isEmpty(query.getOrderId()) && query.getStartTime() == null && query.getEndTime() == null) {
+        if (query.getPid() == null && StringUtils.isEmpty(query.getOrderId()) && query.getStartTime() == null && query.getEndTime() == null) {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
@@ -352,18 +350,18 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             }
 
         }
-        if(query.getPid() != null && StringUtils.isEmpty(query.getOrderId())) {
+        if (query.getPid() != null && StringUtils.isEmpty(query.getOrderId())) {
             pids = Collections.singletonList(query.getPid());
         }
-        if(query.getPid() == null && !StringUtils.isEmpty(query.getOrderId())) {
+        if (query.getPid() == null && !StringUtils.isEmpty(query.getOrderId())) {
             pids = pidList;
         }
-        if(query.getPid() != null && !StringUtils.isEmpty(query.getOrderId())) {
+        if (query.getPid() != null && !StringUtils.isEmpty(query.getOrderId())) {
             pids = ListUtils.retainAll(Collections.singletonList(query.getPid()), pidList);
         }
 
         // 没有交集直接返回空
-        if(CollectionUtils.isEmpty(pids)) {
+        if (CollectionUtils.isEmpty(pids)) {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
@@ -372,7 +370,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         List<Playerunit> playerunits = playerunitDao.queryRechargeByPage(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getStartRow(), query.getPageSize(), query.getOrderTime(), query.getUnlock());
         Integer total = playerunitDao.queryRechargeByPageCount(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getOrderTime(), query.getUnlock());
 
-        if(CollectionUtils.isEmpty(playerunits)) {
+        if (CollectionUtils.isEmpty(playerunits)) {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
@@ -380,7 +378,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         List<Long> bookIds = playerunits.stream().map(playerunit -> Long.parseLong(String.valueOf(playerunit.getBookidx()))).collect(Collectors.toList());
         List<Bookresource> bookresources = bookresourceDao.batchQueryBookResourceInfosByIds(bookIds);
         Map<Long, Bookresource> bookresourceMap = new HashMap<>();
-        if(!CollectionUtils.isEmpty(bookresources)) {
+        if (!CollectionUtils.isEmpty(bookresources)) {
             bookresourceMap = bookresources.stream().collect(Collectors.toMap(Bookresource::getBookId, v -> v, (k1, k2) -> k1));
         }
         Map<Long, Player> playerMap = new HashMap<>();
@@ -399,14 +397,14 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
 
     /**
-     *
      * VO转化
+     *
      * @param playerunit
      * @param finalBookresourceMap
      * @param finalPlayerMap
-     * @author 13540
-     * @date 2023-09-09 14:42 
      * @return org.spring.springboot.domain.game.playerunit.PlayerRechargeVO
+     * @author 13540
+     * @date 2023-09-09 14:42
      */
     private PlayerRechargeVO mapsToPlayerRechargeVO(Playerunit playerunit, Map<Long, Bookresource> finalBookresourceMap, Map<Long, Player> finalPlayerMap) {
         PlayerRechargeVO playerRechargeVO = new PlayerRechargeVO();
@@ -417,17 +415,22 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerRechargeVO.setCreateTime(date);
         playerRechargeVO.setUnlock(playerunit.getUnit3());// unit3 = 1：解锁、0：锁住
         playerRechargeVO.setRemainTime(String.valueOf(playerunit.getPeriod()));
-
+        Date bookDeadLineTime = getBookDeadLineTime(playerunit.getCreatetime(), playerunit.getPeriod());
+        playerRechargeVO.setDeadLineTime(bookDeadLineTime);
+        playerRechargeVO.setUnlockShow(1);
+        if (new Date().after(bookDeadLineTime)) {
+            playerRechargeVO.setUnlockShow(0);
+        }
         Integer bookidx = playerunit.getBookidx();
         if (bookidx != null) {
             playerRechargeVO.setBookIdx(playerunit.getBookidx());
             long bookIndexLong = Long.parseLong(String.valueOf(bookidx));
             // 书名填充
-            if(finalBookresourceMap.get(bookIndexLong) != null){
+            if (finalBookresourceMap.get(bookIndexLong) != null) {
                 playerRechargeVO.setBookName(finalBookresourceMap.get(bookIndexLong).getName());
             }
             // 用户名填充
-            if(finalPlayerMap.get(playerunit.getPid()) != null) {
+            if (finalPlayerMap.get(playerunit.getPid()) != null) {
                 playerRechargeVO.setPlayerName(finalPlayerMap.get(playerunit.getPid()).getName());
             }
         }
@@ -436,11 +439,11 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     /**
-     *
      * 账号转移
-     * @author 13540
-     * @date 2023-09-03 18:47 
+     *
      * @return java.lang.String
+     * @author 13540
+     * @date 2023-09-03 18:47
      */
     @Override
     @Transactional
@@ -450,11 +453,11 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerunit.setPid(playerRechargeOperateVO.getOriginPid());
         playerunit.setUnit3(1);
         List<Playerunit> originPlayerUnits = playerunitDao.findPlayerUnitByExample(playerunit);
-        if(CollectionUtils.isEmpty(originPlayerUnits)) {
+        if (CollectionUtils.isEmpty(originPlayerUnits)) {
             return "该账号没有该书的转移权限！";
         }
         List<Integer> originBookIds = originPlayerUnits.stream().map(Playerunit::getBookidx).collect(Collectors.toList());
-        if(!originBookIds.contains(playerRechargeOperateVO.getBookIdx())) {
+        if (!originBookIds.contains(playerRechargeOperateVO.getBookIdx())) {
             return "该账号没有该书的转移权限";
         }
 
@@ -466,7 +469,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
         List<ChangeRechargeOperateInfo> changeRechargeOperateInfos = new ArrayList<>();
         // 3、目标账号与原账号不同，并且目标账号有该书的时候删除目标账号的书
-        if(!CollectionUtils.isEmpty(targetPlayerUnits) && !playerRechargeOperateVO.getOriginPid().equals(playerRechargeOperateVO.getTargetPid())) {
+        if (!CollectionUtils.isEmpty(targetPlayerUnits) && !playerRechargeOperateVO.getOriginPid().equals(playerRechargeOperateVO.getTargetPid())) {
             for (Playerunit targetPlayerUnit : targetPlayerUnits) {
                 // 记录删除
                 Playerunit playerunitInfo = playerunitDao.selectByPrimaryKey(targetPlayerUnit.getId());
@@ -502,25 +505,38 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         ChangeRechargeRecordPO changeRechargeRecordPO = new ChangeRechargeRecordPO();
         changeRechargeRecordPO.setChangeInfo(JSON.toJSONString(playerRechargeOperateVO));
         changeRechargeRecordPO.setOperateInfo(JSON.toJSONString(changeRechargeOperateInfos));
-        changeRechargeRecordPO.setCreateTime(System.currentTimeMillis()  / 1000);
+        changeRechargeRecordPO.setCreateTime(System.currentTimeMillis() / 1000);
         changeRechargeRecordDao.saveBookInfo(changeRechargeRecordPO);
         return null;
     }
 
     @Override
     public Integer updateUnlockStatus(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        if (!checkUnlockShow(playerRechargeUnLockQuery.getId())) {
+            return 0;
+        }
         Playerunit playerunit = new Playerunit();
         playerunit.setId(playerRechargeUnLockQuery.getId());
         playerunit.setUnit3(playerRechargeUnLockQuery.getUnlock());
         return playerunitDao.updateByPrimaryKeySelective(playerunit);
     }
 
+
+    private Boolean checkUnlockShow(Long playerUnitId) {
+        Playerunit playerunit = playerunitDao.selectByPrimaryKey(playerUnitId);
+        Date bookDeadLineTime = getBookDeadLineTime(playerunit.getCreatetime(), playerunit.getPeriod());
+        Date now = new Date();
+        Date createTime = DateUtil.timeStampToDate(playerunit.getCreatetime(), LENGTH_10);
+        return !now.after(bookDeadLineTime) && now.after(createTime);
+    }
+
+
     /**
-     *
      * date类型转为Long时间戳
+     *
+     * @return java.util.Map<java.lang.String, java.lang.Long>
      * @author 13540
      * @date 2023-09-03 14:53
-     * @return java.util.Map<java.lang.String, java.lang.Long>
      */
     private Map<String, Long> getTimeChangeMap(List<Date> timeList, List<String> keys) {
         Map<String, Long> map = new HashMap<>();
@@ -528,7 +544,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
         for (int i = 0; i < timeList.size(); i++) {
             Date time = timeList.get(i);
-            if(time == null) {
+            if (time == null) {
                 continue;
             }
             String timeStr = df.format(time);
@@ -541,5 +557,17 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
 
         return map;
+    }
+
+    /**
+     * 获取createTime+month时间，书本截止时间
+     *
+     * @return java.util.Date
+     * @author 13540
+     * @date 2023-09-12 22:03
+     */
+    private Date getBookDeadLineTime(Integer createTime, Integer month) {
+        Date date = DateUtil.timeStampToDate(createTime, LENGTH_10);
+        return cn.hutool.core.date.DateUtil.offsetMonth(date, month);
     }
 }
