@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.game.PlayerLearnTimeDao">
+  <resultMap id="BaseResultMap" type="org.spring.springboot.domain.game.palyerlearntime.PlayerLearnTimePO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="createTime" jdbcType="INTEGER" property="createTime" />
+    <result column="bookIdx" jdbcType="INTEGER" property="bookIdx" />
+    <result column="totalTime" jdbcType="INTEGER" property="totalTime" />
+    <result column="unit1" jdbcType="INTEGER" property="unit1" />
+    <result column="unit2" jdbcType="INTEGER" property="unit2" />
+    <result column="unit3" jdbcType="INTEGER" property="unit3" />
+    <result column="unit4" jdbcType="INTEGER" property="unit4" />
+    <result column="unit5" jdbcType="INTEGER" property="unit5" />
+    <result column="unit6" jdbcType="INTEGER" property="unit6" />
+    <result column="unit7" jdbcType="INTEGER" property="unit7" />
+    <result column="unit8" jdbcType="INTEGER" property="unit8" />
+    <result column="unit9" jdbcType="INTEGER" property="unit9" />
+    <result column="unit10" jdbcType="INTEGER" property="unit10" />
+    <result column="unit11" jdbcType="INTEGER" property="unit11" />
+    <result column="unit12" jdbcType="INTEGER" property="unit12" />
+    <result column="unit13" jdbcType="INTEGER" property="unit13" />
+    <result column="unit14" jdbcType="INTEGER" property="unit14" />
+    <result column="unit15" jdbcType="INTEGER" property="unit15" />
+    <result column="unit16" jdbcType="INTEGER" property="unit16" />
+    <result column="unit17" jdbcType="INTEGER" property="unit17" />
+    <result column="unit18" jdbcType="INTEGER" property="unit18" />
+    <result column="unit19" jdbcType="INTEGER" property="unit19" />
+    <result column="unit20" jdbcType="INTEGER" property="unit20" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, pid, createTime, bookIdx, totalTime, unit1, unit2, unit3,
+    unit4, unit5, unit6, unit7, unit8, unit9, unit10, unit11, unit12, unit13, unit14, 
+    unit15, unit16, unit17, unit18, unit19, unit20
+  </sql>
+
+  <update id="updateByPrimaryKey">
+    update PlayerLearnTime
+    set pid = #{pid,jdbcType=BIGINT},
+        createTime = #{createTime,jdbcType=INTEGER},
+        bookIdx = #{bookIdx,jdbcType=INTEGER},
+        totalTime = #{totalTime,jdbcType=INTEGER},
+        unit1 = #{unit1,jdbcType=INTEGER},
+        unit2 = #{unit2,jdbcType=INTEGER},
+        unit3 = #{unit3,jdbcType=INTEGER},
+        unit4 = #{unit4,jdbcType=INTEGER},
+        unit5 = #{unit5,jdbcType=INTEGER},
+        unit6 = #{unit6,jdbcType=INTEGER},
+        unit7 = #{unit7,jdbcType=INTEGER},
+        unit8 = #{unit8,jdbcType=INTEGER},
+        unit9 = #{unit9,jdbcType=INTEGER},
+        unit10 = #{unit10,jdbcType=INTEGER},
+        unit11 = #{unit11,jdbcType=INTEGER},
+        unit12 = #{unit12,jdbcType=INTEGER},
+        unit13 = #{unit13,jdbcType=INTEGER},
+        unit14 = #{unit14,jdbcType=INTEGER},
+        unit15 = #{unit15,jdbcType=INTEGER},
+        unit16 = #{unit16,jdbcType=INTEGER},
+        unit17 = #{unit17,jdbcType=INTEGER},
+        unit18 = #{unit18,jdbcType=INTEGER},
+        unit19 = #{unit19,jdbcType=INTEGER},
+        unit20 = #{unit20,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="batchQueryPlayerLearnTimeInfoByPidAndBookIdx"
+          resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from PlayerLearnTime
+    <trim prefix="where" suffixOverrides="and">
+      <if test="poList != null">
+        <foreach collection="poList" item="item" index="index" open="("  close=")" separator="or">
+          (bookIdx = #{item.bookIdx} and pid = #{item.pid})
+        </foreach>
+        and
+      </if>
+    </trim>
+  </select>
+
+</mapper>

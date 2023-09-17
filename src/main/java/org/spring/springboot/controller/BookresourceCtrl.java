@@ -78,4 +78,21 @@ public class BookresourceCtrl {
         return AjaxResult.emptySuccessResult();
     }
 
+    /**
+     *
+     * 获取书本信息的下拉列表
+     * @author 13540
+     * @date 2023-09-17 16:38
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @RequestMapping(value = "/queryBookResourceOptions", method = RequestMethod.GET)
+    public Result<?> queryBookResourceOptions() {
+        try {
+          return Result.buildSuccess().add("data", bookresourceService.queryBookResourceOptions());
+        }catch (Exception e) {
+            logger.error("BookresourceCtrl#queryBookResourceOptions error e", e);
+        }
+        return Result.buildFailure();
+    }
+
 }

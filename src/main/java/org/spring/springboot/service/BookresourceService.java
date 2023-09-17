@@ -1,5 +1,6 @@
 package org.spring.springboot.service;
 
+import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.vo.PageBookParamVO;
 import org.spring.springboot.domain.yldres.Bookresource;
@@ -27,4 +28,5 @@ public interface BookresourceService {
 
     void saveBookInfo(Bookresource bookInfo);
 
+    List<Option> queryBookResourceOptions();
 }

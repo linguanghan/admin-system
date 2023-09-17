@@ -9,9 +9,7 @@ import org.spring.springboot.common.anno.JwtIgnore;
 import org.spring.springboot.common.enums.BusiCodeEnum;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.game.playerunit.PlayerRechargeOperateVO;
-import org.spring.springboot.domain.game.playerunit.PlayerRechargeQuery;
-import org.spring.springboot.domain.game.playerunit.PlayerRechargeUnLockQuery;
+import org.spring.springboot.domain.game.playerunit.*;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,6 +238,58 @@ public class PlayerunitCtrl {
             logger.info("PlayerCtrl#updateUnlockStatus error playerRechargeUnLockQuery is {}", JSONUtil.toJsonStr(playerRechargeUnLockQuery), e);
         }
         return Result.buildFailure(SysCodeEnum.SysError);
+
+    }
+
+    @RequestMapping("/addBookUnit")
+    public Result<?> addBookUnit(PlayerUnitQuery query) {
+        if(query == null
+                || query.getPid() == null
+                || query.getChannel() == null
+                || query.getPackageIdx() == null
+                || query.getRemainTime() == null
+        ) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        String errMsg = null;
+        try {
+            errMsg = playerunitService.addBookUnit(query);
+            if(StringUtils.isEmpty(errMsg)) {
+                return Result.buildSuccess();
+            }
+        }catch (Exception e) {
+            logger.info("PlayerCtrl#addBookUnit error query is {}", JSONUtil.toJsonStr(query), e);
+        }
+
+        return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, errMsg);
+
+    }
+
+    @RequestMapping(value = "/queryBookResourceOptions", method = RequestMethod.GET)
+    public Result<?> queryBookResourceOptions(@RequestParam("pid") Long pid) {
+        try {
+            return Result.buildSuccess().add("data", playerunitService.queryBookResourceOptions(pid));
+        }catch (Exception e) {
+            logger.error("BookresourceCtrl#queryBookResourceOptions error e", e);
+        }
+        return Result.buildFailure();
+    }
+
+    @RequestMapping("/updateBookUnitUpdateTimeOrLearnTime")
+    public Result<?> updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query) {
+        if(query == null
+                || query.getPid() == null
+                || query.getBookIdx() == null
+        ) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            playerunitService.updateBookUnitUpdateTimeOrLearnTime(query);
+        }catch (Exception e) {
+            logger.info("PlayerCtrl#updateBookUnitUpdateTimeOrLearnTime error query is {}", JSONUtil.toJsonStr(query), e);
+        }
+
+        return Result.buildFailure();
 
     }
 

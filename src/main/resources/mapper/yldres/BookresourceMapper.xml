@@ -22,6 +22,7 @@
         select
         <include refid="Base_Column_List"/>
         from BookResource
+        order by `bookId`
     </select>
 
     <select id="fetchBookresourceInfosByName" resultMap="BaseResultMap">

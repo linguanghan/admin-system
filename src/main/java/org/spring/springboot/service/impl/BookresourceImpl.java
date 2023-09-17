@@ -4,17 +4,20 @@ import cn.hutool.core.collection.ListUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.domain.game.vo.PageBookParamVO;
 import org.spring.springboot.domain.yldres.Bookresource;
 import org.spring.springboot.service.BookresourceService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description
@@ -87,6 +90,20 @@ public class BookresourceImpl implements BookresourceService {
     @Override
     public void saveBookInfo(Bookresource bookInfo) {
         bookresourceDao.saveBookInfo(bookInfo);
+    }
+
+    @Override
+    public List<Option> queryBookResourceOptions() {
+        List<Bookresource> bookresources = bookresourceDao.fetchBookresourceInfos();
+        if(CollectionUtils.isEmpty(bookresources)) {
+            return Collections.emptyList();
+        }
+        return bookresources.stream().map(bookresource -> {
+            Option option = new Option();
+            option.setLabel("【" + bookresource.getBookId() + "】" + bookresource.getName());
+            option.setValue(String.valueOf(bookresource.getBookId()));
+            return option;
+        }).collect(Collectors.toList());
     }
 
 }

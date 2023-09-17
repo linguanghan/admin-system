@@ -3,17 +3,20 @@ package org.spring.springboot.service.impl;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSON;
+import generator.PlayerunitExample;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayerDao;
+import org.spring.springboot.dao.game.PlayerLearnTimeDao;
 import org.spring.springboot.dao.game.PlayerRechargeDao;
 import org.spring.springboot.dao.game.PlayerunitDao;
 import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.dao.yldres.ChangeRechargeRecordDao;
 import org.spring.springboot.domain.game.Player;
+import org.spring.springboot.domain.game.palyerlearntime.PlayerLearnTimePO;
 import org.spring.springboot.domain.game.playerunit.*;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.domain.yldres.Bookresource;
@@ -50,6 +53,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
     @Resource
     private PlayerRechargeDao playerRechargeDao;
+
+    @Resource
+    private PlayerLearnTimeDao playerLearnTimeDao;
 
     @Resource
     private BookresourceDao bookresourceDao;
@@ -376,6 +382,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
         //4、查询相关信息
         List<Long> bookIds = playerunits.stream().map(playerunit -> Long.parseLong(String.valueOf(playerunit.getBookidx()))).collect(Collectors.toList());
+        // 查询书本详情
         List<Bookresource> bookresources = bookresourceDao.batchQueryBookResourceInfosByIds(bookIds);
         Map<Long, Bookresource> bookresourceMap = new HashMap<>();
         if (!CollectionUtils.isEmpty(bookresources)) {
@@ -383,15 +390,35 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
         Map<Long, Player> playerMap = new HashMap<>();
         List<Long> ids = playerunits.stream().map(Playerunit::getPid).collect(Collectors.toList());
+        // 用户详情
         List<Player> players = playerDao.batchQueryPlayerInfosById(ids);
         if (!CollectionUtils.isEmpty(players)) {
             playerMap = players.stream().collect(Collectors.toMap(Player::getId, v -> v, (k1, k2) -> k1));
         }
 
+
+        List<PlayerLearnTimePO> poList = playerunits.stream().map(playerunit -> {
+            PlayerLearnTimePO playerLearnTimePO = new PlayerLearnTimePO();
+            playerLearnTimePO.setPid(playerunit.getPid());
+            playerLearnTimePO.setBookIdx(playerunit.getBookidx());
+            return playerLearnTimePO;
+        }).collect(Collectors.toList());
+        // 学习时长
+        Map<String, PlayerLearnTimePO> playerLearnTimeMap = new HashMap<>();
+        List<PlayerLearnTimePO> playerLearnTimePOS = playerLearnTimeDao.batchQueryPlayerLearnTimeInfoByPidAndBookIdx(poList);
+        if(!CollectionUtils.isEmpty(playerLearnTimePOS)) {
+            playerLearnTimeMap = playerLearnTimePOS.stream()
+                    .collect(Collectors.toMap(playerLearnTimePO -> playerLearnTimePO.getPid() + "-" + playerLearnTimePO.getBookIdx(), v -> v, (v1, v2) -> v1));
+        }
+
         // 5、VO转化
         final Map<Long, Bookresource> finalBookresourceMap = bookresourceMap;
         final Map<Long, Player> finalPlayerMap = playerMap;
-        List<PlayerRechargeVO> playerRechargeVOS = playerunits.stream().map(playerunit -> mapsToPlayerRechargeVO(playerunit, finalBookresourceMap, finalPlayerMap)).collect(Collectors.toList());
+        final Map<String, PlayerLearnTimePO> finalPlayerLearnTimeMap = playerLearnTimeMap;
+
+        List<PlayerRechargeVO> playerRechargeVOS = playerunits.stream()
+                .map(playerunit -> mapsToPlayerRechargeVO(playerunit, finalBookresourceMap, finalPlayerMap, finalPlayerLearnTimeMap))
+                .collect(Collectors.toList());
         return Result.buildSuccess().add("data", playerRechargeVOS).add("total", total);
     }
 
@@ -406,11 +433,10 @@ public class PlayerunitServiceImpl implements PlayerunitService {
      * @author 13540
      * @date 2023-09-09 14:42
      */
-    private PlayerRechargeVO mapsToPlayerRechargeVO(Playerunit playerunit, Map<Long, Bookresource> finalBookresourceMap, Map<Long, Player> finalPlayerMap) {
+    private PlayerRechargeVO mapsToPlayerRechargeVO(Playerunit playerunit, Map<Long, Bookresource> finalBookresourceMap, Map<Long, Player> finalPlayerMap, Map<String, PlayerLearnTimePO> finalPlayerLearnTimeMap) {
         PlayerRechargeVO playerRechargeVO = new PlayerRechargeVO();
         playerRechargeVO.setId(playerunit.getId());
         playerRechargeVO.setPid(playerunit.getPid());
-        playerRechargeVO.setBookType(playerunit.getBooktype());
         Date date = DateUtil.timeStampToDate(playerunit.getCreatetime(), LENGTH_10);
         playerRechargeVO.setCreateTime(date);
         playerRechargeVO.setUnlock(playerunit.getUnit3());// unit3 = 1：解锁、0：锁住
@@ -428,10 +454,16 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             // 书名填充
             if (finalBookresourceMap.get(bookIndexLong) != null) {
                 playerRechargeVO.setBookName(finalBookresourceMap.get(bookIndexLong).getName());
+                playerRechargeVO.setBookType(finalBookresourceMap.get(bookIndexLong).getBookType());
             }
             // 用户名填充
             if (finalPlayerMap.get(playerunit.getPid()) != null) {
                 playerRechargeVO.setPlayerName(finalPlayerMap.get(playerunit.getPid()).getName());
+            }
+            PlayerLearnTimePO playerLearnTimePO = finalPlayerLearnTimeMap.get(playerunit.getPid() + "-" + playerunit.getBookidx());
+            // 学习时长填充
+            if (playerLearnTimePO != null && playerLearnTimePO.getTotalTime() != null) {
+                playerRechargeVO.setTotalTime(playerLearnTimePO.getTotalTime());
             }
         }
 
@@ -517,8 +549,122 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
         Playerunit playerunit = new Playerunit();
         playerunit.setId(playerRechargeUnLockQuery.getId());
-        playerunit.setUnit3(playerRechargeUnLockQuery.getUnlock());
+        Integer unlock = playerRechargeUnLockQuery.getUnlock();
+        playerunit.setUnit3(unlock);
+        playerunit.setUnit4(unlock);
+        playerunit.setUnit5(unlock);
+        playerunit.setUnit6(unlock);
+        playerunit.setUnit7(unlock);
+        playerunit.setUnit8(unlock);
+        playerunit.setUnit9(unlock);
+        playerunit.setUnit10(unlock);
+        playerunit.setUnit11(unlock);
+        playerunit.setUnit12(unlock);
+        playerunit.setUnit13(unlock);
+        playerunit.setUnit14(unlock);
+        playerunit.setUnit15(unlock);
+        playerunit.setUnit16(unlock);
+        playerunit.setUnit17(unlock);
+        playerunit.setUnit18(unlock);
+        playerunit.setUnit19(unlock);
+        playerunit.setUnit20(unlock);
         return playerunitDao.updateByPrimaryKeySelective(playerunit);
+    }
+
+    @Override
+    public String addBookUnit(PlayerUnitQuery query) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setPid(query.getPid());
+        long now = System.currentTimeMillis();
+        playerunit.setCreatetime((int) (now / 1000));
+        playerunit.setChannel(query.getChannel());
+        playerunit.setBookidx(query.getBookIdx());
+        List<Playerunit> playerunits = playerunitDao.selectByCondition(playerunit);
+        if(!CollectionUtils.isEmpty(playerunits)) {
+            return "已经有该本书了不能再添加了";
+        }
+        List<Bookresource> bookresources = bookresourceDao.fetchBookresourceInfosByBookId(String.valueOf(query.getBookIdx()));
+        if(!CollectionUtils.isEmpty(bookresources)) {
+            Bookresource bookresource = bookresources.get(0);
+            playerunit.setBooktype(bookresource.getBookType());
+        }
+        playerunit.setPeriod(query.getRemainTime());
+        playerunit.setUnit1(1);
+        playerunit.setUnit2(1);
+        playerunit.setUnit3(1);
+        playerunit.setUnit4(1);
+        playerunit.setUnit5(1);
+        playerunit.setUnit6(1);
+        playerunit.setUnit7(1);
+        playerunit.setUnit8(1);
+        playerunit.setUnit9(1);
+        playerunit.setUnit10(1);
+        playerunit.setUnit11(1);
+        playerunit.setUnit12(1);
+        playerunit.setUnit13(1);
+        playerunit.setUnit14(1);
+        playerunit.setUnit15(1);
+        playerunit.setUnit16(1);
+        playerunit.setUnit17(1);
+        playerunit.setUnit18(1);
+        playerunit.setUnit19(1);
+        playerunit.setUnit20(1);
+        int insertNum = playerunitDao.insertSelective(playerunit);
+        return insertNum > 0 ? null : "新增失败！";
+    }
+
+    @Override
+    public void updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query) {
+        if(query.getRemainTime() != null) {
+            Playerunit playerunit = new Playerunit();
+            playerunit.setPid(query.getPid());
+            playerunit.setBookidx(query.getBookIdx());
+            List<Playerunit> playerUnitInfos = playerunitDao.selectByCondition(playerunit);
+            if(!CollectionUtils.isEmpty(playerUnitInfos)) {
+                Playerunit playerunitTemp = playerUnitInfos.get(0);
+                playerunitTemp.setPeriod(query.getRemainTime());
+                playerunitDao.updateByPrimaryKey(playerunitTemp);
+            }
+        }
+
+        if(query.getLearnTime() != null) {
+            PlayerLearnTimePO playerLearnTimePO = new PlayerLearnTimePO();
+            playerLearnTimePO.setPid(query.getPid());
+            playerLearnTimePO.setBookIdx(query.getBookIdx());
+            List<PlayerLearnTimePO> playerLearnTimePOS = playerLearnTimeDao.batchQueryPlayerLearnTimeInfoByPidAndBookIdx(Collections.singletonList(playerLearnTimePO));
+            if(!CollectionUtils.isEmpty(playerLearnTimePOS)) {
+                PlayerLearnTimePO playerLearnTimePOTemp = playerLearnTimePOS.get(0);
+                playerLearnTimePOTemp.setTotalTime(query.getLearnTime());
+                playerLearnTimeDao.updateByPrimaryKey(playerLearnTimePOTemp);
+            }
+        }
+    }
+
+    @Override
+    public List<Option> queryBookResourceOptions(Long pid) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setPid(pid);
+        List<Playerunit> playerunits = playerunitDao.selectByCondition(playerunit);
+        Set<Long> booIdxSet = new HashSet<>();
+        if(!CollectionUtils.isEmpty(playerunits)){
+            booIdxSet = playerunits.stream()
+                    .map(item -> (long) item.getBookidx())
+                    .collect(Collectors.toSet());
+        }
+        List<Bookresource> bookresources = bookresourceDao.fetchBookresourceInfos();
+        if(CollectionUtils.isEmpty(bookresources)) {
+            return Collections.emptyList();
+        }
+
+        Set<Long> finalBooIdxSet = booIdxSet;
+        return bookresources.stream()
+                .filter(bookresource -> !finalBooIdxSet.contains(bookresource.getBookId()))
+                .map(bookresource -> {
+                    Option option = new Option();
+                    option.setLabel("【" + bookresource.getBookId() + "】" + bookresource.getName());
+                    option.setValue(String.valueOf(bookresource.getBookId()));
+                    return option;
+                }).collect(Collectors.toList());
     }
 
 

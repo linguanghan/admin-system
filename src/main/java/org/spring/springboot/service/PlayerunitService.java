@@ -47,4 +47,25 @@ public interface PlayerunitService {
      * @return java.lang.String
      */
     Integer updateUnlockStatus(PlayerRechargeUnLockQuery playerRechargeUnLockQuery);
+
+    /**
+     *
+     * 用户添加自己的书本（后台）
+     * @author 13540
+     * @date 2023-09-17 15:24
+     * @return boolean
+     */
+    String addBookUnit(PlayerUnitQuery query);
+
+    /**
+     *
+     * 更新用户购买书本的使用时间和学习时长
+     * @param query
+     * @author 13540
+     * @date 2023-09-17 15:44
+     * @return boolean
+     */
+    void updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query);
+
+    List<Option> queryBookResourceOptions(Long pid);
 }

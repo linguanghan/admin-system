@@ -56,9 +56,13 @@ public class PlayerRechargeVO {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date deadLineTime;
-    
+    /**
+     * 学习时长(默认0)
+     */
+    private Integer totalTime = 0;
     /**
      * 是否展示加解锁
      */
     private Integer unlockShow;
+
 }

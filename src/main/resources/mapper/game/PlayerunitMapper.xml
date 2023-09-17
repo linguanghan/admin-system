@@ -701,4 +701,18 @@
     </trim>
   </select>
 
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from playerUnit
+    <trim prefix="where" suffixOverrides="and">
+      <if test="pid != null">
+        pid = #{pid} and
+      </if>
+      <if test="bookidx != null">
+        bookIdx = #{bookidx} and
+      </if>
+    </trim>
+
+  </select>
+
 </mapper>

@@ -19,6 +19,8 @@ public interface PlayerunitDao {
 
     List<Playerunit> selectByExample(PlayerunitExample example);
 
+    List<Playerunit> selectByCondition(Playerunit playerunit);
+
     Playerunit selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") Playerunit record, @Param("example") PlayerunitExample example);
