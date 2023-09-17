@@ -59,7 +59,7 @@ public class PlayerRechargeVO {
     /**
      * 学习时长(默认0)
      */
-    private Integer totalTime = 0;
+    private Integer totalTime;
     /**
      * 是否展示加解锁
      */
