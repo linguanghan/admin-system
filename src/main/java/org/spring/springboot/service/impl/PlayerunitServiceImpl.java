@@ -713,7 +713,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
      * @date 2023-09-12 22:03
      */
     private Date getBookDeadLineTime(Integer createTime, Integer month) {
-        Date date = DateUtil.timeStampToDate(createTime, LENGTH_10);
-        return cn.hutool.core.date.DateUtil.offsetMonth(date, month);
+        int deadLineTime = createTime + 60 * 60 * 24 * 30 * (month + 2);
+//        Date date = DateUtil.timeStampToDate(createTime, LENGTH_10);
+//        cn.hutool.core.date.DateUtil.offsetMonth(date, month);
+        return DateUtil.timeStampToDate(deadLineTime, LENGTH_10);
     }
 }
