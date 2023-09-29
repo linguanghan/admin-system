@@ -24,5 +24,19 @@
 		(#{id},#{changeInfo},#{operateInfo},#{createTime})
 	</insert>
 
+    <select id="queryChangeRechargeRecord"
+            resultType="org.spring.springboot.domain.yldres.recharge.ChangeRechargeRecordPO">
+        select <include refid="Base_Column_List"/>
+        from `change_recharge_record`
+        <trim prefix="where" suffixOverrides="and">
+            <if test="startTime != null">
+                create_time &gt; #{startTime} and
+            </if>
+            <if test="endTime">
+                create_time &lt; #{endTime} and
+            </if>
+        </trim>
+    </select>
+
 
 </mapper>

@@ -6,6 +6,7 @@ import org.spring.springboot.domain.game.vo.PageBookParamVO;
 import org.spring.springboot.domain.yldres.Bookresource;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description
@@ -29,4 +30,13 @@ public interface BookresourceService {
     void saveBookInfo(Bookresource bookInfo);
 
     List<Option> queryBookResourceOptions();
+
+    /**
+     *
+     * 根据课本id批量查询课本信息
+     * @author 13540
+     * @date 2023-09-24 16:56
+     * @return java.util.Map<java.lang.Long, org.spring.springboot.domain.yldres.Bookresource>
+     */
+    Map<Long, Bookresource> fetchBookResourceByIds(List<Long> bookIds);
 }

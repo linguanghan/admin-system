@@ -22,6 +22,6 @@ public class ServiceExceptionHandler {
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<Result<?>> handler(HttpServletResponse response, ServiceException e) {
         return ResponseEntity.status(response.getStatus()).body(
-                Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, e.getMessage()));
+                Result.buildServiceFailure(BusiCodeEnum.getBusiCodeEnum(e.getCode()), e.getMessage()));
     }
 }

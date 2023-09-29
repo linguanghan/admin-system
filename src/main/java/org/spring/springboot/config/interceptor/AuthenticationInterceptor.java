@@ -3,6 +3,8 @@ package org.spring.springboot.config.interceptor;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.spring.springboot.common.anno.JwtIgnore;
+import org.spring.springboot.common.enums.BusiCodeEnum;
+import org.spring.springboot.common.exception.ServiceException;
 import org.spring.springboot.domain.user.*;
 import org.spring.springboot.service.UserService;
 import org.spring.springboot.util.JwtTokenUtil;
@@ -53,7 +55,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         if(StringUtils.isEmpty(token)) {
             log.error("AuthenticationInterceptor#preHandle token为空，鉴权失败！");
-            return false;
+            throw new ServiceException(BusiCodeEnum.LOGIN_ERROR);
         }
         //验证，并获取token内部信息
         String tokenStr = JwtTokenUtil.verifyToken(token);

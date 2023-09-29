@@ -27,7 +27,7 @@ public class JwtTokenUtil {
     public static final String KEY = "q3t6w9z$C&F)J@NcQfTjWnZr4u7x";
 
     //有效期默认为 2hour
-    public static final Long EXPIRATION_TIME = 1000L*60*60*2;
+    public static final Long EXPIRATION_TIME = 1000L*2;
 
     /**
      *

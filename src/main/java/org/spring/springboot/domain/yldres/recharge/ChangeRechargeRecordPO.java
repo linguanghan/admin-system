@@ -11,11 +11,20 @@ import lombok.Data;
  */
 @Data
 public class ChangeRechargeRecordPO {
+    /**
+     * 自增id
+     */
     private Long id;
-
+    /**
+     * 变更记录
+     */
     private String changeInfo;
-
+    /**
+     * 具体sql操作
+     */
     private String operateInfo;
-
+    /**
+     * 创建时间
+     */
     private Long createTime;
 }

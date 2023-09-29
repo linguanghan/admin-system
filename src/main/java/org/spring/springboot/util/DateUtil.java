@@ -71,6 +71,23 @@ public class DateUtil {
         return new Date();
     }
 
+
+    public static Long dateToTimeStamp(Date date, String type) {
+        if(date == null) {
+            return null;
+        }
+
+        if (LENGTH_13.equals(type)) {
+            return date.getTime();
+        }
+        if (LENGTH_10.equals(type)) {
+            return date.getTime() / 1000;
+        }
+
+        return null;
+
+    }
+
     public static void main(String[] args) {
         List<String> betweenDates = getBetweenDates("2023-01-01 11:11:11", "2023-01-10");
         for (String s:betweenDates){

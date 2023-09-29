@@ -15,8 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -104,6 +103,17 @@ public class BookresourceImpl implements BookresourceService {
             option.setValue(String.valueOf(bookresource.getBookId()));
             return option;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<Long, Bookresource> fetchBookResourceByIds(List<Long> bookIds) {
+        List<Bookresource> bookresources = bookresourceDao.batchQueryBookResourceInfosByIds(bookIds);
+        if(CollectionUtils.isEmpty(bookresources)) {
+            return new HashMap<>();
+        }
+        return bookresources.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Bookresource::getBookId, v->v, (k1,k2)->k1));
     }
 
 }

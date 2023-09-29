@@ -111,12 +111,17 @@ public class Result<T> implements Serializable {
         return new Result<>(false, busiCodeEnum, errorMsg);
     }
 
+    public static <T> Result<T> buildServiceFailure(BusiCodeEnum busiCodeEnum, String errorMsg) {
+       return new Result<T>(false, busiCodeEnum, errorMsg).setCode("3");
+    }
+
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public Result<T> setCode(String code) {
         this.code = code;
+        return this;
     }
 
     public Boolean getSuccess() {
