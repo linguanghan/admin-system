@@ -35,6 +35,10 @@ public class PlayerRechargeVO {
      */
     private Integer bookType;
     /**
+     * 书本类型
+     */
+    private Integer packageIdx;
+    /**
      * 购买时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

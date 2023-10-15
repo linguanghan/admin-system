@@ -37,6 +37,15 @@
         </where>
     </select>
 
+    <select id="queryDailyActiveUserLog"
+            resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from `daily_active_user_log`
+        where STR_TO_DATE(count_time, '%Y-%m-%d') &gt;= #{startTime}
+          and STR_TO_DATE(count_time, '%Y-%m-%d') &lt;= #{endTime}
+        order by id
+    </select>
+
 
     <insert id="saveDailyActiveUserLog" parameterType="org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO" useGeneratedKeys="true"
             keyProperty="id">

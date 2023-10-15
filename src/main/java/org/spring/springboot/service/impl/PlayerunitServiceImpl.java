@@ -444,6 +444,8 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         Date bookDeadLineTime = getBookDeadLineTime(playerunit.getCreatetime(), playerunit.getPeriod());
         playerRechargeVO.setDeadLineTime(bookDeadLineTime);
         playerRechargeVO.setUnlockShow(1);
+        playerRechargeVO.setBookType(playerunit.getBooktype());
+        playerRechargeVO.setPackageIdx(playerunit.getPackageidx());
         if (new Date().after(bookDeadLineTime)) {
             playerRechargeVO.setUnlockShow(0);
         }
@@ -454,7 +456,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             // 书名填充
             if (finalBookresourceMap.get(bookIndexLong) != null) {
                 playerRechargeVO.setBookName(finalBookresourceMap.get(bookIndexLong).getName());
-                playerRechargeVO.setBookType(finalBookresourceMap.get(bookIndexLong).getBookType());
+//                playerRechargeVO.setBookType(finalBookresourceMap.get(bookIndexLong).getBookType());
             }
             // 用户名填充
             if (finalPlayerMap.get(playerunit.getPid()) != null) {
@@ -614,15 +616,19 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
+    @Transactional
     public void updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query) {
         if(query.getRemainTime() != null) {
             Playerunit playerunit = new Playerunit();
-            playerunit.setPid(query.getPid());
-            playerunit.setBookidx(query.getBookIdx());
+            playerunit.setId(query.getId());
             List<Playerunit> playerUnitInfos = playerunitDao.selectByCondition(playerunit);
             if(!CollectionUtils.isEmpty(playerUnitInfos)) {
                 Playerunit playerunitTemp = playerUnitInfos.get(0);
                 playerunitTemp.setPeriod(query.getRemainTime());
+                playerunitTemp.setBooktype(query.getBookType());
+                playerunitTemp.setPackageidx(query.getPackageIdx());
+                playerunitTemp.setBookidx(query.getBookIdx());
+                playerunitTemp.setCreatetime(DateUtil.dateToTimeStamp(query.getCreateTime(), LENGTH_10).intValue());
                 playerunitDao.updateByPrimaryKey(playerunitTemp);
             }
         }

@@ -6,10 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayerDao;
+import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.DayPlayer;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.domain.user.UserHolder;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
 import org.spring.springboot.service.PlayerService;
 import org.spring.springboot.util.DateUtil;
 import org.springframework.stereotype.Service;
@@ -33,14 +35,18 @@ public class PlayerServiceImpl implements PlayerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerServiceImpl.class);
 
     private static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
     private static final String time_start_suffix = " 00:00:00";
     private static final String time_end_suffix = " 23:59:59";
     @Resource
     private PlayerDao playerDao;
 
+    @Resource
+    private DailyActiveUserLogDao dailyActiveUserLogDao;
+
     @Override
     public Integer findRegisterNum(Date dateTime) {
-        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
             return 0;
         }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
@@ -161,28 +167,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Integer findActiveNum(Date dateTime) {
-        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(dateTime, dateTime);
+        if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)){
             return 0;
         }
-        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        if (null == dateTime) {
-            dateTime = new Date();
-        }
-        String t = df.format(dateTime);
-        String substring = t.substring(0, 10);
-        String e = substring + time_end_suffix;
-        t = substring + time_start_suffix;
-        long start = 0;
-        long end = 0;
-        try {
-            // 获取10位时间戳
-            start = df.parse(t).getTime() / 1000;
-            end = df.parse(e).getTime() / 1000;
-        } catch (ParseException pe) {
-            LOGGER.error(pe.getMessage(), pe);
-        }
-
-        return playerDao.findActiveNumBetweenDate(start, end);
+        return dailyActiveUserLogPOS.get(0).getActiveCount().intValue();
     }
 
     @Override
@@ -244,37 +233,30 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime) {
-        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
             return Collections.emptyList();
         }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
         String e = df.format(endTime);
-        long start = 0;
-        long end = 0;
-        try {
-            start = df.parse(s).getTime() / 1000;
-            end = df.parse(e).getTime() / 1000;
-        } catch (ParseException pe) {
-            LOGGER.error(pe.getMessage(), pe);
-        }
-
         List<String> dates = DateUtil.getBetweenDates(s, e);
         List<DayPlayer> players = new ArrayList<>();
-        List<DayPlayer> result = playerDao.findActiveNumGroupbyDate(start, end);
-        if (CollectionUtils.isEmpty(result)){
-            for (String date:dates){
-                players.add(new DayPlayer(date,0));
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(startTime, endTime);
+        if (CollectionUtils.isEmpty(dailyActiveUserLogPOS)) {
+            for (String date : dates) {
+                players.add(new DayPlayer(date, 0));
             }
         } else {
-            Map<String, Integer> map = result.stream().collect(Collectors.toMap(DayPlayer::getTimedate, DayPlayer::getNum));
+            Map<String, Long> map = dailyActiveUserLogPOS
+                    .stream()
+                    .collect(Collectors.toMap(DailyActiveUserLogPO::getCountTime, DailyActiveUserLogPO::getActiveCount, (k1, k2) -> k1));
 
-            for (String date:dates){
-                int num = 0;
-                if (map.containsKey(date)){
+            for (String date : dates) {
+                long num = 0;
+                if (map.containsKey(date)) {
                     num = map.get(date);
                 }
-                players.add(new DayPlayer(date,num));
+                players.add(new DayPlayer(date, (int)num));
             }
         }
 

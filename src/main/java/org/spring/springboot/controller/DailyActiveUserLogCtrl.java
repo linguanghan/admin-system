@@ -11,12 +11,10 @@ import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
 import org.spring.springboot.service.DailyActiveUserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -77,6 +75,19 @@ public class DailyActiveUserLogCtrl {
             logger.error("DailyActiveUserLogCtrl#fetchDailyActiveUserLogByPage error query:{}", JSONUtil.toJsonStr(dailyActiveUserLogVO), e);
             return Result.buildFailure(SysCodeEnum.BusinessError);
         }
+
+    }
+
+    @RequestMapping("/queryDailyActiveUserLog")
+    public Result<?> queryDailyActiveUserLog(@RequestParam("startTime") Date startTime,@RequestParam("endTime") Date endTime) {
+        try {
+            List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogService.queryDailyActiveUserLog(startTime, endTime);
+
+        }catch (Exception e) {
+            logger.error("DailyActiveUserLogCtrl#queryDailyActiveUserLog error startTime{}, endTime{}", JSONUtil.toJsonStr(startTime), JSONUtil.toJsonStr(endTime));
+        }
+
+        return Result.buildFailure();
 
     }
 }

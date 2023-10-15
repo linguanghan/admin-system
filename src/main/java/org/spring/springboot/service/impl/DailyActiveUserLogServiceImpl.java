@@ -9,6 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,5 +43,12 @@ public class DailyActiveUserLogServiceImpl implements DailyActiveUserLogService 
         return dailyActiveUserLogPO.getId();
     }
 
+    @Override
+    public List<DailyActiveUserLogPO> queryDailyActiveUserLog(Date startTime, Date endTime) {
+        if(startTime == null || endTime == null) {
+            return Collections.emptyList();
+        }
+        return dailyActiveUserLogDao.queryDailyActiveUserLog(startTime, endTime);
+    }
 
 }

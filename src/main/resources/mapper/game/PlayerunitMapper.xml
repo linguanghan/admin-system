@@ -545,10 +545,14 @@
   <update id="updateByPrimaryKey" parameterType="org.spring.springboot.domain.game.playerunit.Playerunit">
     update playerUnit
     set pid = #{pid,jdbcType=BIGINT},
-      createTime = #{createtime,jdbcType=INTEGER},
+      `createTime` = #{createtime,jdbcType=INTEGER},
       channel = #{channel,jdbcType=INTEGER},
-      packageIdx = #{packageidx,jdbcType=INTEGER},
-      bookIdx = #{bookidx,jdbcType=INTEGER},
+      <if test="packageidx != null">
+        `packageIdx` = #{packageidx,jdbcType=INTEGER},
+      </if>
+      <if test="bookidx != null">
+        `bookIdx` = #{bookidx,jdbcType=INTEGER},
+      </if>
       bookType = #{booktype,jdbcType=INTEGER},
       unit1 = #{unit1,jdbcType=INTEGER},
       unit2 = #{unit2,jdbcType=INTEGER},
@@ -705,6 +709,9 @@
     select <include refid="Base_Column_List"></include>
     from playerUnit
     <trim prefix="where" suffixOverrides="and">
+      <if test="id != null">
+        id = #{id} and
+      </if>
       <if test="pid != null">
         pid = #{pid} and
       </if>
