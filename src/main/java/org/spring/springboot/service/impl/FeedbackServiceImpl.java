@@ -5,12 +5,19 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.dao.game.FeedbackDao;
-import org.spring.springboot.domain.game.Feedback;
+import org.spring.springboot.domain.game.feedback.FeedBackVO;
+import org.spring.springboot.domain.game.feedback.Feedback;
 import org.spring.springboot.service.FeedbackService;
+import org.spring.springboot.util.DateUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
@@ -18,6 +25,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     private static final
 
     Logger LOGGER = LoggerFactory.getLogger(FeedbackServiceImpl.class);
+
+    private static final String LENGTH_10 = "LENGTH_10";
 
    @Resource
     private FeedbackDao feedbackDao;
@@ -28,10 +37,22 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public PageInfo<Feedback> selectAllPageQuery(int pageNum, int pageSize) {
+    public PageInfo<FeedBackVO> selectAllPageQuery(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Feedback> list = fetchList();
-        PageInfo<Feedback> result = new PageInfo<>(list);
-        return result;
+        List<Feedback> feedbacks = fetchList();
+        if(CollectionUtils.isEmpty(feedbacks)) {
+            return new PageInfo<>(Collections.emptyList());
+        }
+        List<FeedBackVO> feedBackVOS = feedbacks.stream().map(feedback -> {
+            FeedBackVO feedBackVO = new FeedBackVO();
+            BeanUtils.copyProperties(feedback, feedBackVO);
+            if(feedback.getTime() == null || feedback.getTime() == 0) {
+                return feedBackVO;
+            }
+            Date date = DateUtil.timeStampToDate(feedback.getTime(), LENGTH_10);
+            feedBackVO.setTime(date);
+            return feedBackVO;
+        }).collect(Collectors.toList());
+        return new PageInfo<>(feedBackVOS);
     }
 }

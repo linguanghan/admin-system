@@ -3,7 +3,6 @@ package org.spring.springboot.service.impl;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSON;
-import generator.PlayerunitExample;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -364,11 +363,6 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
         if (query.getPid() != null && !StringUtils.isEmpty(query.getOrderId())) {
             pids = ListUtils.retainAll(Collections.singletonList(query.getPid()), pidList);
-        }
-
-        // 没有交集直接返回空
-        if (CollectionUtils.isEmpty(pids)) {
-            return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
 
         // 3、根据时间、pid联合查询充值记录

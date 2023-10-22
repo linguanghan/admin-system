@@ -1,8 +1,6 @@
 package org.spring.springboot.controller;
 
-import com.github.pagehelper.PageInfo;
 import org.spring.springboot.bean.AjaxResult;
-import org.spring.springboot.domain.game.Feedback;
 import org.spring.springboot.service.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
