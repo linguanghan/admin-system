@@ -167,6 +167,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Integer findActiveNum(Date dateTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
+        }
         List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(dateTime, dateTime);
         if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)){
             return 0;
