@@ -30,6 +30,10 @@ public class PlayerUnitQuery {
      */
     private Integer bookIdx;
     /**
+     * 对应年级
+     */
+    private Integer bookType;
+    /**
      * 剩余使用时间 月
      */
     private Integer remainTime;

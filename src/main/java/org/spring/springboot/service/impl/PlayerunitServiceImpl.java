@@ -459,6 +459,26 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             PlayerLearnTimePO playerLearnTimePO = finalPlayerLearnTimeMap.get(playerunit.getPid() + "-" + playerunit.getBookidx());
             // 学习时长填充
             if (playerLearnTimePO != null && playerLearnTimePO.getTotalTime() != null) {
+                playerRechargeVO.setLearnTimeUnit1(playerLearnTimePO.getUnit1());
+                playerRechargeVO.setLearnTimeUnit2(playerLearnTimePO.getUnit2());
+                playerRechargeVO.setLearnTimeUnit3(playerLearnTimePO.getUnit3());
+                playerRechargeVO.setLearnTimeUnit4(playerLearnTimePO.getUnit4());
+                playerRechargeVO.setLearnTimeUnit5(playerLearnTimePO.getUnit5());
+                playerRechargeVO.setLearnTimeUnit6(playerLearnTimePO.getUnit6());
+                playerRechargeVO.setLearnTimeUnit7(playerLearnTimePO.getUnit7());
+                playerRechargeVO.setLearnTimeUnit8(playerLearnTimePO.getUnit8());
+                playerRechargeVO.setLearnTimeUnit9(playerLearnTimePO.getUnit9());
+                playerRechargeVO.setLearnTimeUnit10(playerLearnTimePO.getUnit10());
+                playerRechargeVO.setLearnTimeUnit11(playerLearnTimePO.getUnit11());
+                playerRechargeVO.setLearnTimeUnit12(playerLearnTimePO.getUnit12());
+                playerRechargeVO.setLearnTimeUnit13(playerLearnTimePO.getUnit13());
+                playerRechargeVO.setLearnTimeUnit14(playerLearnTimePO.getUnit14());
+                playerRechargeVO.setLearnTimeUnit15(playerLearnTimePO.getUnit15());
+                playerRechargeVO.setLearnTimeUnit16(playerLearnTimePO.getUnit16());
+                playerRechargeVO.setLearnTimeUnit17(playerLearnTimePO.getUnit17());
+                playerRechargeVO.setLearnTimeUnit18(playerLearnTimePO.getUnit18());
+                playerRechargeVO.setLearnTimeUnit19(playerLearnTimePO.getUnit19());
+                playerRechargeVO.setLearnTimeUnit20(playerLearnTimePO.getUnit20());
                 playerRechargeVO.setTotalTime(playerLearnTimePO.getTotalTime());
             }
         }
@@ -605,6 +625,8 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerunit.setUnit18(1);
         playerunit.setUnit19(1);
         playerunit.setUnit20(1);
+        playerunit.setPackageidx(query.getPackageIdx());
+        playerunit.setBooktype(query.getBookType());
         int insertNum = playerunitDao.insertSelective(playerunit);
         return insertNum > 0 ? null : "新增失败！";
     }
@@ -627,14 +649,54 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             }
         }
 
-        if(query.getLearnTime() != null) {
+        if(query.getLearnTimeUnit1() != null) {
             PlayerLearnTimePO playerLearnTimePO = new PlayerLearnTimePO();
             playerLearnTimePO.setPid(query.getPid());
             playerLearnTimePO.setBookIdx(query.getBookIdx());
             List<PlayerLearnTimePO> playerLearnTimePOS = playerLearnTimeDao.batchQueryPlayerLearnTimeInfoByPidAndBookIdx(Collections.singletonList(playerLearnTimePO));
             if(!CollectionUtils.isEmpty(playerLearnTimePOS)) {
                 PlayerLearnTimePO playerLearnTimePOTemp = playerLearnTimePOS.get(0);
-                playerLearnTimePOTemp.setTotalTime(query.getLearnTime());
+                playerLearnTimePOTemp.setUnit1(query.getLearnTimeUnit1());
+                playerLearnTimePOTemp.setUnit2(query.getLearnTimeUnit2());
+                playerLearnTimePOTemp.setUnit3(query.getLearnTimeUnit3());
+                playerLearnTimePOTemp.setUnit4(query.getLearnTimeUnit4());
+                playerLearnTimePOTemp.setUnit5(query.getLearnTimeUnit5());
+                playerLearnTimePOTemp.setUnit6(query.getLearnTimeUnit6());
+                playerLearnTimePOTemp.setUnit7(query.getLearnTimeUnit7());
+                playerLearnTimePOTemp.setUnit8(query.getLearnTimeUnit8());
+                playerLearnTimePOTemp.setUnit9(query.getLearnTimeUnit9());
+                playerLearnTimePOTemp.setUnit10(query.getLearnTimeUnit10());
+                playerLearnTimePOTemp.setUnit11(query.getLearnTimeUnit11());
+                playerLearnTimePOTemp.setUnit12(query.getLearnTimeUnit12());
+                playerLearnTimePOTemp.setUnit13(query.getLearnTimeUnit13());
+                playerLearnTimePOTemp.setUnit14(query.getLearnTimeUnit14());
+                playerLearnTimePOTemp.setUnit15(query.getLearnTimeUnit15());
+                playerLearnTimePOTemp.setUnit16(query.getLearnTimeUnit16());
+                playerLearnTimePOTemp.setUnit17(query.getLearnTimeUnit17());
+                playerLearnTimePOTemp.setUnit18(query.getLearnTimeUnit18());
+                playerLearnTimePOTemp.setUnit19(query.getLearnTimeUnit19());
+                playerLearnTimePOTemp.setUnit20(query.getLearnTimeUnit20());
+                Integer totalTime = query.getLearnTimeUnit1()
+                        + query.getLearnTimeUnit2()
+                        + query.getLearnTimeUnit3()
+                        + query.getLearnTimeUnit4()
+                        + query.getLearnTimeUnit5()
+                        + query.getLearnTimeUnit6()
+                        + query.getLearnTimeUnit7()
+                        + query.getLearnTimeUnit8()
+                        + query.getLearnTimeUnit9()
+                        + query.getLearnTimeUnit10()
+                        + query.getLearnTimeUnit11()
+                        + query.getLearnTimeUnit12()
+                        + query.getLearnTimeUnit13()
+                        + query.getLearnTimeUnit14()
+                        + query.getLearnTimeUnit15()
+                        + query.getLearnTimeUnit16()
+                        + query.getLearnTimeUnit17()
+                        + query.getLearnTimeUnit18()
+                        + query.getLearnTimeUnit19()
+                        + query.getLearnTimeUnit20();
+                playerLearnTimePOTemp.setTotalTime(totalTime);
                 playerLearnTimeDao.updateByPrimaryKey(playerLearnTimePOTemp);
             }
         }

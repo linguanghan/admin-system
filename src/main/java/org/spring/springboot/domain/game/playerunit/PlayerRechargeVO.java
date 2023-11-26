@@ -61,9 +61,89 @@ public class PlayerRechargeVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date deadLineTime;
     /**
-     * 学习时长(默认0)
+     * 学习时长(总)
      */
     private Integer totalTime;
+    /**
+     * 学习时长(Unit1)
+     */
+    private Integer learnTimeUnit1;
+    /**
+     * 学习时长(Unit2)
+     */
+    private Integer learnTimeUnit2;
+    /**
+     * 学习时长(Unit3)
+     */
+    private Integer learnTimeUnit3;
+    /**
+     * 学习时长(Unit4)
+     */
+    private Integer learnTimeUnit4;
+    /**
+     * 学习时长(Unit5)
+     */
+    private Integer learnTimeUnit5;
+    /**
+     * 学习时长(Unit6)
+     */
+    private Integer learnTimeUnit6;
+    /**
+     * 学习时长(Unit7)
+     */
+    private Integer learnTimeUnit7;
+    /**
+     * 学习时长(Unit8)
+     */
+    private Integer learnTimeUnit8;
+    /**
+     * 学习时长(Unit9)
+     */
+    private Integer learnTimeUnit9;
+    /**
+     * 学习时长(Unit10)
+     */
+    private Integer learnTimeUnit10;
+    /**
+     * 学习时长(Unit11)
+     */
+    private Integer learnTimeUnit11;
+    /**
+     * 学习时长(Unit12)
+     */
+    private Integer learnTimeUnit12;
+    /**
+     * 学习时长(Unit13)
+     */
+    private Integer learnTimeUnit13;
+    /**
+     * 学习时长(Unit14)
+     */
+    private Integer learnTimeUnit14;
+    /**
+     * 学习时长(Unit15)
+     */
+    private Integer learnTimeUnit15;
+    /**
+     * 学习时长(Unit16)
+     */
+    private Integer learnTimeUnit16;
+    /**
+     * 学习时长(Unit17)
+     */
+    private Integer learnTimeUnit17;
+    /**
+     * 学习时长(Unit18)
+     */
+    private Integer learnTimeUnit18;
+    /**
+     * 学习时长(Unit19)
+     */
+    private Integer learnTimeUnit19;
+    /**
+     * 学习时长(Unit20)
+     */
+    private Integer learnTimeUnit20;
     /**
      * 是否展示加解锁
      */
