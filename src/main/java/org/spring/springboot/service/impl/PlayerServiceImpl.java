@@ -134,6 +134,8 @@ public class PlayerServiceImpl implements PlayerService {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
         String e = df.format(endTime);
+        String substring = e.substring(0, 10);
+        e = substring + time_end_suffix;
         long start = 0;
         long end = 0;
         try {
