@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="org.spring.springboot.dao.res">-->
+<mapper namespace="org.spring.springboot.dao.yldres.DailyVipRechargeUserLogDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="vip_recharge_count" jdbcType="BIGINT" property="vipRechargeCount"/>
+        <result column="count_time" jdbcType="VARCHAR" property="countTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id,`vip_recharge_count`,`count_time`
+	</sql>
+
+    <select id="fetchDailyVipRechargeUserLogByPage" parameterType="org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `daily_vip_recharge_user_log`
+        <where>
+            <if test="countTime != null">
+                count_time = #{countTime}
+            </if>
+        </where>
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <select id="fetchDailyVipRechargeUserLogByPageCount" parameterType="org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery"
+            resultType="java.lang.Integer">
+        select
+        count(1)
+        from `daily_vip_recharge_user_log`
+        <where>
+            <if test="countTime != null">
+                count_time = #{countTime}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="saveDailyVipRechargeUserLog" parameterType="org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogPO" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into
+            `daily_vip_recharge_user_log`(`id`,`vip_recharge_count`,`count_time`)
+		values
+		(#{id},#{vipRechargeCount},#{countTime})
+	</insert>
+
+</mapper>

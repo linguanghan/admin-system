@@ -4,9 +4,9 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spring.springboot.dao.game.PlayerDao;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
-import org.spring.springboot.service.DailyActiveUserLogService;
+import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogVO;
+import org.spring.springboot.service.DailyVipRechargeUserLogService;
+import org.spring.springboot.service.PlayerExtService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,40 +17,41 @@ import java.util.Map;
 
 /**
  * TODO
- * 计算每日活跃人数定时任务
+ * 计算每日充值人数定时任务
  * @author 13540
  * @version 1.0
  * @date 2023-07-22 13:42
  */
 @Service
-public class CalcDailyActiveSchedule {
+public class CalcDailyVipRechargeSchedule {
 
-    private static final Logger logger = LoggerFactory.getLogger(CalcDailyActiveSchedule.class);
-    @Resource
-    private PlayerDao playerDao;
+    private static final Logger logger = LoggerFactory.getLogger(CalcDailyVipRechargeSchedule.class);
 
     @Resource
-    private DailyActiveUserLogService dailyActiveUserLogService;
+    private PlayerExtService playerExtService;
 
-    @Scheduled(cron = "0 15 0 * * ?")
+    @Resource
+    private DailyVipRechargeUserLogService dailyVipRechargeUserLogService;
+
+    @Scheduled(cron = "0 20 0 * * ?")
     private void calcDailyActiveUser() {
 
         //1、获取昨天的开始时间和结束时间的时间戳
         Map<String, Long> yesterdayTimeStamp = getYesterdayTimeStamp();
         logger.info("calcDailyActiveUser 开始计算活跃度了！");
 
-        //2、获取到昨天的活跃数
-        Integer activeNum = playerDao.findActiveNumBetweenDate(yesterdayTimeStamp.get("beginOfYesterdayTime"), yesterdayTimeStamp.get("endOfYesterdayTime"));
+        //2、获取到昨天的充值人数
+        long activeNum = playerExtService.countDailyPlayerRecharge(yesterdayTimeStamp.get("beginOfYesterdayTime"), yesterdayTimeStamp.get("endOfYesterdayTime"));
 
         //3、数据封装
-        DailyActiveUserLogVO dailyActiveUserLogVO = new DailyActiveUserLogVO();
+        DailyVipRechargeUserLogVO dailyVipRechargeUserLogVO = new DailyVipRechargeUserLogVO();
         String countTime = DateUtil.format(DateUtil.offsetDay(new Date(), -1), "yyyy-MM-dd");
 
-        dailyActiveUserLogVO.setActiveCount(activeNum.longValue());
-        dailyActiveUserLogVO.setCountTime(countTime);
+        dailyVipRechargeUserLogVO.setVipRechargeCount(activeNum);
+        dailyVipRechargeUserLogVO.setCountTime(countTime);
 
         //4、插入到数据库中
-        Long insert = dailyActiveUserLogService.saveDailyActiveUserLog(dailyActiveUserLogVO);
+        Long insert = dailyVipRechargeUserLogService.saveDailyVipRechargeUserLog(dailyVipRechargeUserLogVO);
         if(insert == null || insert < 0) {
             logger.error("calcDailyActiveUser error insert :{}", insert);
         }
@@ -77,7 +78,7 @@ public class CalcDailyActiveSchedule {
     }
 
     public static void main(String[] args) {
-        CalcDailyActiveSchedule calcDailyActiveSchedule = new CalcDailyActiveSchedule();
-        calcDailyActiveSchedule.getYesterdayTimeStamp();
+        CalcDailyVipRechargeSchedule calcDailyVipRechargeSchedule = new CalcDailyVipRechargeSchedule();
+        calcDailyVipRechargeSchedule.getYesterdayTimeStamp();
     }
 }

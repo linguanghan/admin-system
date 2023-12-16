@@ -26,7 +26,7 @@
         limit #{startRow}, #{pageSize}
     </select>
 
-    <select id="fetchDailyActiveUserLogByPageCount" resultType="java.lang.Integer">
+    <select id="fetchDailyActiveUserLogByPageCount" parameterType="org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery" resultType="java.lang.Integer">
         select
         count(1)
         from `daily_active_user_log`

@@ -1,5 +1,7 @@
 package org.spring.springboot.util;
 
+import cn.hutool.core.date.DateTime;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -86,6 +88,17 @@ public class DateUtil {
 
         return null;
 
+    }
+
+    public static String timeStamp2Str(long timeStamp, String type) {
+        if(timeStamp == 0) {
+            return "-";
+        }
+        if(LENGTH_10.equals(type)) {
+            timeStamp = timeStamp * 1000;
+        }
+        DateTime date = cn.hutool.core.date.DateUtil.date(timeStamp);
+        return cn.hutool.core.date.DateUtil.formatDateTime(date);
     }
 
     public static void main(String[] args) {

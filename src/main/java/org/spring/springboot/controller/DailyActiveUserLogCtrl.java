@@ -47,7 +47,7 @@ public class DailyActiveUserLogCtrl {
             if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)) {
                 return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
             }
-            Integer count = dailyActiveUserLogService.fetchDailyActiveUserLogByPageCount();
+            Integer count = dailyActiveUserLogService.fetchDailyActiveUserLogByPageCount(query);
             return Result.buildSuccess().add("data", dailyActiveUserLogPOS).add("total", count);
         }catch (Exception e) {
             logger.error("DailyActiveUserLogCtrl#fetchDailyActiveUserLogByPage error query:{}", JSONUtil.toJsonStr(query), e);

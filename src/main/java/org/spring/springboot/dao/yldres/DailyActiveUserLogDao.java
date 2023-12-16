@@ -30,7 +30,7 @@ public interface DailyActiveUserLogDao {
      * @date 2023-07-22 14:54 
      * @return java.lang.Integer
      */
-    Integer fetchDailyActiveUserLogByPageCount();
+    Integer fetchDailyActiveUserLogByPageCount(DailyActiveUserLogQuery query);
     /**
      *
      * 保存

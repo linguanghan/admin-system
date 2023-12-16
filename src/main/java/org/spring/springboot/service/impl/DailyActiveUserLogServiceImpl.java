@@ -31,8 +31,8 @@ public class DailyActiveUserLogServiceImpl implements DailyActiveUserLogService 
     }
 
     @Override
-    public Integer fetchDailyActiveUserLogByPageCount() {
-        return dailyActiveUserLogDao.fetchDailyActiveUserLogByPageCount();
+    public Integer fetchDailyActiveUserLogByPageCount(DailyActiveUserLogQuery query) {
+        return dailyActiveUserLogDao.fetchDailyActiveUserLogByPageCount(query);
     }
 
     @Override

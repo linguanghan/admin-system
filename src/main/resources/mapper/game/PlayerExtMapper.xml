@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.game.PlayerExtDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.game.playerext.PlayerExtPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="accountID" jdbcType="BIGINT" property="accountID"/>
+        <id column="huibenVipOverdueTime" jdbcType="INTEGER" property="huibenVipOverdueTime"/>
+        <id column="createTime1" jdbcType="INTEGER" property="createTime1"/>
+        <id column="createTime2" jdbcType="INTEGER" property="createTime2"/>
+        <id column="createTime3" jdbcType="INTEGER" property="createTime3"/>
+        <id column="type1" jdbcType="INTEGER" property="type1"/>
+        <id column="type2" jdbcType="INTEGER" property="type2"/>
+        <id column="type3" jdbcType="INTEGER" property="type3"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    `id`, `accountID`, `huibenVipOverdueTime`, `createTime1`, `createTime2`, `createTime3`, `type1`, `type2`, `type3`
+  </sql>
+    <select id="selectByExample" parameterType="org.spring.springboot.domain.game.playerext.PlayerExtDaoQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `player_ext`
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id != null">
+                id = #{id} and
+            </if>
+            <if test="accountID != null">
+                accountID = #{accountID} and
+            </if>
+        </trim>
+
+        <if test="pageSize != null">
+            <if test="offset != null">
+                limit ${offset}, ${pageSize}
+            </if>
+            <if test="offset == null">
+                limit ${pageSize}
+            </if>
+        </if>
+    </select>
+
+    <select id="countByExample" parameterType="org.spring.springboot.domain.game.playerext.PlayerExtDaoQuery" resultType="java.lang.Long">
+        select count(*) from `player_ext`
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id != null">
+                id = #{id} and
+            </if>
+            <if test="accountID != null">
+                accountID = #{accountID} and
+            </if>
+        </trim>
+    </select>
+
+    <select id="countDailyPlayerRecharge" resultType="java.lang.Long">
+        select count(*)
+        from `player_ext`
+        where (createTime1 &gt;= #{startTime} and createTime1 &lt;= #{endTime}) or
+              (createTime2 &gt;= #{startTime} and createTime2 &lt;= #{endTime}) or
+              (createTime3 &gt;= #{startTime} and createTime3 &lt;= #{endTime})
+    </select>
+
+</mapper>

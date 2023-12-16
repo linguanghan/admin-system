@@ -27,7 +27,7 @@ public interface DailyActiveUserLogService {
      * @date 2023-07-22 14:59 
      * @return java.lang.Integer
      */
-    Integer fetchDailyActiveUserLogByPageCount();
+    Integer fetchDailyActiveUserLogByPageCount(DailyActiveUserLogQuery query);
     /**
      *
      * 保存
