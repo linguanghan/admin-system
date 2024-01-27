@@ -1,10 +1,17 @@
 package org.spring.springboot.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.springboot.common.enums.RoleEnum;
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.game.PlayerDao;
+import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.DayPlayer;
+import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.user.UserHolder;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
 import org.spring.springboot.service.PlayerService;
 import org.spring.springboot.util.DateUtil;
 import org.springframework.stereotype.Service;
@@ -28,13 +35,20 @@ public class PlayerServiceImpl implements PlayerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerServiceImpl.class);
 
     private static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
     private static final String time_start_suffix = " 00:00:00";
     private static final String time_end_suffix = " 23:59:59";
     @Resource
     private PlayerDao playerDao;
 
+    @Resource
+    private DailyActiveUserLogDao dailyActiveUserLogDao;
+
     @Override
     public Integer findRegisterNum(Date dateTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         if (null == dateTime) {
             dateTime = new Date();
@@ -91,10 +105,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<Player> findRegisterDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findRegisterDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -103,15 +117,25 @@ public class PlayerServiceImpl implements PlayerService {
         } catch (ParseException pe) {
             LOGGER.error(pe.getMessage(), pe);
         }
+        List<Player> playerList = playerDao.findRegistersBetweenDate(start, end);
+        List<Player> playerListPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerList);
+        if (CollectionUtils.isEmpty(playerList)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        return Result.buildSuccess().add("data", playerListPage).add("total", playerList.size());
 
-        return playerDao.findRegistersBetweenDate(start, end);
     }
 
     @Override
     public List<DayPlayer> findRegisterNumGroupbyDate(Date startTime, Date endTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
         String e = df.format(endTime);
+        String substring = e.substring(0, 10);
+        e = substring + time_end_suffix;
         long start = 0;
         long end = 0;
         try {
@@ -145,25 +169,14 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Integer findActiveNum(Date dateTime) {
-        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        if (null == dateTime) {
-            dateTime = new Date();
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
         }
-        String t = df.format(dateTime);
-        String substring = t.substring(0, 10);
-        String e = substring + time_end_suffix;
-        t = substring + time_start_suffix;
-        long start = 0;
-        long end = 0;
-        try {
-            // 获取10位时间戳
-            start = df.parse(t).getTime() / 1000;
-            end = df.parse(e).getTime() / 1000;
-        } catch (ParseException pe) {
-            LOGGER.error(pe.getMessage(), pe);
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(dateTime, dateTime);
+        if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)){
+            return 0;
         }
-
-        return playerDao.findActiveNumBetweenDate(start, end);
+        return dailyActiveUserLogPOS.get(0).getActiveCount().intValue();
     }
 
     @Override
@@ -202,10 +215,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<Player> findActiveDetailBetweenDate(Date startTime, Date endTime) {
+    public Result<?> findActiveDetailBetweenDate(PageParamVo vo) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-        String t = df.format(startTime);
-        String e = df.format(endTime);
+        String t = df.format(vo.getStartTime());
+        String e = df.format(vo.getEndTime());
         long start = 0;
         long end = 0;
         try {
@@ -215,39 +228,40 @@ public class PlayerServiceImpl implements PlayerService {
             LOGGER.error(pe.getMessage(), pe);
         }
 
-        return playerDao.findActiveBetweenDate(start, end);
+        List<Player> playerList = playerDao.findActiveBetweenDate(start, end);
+        if(CollectionUtils.isEmpty(playerList)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+        List<Player> playerListPage = ListUtil.page(vo.getPageNo() - 1, vo.getPageSize(), playerList);
+        return Result.buildSuccess().add("data", playerListPage).add("total", playerList.size());
     }
 
     @Override
     public List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
         String e = df.format(endTime);
-        long start = 0;
-        long end = 0;
-        try {
-            start = df.parse(s).getTime() / 1000;
-            end = df.parse(e).getTime() / 1000;
-        } catch (ParseException pe) {
-            LOGGER.error(pe.getMessage(), pe);
-        }
-
         List<String> dates = DateUtil.getBetweenDates(s, e);
         List<DayPlayer> players = new ArrayList<>();
-        List<DayPlayer> result = playerDao.findActiveNumGroupbyDate(start, end);
-        if (CollectionUtils.isEmpty(result)){
-            for (String date:dates){
-                players.add(new DayPlayer(date,0));
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(startTime, endTime);
+        if (CollectionUtils.isEmpty(dailyActiveUserLogPOS)) {
+            for (String date : dates) {
+                players.add(new DayPlayer(date, 0));
             }
         } else {
-            Map<String, Integer> map = result.stream().collect(Collectors.toMap(DayPlayer::getTimedate, DayPlayer::getNum));
+            Map<String, Long> map = dailyActiveUserLogPOS
+                    .stream()
+                    .collect(Collectors.toMap(DailyActiveUserLogPO::getCountTime, DailyActiveUserLogPO::getActiveCount, (k1, k2) -> k1));
 
-            for (String date:dates){
-                int num = 0;
-                if (map.containsKey(date)){
+            for (String date : dates) {
+                long num = 0;
+                if (map.containsKey(date)) {
                     num = map.get(date);
                 }
-                players.add(new DayPlayer(date,num));
+                players.add(new DayPlayer(date, (int)num));
             }
         }
 

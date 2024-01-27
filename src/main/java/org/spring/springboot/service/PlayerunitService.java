@@ -1,6 +1,9 @@
 package org.spring.springboot.service;
 
-import org.spring.springboot.domain.game.Playerunit;
+import org.spring.springboot.bean.Option;
+import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.playerunit.*;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;
@@ -16,17 +19,53 @@ public interface PlayerunitService {
     Integer findPlayunitNum(Date dateTime);
     Integer findNumBetweenDate(Date startTime, Date endTime);
     List<Playerunit> findDetail(Date dateTime);
-    List<Playerunit> findDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findDetailBetweenDate(PageParamVo vo);
 
     // 用户购买特定版本
     Integer findPurchasePlayunitNum(Date dateTime);
     Integer findPurchaseNumBetweenDate(Date startTime, Date endTime);
     List<Playerunit> findPurchaseDetail(Date dateTime);
-    List<Playerunit> findPurchaseDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findPurchaseDetailBetweenDate(PageParamVo vo);
 
     // 特定版本查询
     Integer findVersionPlayunitNum(Date dateTime);
     Integer findVersionNumBetweenDate(Date startTime, Date endTime);
     List<Playerunit> findVersionDetail(Date dateTime);
-    List<Playerunit> findVersionDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findVersionDetailBetweenDate(PageParamVo vo);
+
+    List<Option> getPlayerUnitOptionListByPid(Long pid);
+
+    Result<?> queryRechargeByPage(PlayerRechargeQuery query);
+
+    String changeRecharge(PlayerRechargeOperateVO playerRechargeOperateVO);
+
+    /**
+     *
+     * 更新书本锁定状态
+     * @author 13540
+     * @date 2023-09-10 13:20
+     * @return java.lang.String
+     */
+    Integer updateUnlockStatus(PlayerRechargeUnLockQuery playerRechargeUnLockQuery);
+
+    /**
+     *
+     * 用户添加自己的书本（后台）
+     * @author 13540
+     * @date 2023-09-17 15:24
+     * @return boolean
+     */
+    String addBookUnit(PlayerUnitQuery query);
+
+    /**
+     *
+     * 更新用户购买书本的使用时间和学习时长
+     * @param query
+     * @author 13540
+     * @date 2023-09-17 15:44
+     * @return boolean
+     */
+    void updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query);
+
+    List<Option> queryBookResourceOptions(Long pid);
 }

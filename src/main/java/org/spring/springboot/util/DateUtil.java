@@ -1,5 +1,7 @@
 package org.spring.springboot.util;
 
+import cn.hutool.core.date.DateTime;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -10,6 +12,12 @@ import java.util.*;
  * @Date : 2023-01-10 01:07
  */
 public class DateUtil {
+
+    private static final String LENGTH_13 = "LENGTH_13";
+
+    private static final String LENGTH_10 = "LENGTH_10";
+
+
 
     /**
      * 获取两个日期之间的所有日期 (年月日)
@@ -42,6 +50,55 @@ public class DateUtil {
         }
 
         return result;
+    }
+
+    /**
+     * 时间戳转时间字符串
+     *
+     * @return java.lang.String
+     * @author 13540
+     * @date 2023-09-03 17:05
+     */
+    public static Date timeStampToDate(Integer timeStamp, String type) {
+
+        if (timeStamp == null) {
+            return new Date();
+        }
+        if (LENGTH_13.equals(type)) {
+            return new Date(timeStamp);
+        }
+        if (LENGTH_10.equals(type)) {
+            return new Date(timeStamp * 1000L);
+        }
+        return new Date();
+    }
+
+
+    public static Long dateToTimeStamp(Date date, String type) {
+        if(date == null) {
+            return null;
+        }
+
+        if (LENGTH_13.equals(type)) {
+            return date.getTime();
+        }
+        if (LENGTH_10.equals(type)) {
+            return date.getTime() / 1000;
+        }
+
+        return null;
+
+    }
+
+    public static String timeStamp2Str(long timeStamp, String type) {
+        if(timeStamp == 0) {
+            return "-";
+        }
+        if(LENGTH_10.equals(type)) {
+            timeStamp = timeStamp * 1000;
+        }
+        DateTime date = cn.hutool.core.date.DateUtil.date(timeStamp);
+        return cn.hutool.core.date.DateUtil.formatDateTime(date);
     }
 
     public static void main(String[] args) {

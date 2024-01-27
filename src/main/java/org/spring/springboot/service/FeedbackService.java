@@ -1,12 +1,13 @@
 package org.spring.springboot.service;
 
 import com.github.pagehelper.PageInfo;
-import org.spring.springboot.domain.game.Feedback;
+import org.spring.springboot.domain.game.feedback.FeedBackVO;
+import org.spring.springboot.domain.game.feedback.Feedback;
 
 import java.util.List;
 
 public interface FeedbackService {
     List<Feedback> fetchList();
 
-    PageInfo<Feedback> selectAllPageQuery(int pageNum, int pageSize);
+    PageInfo<FeedBackVO> selectAllPageQuery(int pageNum, int pageSize);
 }

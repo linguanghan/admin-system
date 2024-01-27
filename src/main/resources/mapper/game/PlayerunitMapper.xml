@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.spring.springboot.dao.game.PlayerunitDao">
-  <resultMap id="BaseResultMap" type="org.spring.springboot.domain.game.Playerunit">
+  <resultMap id="BaseResultMap" type="org.spring.springboot.domain.game.playerunit.Playerunit">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="createTime" jdbcType="INTEGER" property="createtime" />
@@ -90,9 +90,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, pid, createTime, channel, packageIdx, bookIdx, bookType, unit1, unit2, unit3, 
+    id, pid, createTime, channel, packageIdx, bookIdx, bookType, unit1, unit2, unit3,
     unit4, unit5, unit6, unit7, unit8, unit9, unit10, unit11, unit12, unit13, unit14, 
-    unit15, unit16, unit17, unit18, unit19, unit20, period
+    unit15, unit16, unit17, unit18, unit19, unit20, `period`
   </sql>
   <select id="selectByExample" parameterType="generator.PlayerunitExample" resultMap="BaseResultMap">
     select
@@ -132,7 +132,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.game.Playerunit" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.game.playerunit.Playerunit" useGeneratedKeys="true">
     insert into playerUnit (pid, createTime, channel, 
       packageIdx, bookIdx, bookType, 
       unit1, unit2, unit3, 
@@ -154,7 +154,7 @@
       #{unit19,jdbcType=INTEGER}, #{unit20,jdbcType=INTEGER}, #{period,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.game.Playerunit" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.game.playerunit.Playerunit" useGeneratedKeys="true">
     insert into playerUnit
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="pid != null">
@@ -455,7 +455,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="org.spring.springboot.domain.game.Playerunit">
+  <update id="updateByPrimaryKeySelective" parameterType="org.spring.springboot.domain.game.playerunit.Playerunit">
     update playerUnit
     <set>
       <if test="pid != null">
@@ -537,18 +537,22 @@
         unit20 = #{unit20,jdbcType=INTEGER},
       </if>
       <if test="period != null">
-        period = #{period,jdbcType=INTEGER},
+        `period` = #{period,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.spring.springboot.domain.game.Playerunit">
+  <update id="updateByPrimaryKey" parameterType="org.spring.springboot.domain.game.playerunit.Playerunit">
     update playerUnit
     set pid = #{pid,jdbcType=BIGINT},
-      createTime = #{createtime,jdbcType=INTEGER},
+      `createTime` = #{createtime,jdbcType=INTEGER},
       channel = #{channel,jdbcType=INTEGER},
-      packageIdx = #{packageidx,jdbcType=INTEGER},
-      bookIdx = #{bookidx,jdbcType=INTEGER},
+      <if test="packageidx != null">
+        `packageIdx` = #{packageidx,jdbcType=INTEGER},
+      </if>
+      <if test="bookidx != null">
+        `bookIdx` = #{bookidx,jdbcType=INTEGER},
+      </if>
       bookType = #{booktype,jdbcType=INTEGER},
       unit1 = #{unit1,jdbcType=INTEGER},
       unit2 = #{unit2,jdbcType=INTEGER},
@@ -624,4 +628,98 @@
     and bookIdx BETWEEN 52 and 59 and unit3 = 1
     order by bookIdx, createTime
   </select>
+
+  <select id="findPlayerUnitByExample" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from playerUnit
+    <trim prefix="where" suffixOverrides="and">
+        <if test="pid!=null">
+          pid = #{pid} and
+        </if>
+        <if test="bookidx!=null">
+          bookIdx = #{bookidx} and
+        </if>
+        <if test="unit3">
+          unit3 = #{unit3} and
+        </if>
+
+    </trim>
+    order by bookIdx
+  </select>
+
+  <select id="queryRechargeByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from playerUnit
+    <trim prefix="where" suffixOverrides="and">
+      <if test="startTime != null">
+        createTime &gt;= #{startTime} and
+      </if>
+      <if test="endTime != null">
+        createTime &lt;= #{endTime} and
+      </if>
+      <if test="pidList != null and pidList.size > 0">
+        pid in
+        <foreach collection="pidList" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+        and
+      </if>
+      <if test="orderTime != null">
+        createTime &gt;= #{orderTime} - 300 and
+        createTime &lt;= #{orderTime} + 300 and
+      </if>
+      <if test="unlock != null">
+        unit3 = #{unlock}
+      </if>
+    </trim>
+    order by bookIdx
+    limit #{startRow}, #{pageSize}
+  </select>
+
+  <select id="queryRechargeByPageCount" resultType="java.lang.Integer">
+    select count(1)
+    from playerUnit
+    <trim prefix="where" suffixOverrides="and">
+      <if test="startTime != null">
+        createTime &gt;= #{startTime} and
+      </if>
+      <if test="endTime != null">
+        createTime &lt;= #{endTime} and
+      </if>
+      <if test="pidList != null and pidList.size > 0">
+        pid in
+        <foreach collection="pidList" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+        and
+      </if>
+      <if test="orderTime != null">
+        createTime &gt;= #{orderTime} - 5 and
+        createTime &lt;= #{orderTime} + 5 and
+      </if>
+      <if test="unlock != null">
+        unit3 = #{unlock}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from playerUnit
+    <trim prefix="where" suffixOverrides="and">
+      <if test="id != null">
+        id = #{id} and
+      </if>
+      <if test="pid != null">
+        pid = #{pid} and
+      </if>
+      <if test="bookidx != null">
+        bookIdx = #{bookidx} and
+      </if>
+    </trim>
+
+  </select>
+
 </mapper>

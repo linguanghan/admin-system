@@ -1,6 +1,8 @@
 package org.spring.springboot.service;
 
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.Playervideo;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;
@@ -18,5 +20,5 @@ public interface PlayervideoService {
 
     List<Playervideo> findDetail(Date dateTime);
 
-    List<Playervideo> findDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findDetailBetweenDate(PageParamVo vo);
 }

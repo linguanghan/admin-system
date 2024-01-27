@@ -1,7 +1,9 @@
 package org.spring.springboot.service;
 
+import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.DayPlayer;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;
@@ -58,11 +60,11 @@ public interface PlayerService {
 
     /**
      * 查询该日期范围注册人员详情
-     * @param startTime
-     * @param endTime
+     * @param vo => startTime
+     * @param vo => endTime
      * @return 详细信息
      */
-    List<Player> findRegisterDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findRegisterDetailBetweenDate(PageParamVo vo);
 
     /**
      * 查询该日期范围注册人数--按天归类
@@ -76,6 +78,6 @@ public interface PlayerService {
     Integer findActiveNum(Date dateTime);
     Integer findActiveNumBetweenDate(Date startTime, Date endTime);
     List<Player> findActiveDetail(Date dateTime);
-    List<Player> findActiveDetailBetweenDate(Date startTime, Date endTime);
+    Result<?> findActiveDetailBetweenDate(PageParamVo vo);
     List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime);
 }

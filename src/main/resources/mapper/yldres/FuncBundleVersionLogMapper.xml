@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.yldres.FuncBundleVersionLogDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="idx" jdbcType="BIGINT" property="idx"/>
+        <result column="folder" jdbcType="VARCHAR" property="folder"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+        <result column="version" jdbcType="VARCHAR" property="version"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,`name`,`idx`, `folder`, `path`, `version`, `create_time`, `update_time`
+    </sql>
+
+    <select id="searchFuncBundleVersionLogByKeyWord" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `func_bundle_vertion_log` b
+        <if test="keyWord != null">
+            <trim prefix="where">
+                b.idx like concat('%',#{keyWord},'%')
+                or b.name like concat('%',#{keyWord},'%')
+            </trim>
+        </if>
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <select id="searchFuncBundleVersionLogByKeyWordCount" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultType="java.lang.Integer">
+        select
+        count(1)
+        from `func_bundle_vertion_log` b
+        where
+        b.idx like concat('%',#{keyWord},'%')
+        or b.name like concat('%',#{keyWord},'%')
+    </select>
+
+    <insert id="saveFuncBundleVersionLog" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into
+        `func_bundle_vertion_log`(`name`,`idx`,`folder`,`path`,`version`,`create_time`,`update_time`)
+		values
+		(#{name},#{idx},#{folder},#{path},#{version},#{createTime},#{updateTime})
+	</insert>
+
+    <update id="updateFuncBundleVersionLog" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO">
+        update
+        `func_bundle_vertion_log`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                `name` = #{name},
+            </if>
+            <if test="idx!=null">
+                `idx` = #{idx},
+            </if>
+            <if test="folder!=null">
+                `folder` = #{folder},
+            </if>
+            <if test="path!=null">
+                `path` = #{path},
+            </if>
+            <if test="version!=null">
+                `version` = #{version},
+            </if>
+            <if test="createTime!=null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="updateTime!=null">
+                `update_time` = #{updateTime},
+            </if>
+        </trim>
+        where
+        id = #{id}
+    </update>
+
+    <delete id="deleteFuncBundleVersionLog" parameterType="long">
+		delete from
+            `func_bundle_vertion_log`
+		where id = #{id}
+	</delete>
+
+    <select id="searchFuncBundleVersionLogByIdx" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `func_bundle_vertion_log` b
+        where b.idx = #{idx}
+    </select>
+</mapper>

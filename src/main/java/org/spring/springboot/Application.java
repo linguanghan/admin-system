@@ -4,6 +4,7 @@ import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Spring Boot 应用启动类
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * Created by github on 16/4/26.
  */
 // Spring Boot 应用的标识
+@EnableScheduling
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
         MybatisAutoConfiguration.class})
 // mapper 接口类扫描包配置

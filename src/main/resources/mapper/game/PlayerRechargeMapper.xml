@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.game.PlayerRechargeDao">
+  <resultMap id="BaseResultMap" type="org.spring.springboot.domain.game.playerunit.PlayerRechargePO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="accountID" jdbcType="BIGINT" property="accountId" />
+    <result column="updatetime" jdbcType="VARCHAR" property="updateTime"/>
+    <result column="referer" jdbcType="INTEGER" property="refer" />
+    <result column="familyID" jdbcType="BIGINT" property="familyId" />
+    <result column="onelevel_agents_id" jdbcType="INTEGER" property="oneLevelAgentsId" />
+    <result column="top_agents_id" jdbcType="INTEGER" property="topAgentsId" />
+    <result column="app_price" jdbcType="INTEGER" property="appPrice" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, accountID, updatetime, referer, familyID, onelevel_agents_id, top_agents_id, app_price, order_id, pid,
+    `name`
+  </sql>
+
+  <select id="queryPlayerRechargeInfoByOrderId"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from playerrecharge
+    <trim prefix="where" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id = #{orderId}
+      </if>
+    </trim>
+  </select>
+
+  <select id="batchQueryPlayerRechargeInfByUpdateTimeAndPid"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from playerrecharge
+    <trim prefix="where" suffixOverrides="and">
+      1 = 1 and
+      <if test="playerRechargePOS != null">
+        <foreach collection="playerRechargePOS" item="item" index="index" open="("  close=")">
+        or (updatetime &gt; #{item.updateTime} - 5 and updatetime &lt; #{item.updateTime} + 5 and pid = #{item.pid})
+        </foreach>
+        and
+      </if>
+    </trim>
+  </select>
+
+</mapper>

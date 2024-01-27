@@ -1,6 +1,12 @@
 package org.spring.springboot.controller;
 
+import cn.hutool.json.JSONUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
+import org.spring.springboot.common.enums.SysCodeEnum;
+import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.vo.PageParamVo;
 import org.spring.springboot.service.PlayervideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -21,6 +27,8 @@ import java.util.Date;
 @RestController
 @RequestMapping("player/video")
 public class PlayervideoCtrl {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlayervideoCtrl.class);
     @Autowired
     private PlayervideoService playervideoService;
 
@@ -43,9 +51,19 @@ public class PlayervideoCtrl {
     }
 
     // 查询该日期范围绘本数据详情
-    @RequestMapping(value = "/rangedate/detail", method = RequestMethod.GET)
-    public AjaxResult findDetailBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
-        return AjaxResult.successResult(playervideoService.findDetailBetweenDate(startTime, endTime));
+    @RequestMapping(value = "/rangedate/detail")
+    public Result<?> findDetailBetweenDate(PageParamVo vo) {
+        if (vo == null
+                || vo.getEndTime() == null
+                || vo.getStartTime() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            return playervideoService.findDetailBetweenDate(vo);
+        } catch (Exception e) {
+            logger.info("PlayervideoCtrl#findDetailBetweenDate error vo is {}", JSONUtil.toJsonStr(vo), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     @InitBinder
