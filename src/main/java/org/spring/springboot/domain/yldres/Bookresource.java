@@ -16,10 +16,11 @@ public class Bookresource {
     private String name;
 //    private Boolean release;
 //    private Boolean video;
+
+    private String serverAddress;
     private Integer release;
     private Integer video;
     private String version;
-
     private Integer bookType;
 
     public Long getId() {
@@ -76,6 +77,14 @@ public class Bookresource {
 
     public void setBookType(Integer bookType) {
         this.bookType = bookType;
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     @Override
