@@ -19,7 +19,7 @@ public class Bookresource {
     private Integer release;
     private Integer video;
     private String version;
-
+    private String serverAddress;
     private Integer bookType;
 
     public Long getId() {
@@ -78,6 +78,14 @@ public class Bookresource {
         this.bookType = bookType;
     }
 
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
+    }
+
     @Override
     public String toString() {
         return "Bookresource{" +
@@ -88,6 +96,7 @@ public class Bookresource {
                 ", video=" + video +
                 ", version='" + version + '\'' +
                 ", bookType='" + bookType + '\'' +
+                ", serverAddress='" + serverAddress + '\'' +
                 '}';
     }
 }
