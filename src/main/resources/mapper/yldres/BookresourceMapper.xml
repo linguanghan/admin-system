@@ -76,6 +76,31 @@
 		(#{id},#{bookId},#{name},#{release},#{video},#{version},#{bookType},#{serverAddress})
 	</insert>
 
+    <!--备用方案：为bookType添加默认值
+    <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into
+        BookResource(id,bookId,`name`,`release`,video,`version`,`bookType`,`serverAddress`)
+        values
+        (
+        #{id},
+        #{bookId},
+        #{name},
+        #{release},
+        #{video},
+        #{version},
+        <choose>
+            <when test="bookType!=null">
+                #{bookType}
+            </when>
+            <otherwise>
+                0 &lt;!&ndash; 这里是默认值，你可以根据需要进行修改 &ndash;&gt;
+            </otherwise>
+        </choose>,
+        #{serverAddress}
+        )
+    </insert>-->
+
     <update id="updateBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource">
         update
         BookResource
