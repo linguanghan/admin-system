@@ -16,11 +16,10 @@ public class Bookresource {
     private String name;
 //    private Boolean release;
 //    private Boolean video;
-
-    private String serverAddress;
     private Integer release;
     private Integer video;
     private String version;
+    private String serverAddress;
     private Integer bookType;
 
     public Long getId() {
@@ -97,6 +96,7 @@ public class Bookresource {
                 ", video=" + video +
                 ", version='" + version + '\'' +
                 ", bookType='" + bookType + '\'' +
+                ", serverAddress='" + serverAddress + '\'' +
                 '}';
     }
 }

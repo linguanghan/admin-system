@@ -12,10 +12,11 @@
         <result column="video" jdbcType="TINYINT" property="video"/>
         <result column="version" jdbcType="VARCHAR" property="version"/>
         <result column="bookType" jdbcType="INTEGER" property="bookType"/>
+        <result column="serverAddress" jdbcType="VARCHAR" property="serverAddress"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-		id,bookId,`name`,`release`,video,`version`,`bookType`
+		id,bookId,`name`,`release`,video,`version`,`bookType`, `serverAddress`
 	</sql>
 
     <select id="fetchBookresourceInfos" resultMap="BaseResultMap">
@@ -70,9 +71,9 @@
     <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
             keyProperty="id">
 		insert into
-		BookResource(id,bookId,`name`,`release`,video,`version`,`bookType`)
+		BookResource(id,bookId,`name`,`release`,video,`version`,`bookType`,`serverAddress`)
 		values
-		(#{id},#{bookId},#{name},#{release},#{video},#{version},#{bookType})
+		(#{id},#{bookId},#{name},#{release},#{video},#{version},#{bookType},#{serverAddress})
 	</insert>
 
     <update id="updateBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource">
@@ -96,6 +97,9 @@
             </if>
             <if test="bookType!=null">
                 `bookType` = #{bookType},
+            </if>
+            <if test="serverAddress!=null">
+                `serverAddress` = #{serverAddress},
             </if>
         </trim>
 

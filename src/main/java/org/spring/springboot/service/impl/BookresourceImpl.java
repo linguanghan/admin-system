@@ -121,9 +121,4 @@ public class BookresourceImpl implements BookresourceService {
                 .collect(Collectors.toMap(Bookresource::getBookId, v->v, (k1,k2)->k1));
     }
 
-    @Override
-    public Bookresource findBookresourceById(Long id) {
-        return null;
-    }
-
 }

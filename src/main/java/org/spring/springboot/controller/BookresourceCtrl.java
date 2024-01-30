@@ -11,9 +11,7 @@ import org.spring.springboot.domain.game.vo.PageBookParamVO;
 import org.spring.springboot.domain.yldres.Bookresource;
 import org.spring.springboot.service.BookresourceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 
 /**
  * Description
@@ -97,13 +95,4 @@ public class BookresourceCtrl {
         return Result.buildFailure();
     }
 
-    @GetMapping("/bookresources/{id}")
-    public ResponseEntity<Bookresource> getBookresource(@PathVariable Long id) {
-        Bookresource bookresource = bookresourceService.findBookresourceById(id);
-        if (bookresource == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(bookresource, HttpStatus.OK);
-        }
-    }
 }
