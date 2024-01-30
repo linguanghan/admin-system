@@ -34,6 +34,47 @@ public class BookresourceImpl implements BookresourceService {
     private static final String time_start_suffix = " 00:00:00";
     private static final String time_end_suffix = " 23:59:59";
 
+    static Map<String, Integer> gradeCodeMap = new HashMap<>();
+
+    static {
+        gradeCodeMap.put("一年级上册", 11);
+        gradeCodeMap.put("一年级下册", 12);
+        gradeCodeMap.put("二年级上册", 21);
+        gradeCodeMap.put("二年级下册", 22);
+        gradeCodeMap.put("三年级上册", 31);
+        gradeCodeMap.put("三年级下册", 32);
+        gradeCodeMap.put("四年级上册", 41);
+        gradeCodeMap.put("四年级下册", 42);
+        gradeCodeMap.put("五年级上册", 51);
+        gradeCodeMap.put("五年级下册", 52);
+        gradeCodeMap.put("六年级上册", 61);
+        gradeCodeMap.put("六年级下册", 62);
+        gradeCodeMap.put("七年级上册", 71);
+        gradeCodeMap.put("七年级下册", 72);
+        gradeCodeMap.put("八年级上册", 81);
+        gradeCodeMap.put("八年级下册", 82);
+        gradeCodeMap.put("九年级上册", 91);
+        gradeCodeMap.put("九年级下册", 92);
+        gradeCodeMap.put("一年级数学上册", 11);
+        gradeCodeMap.put("一年级数学下册", 12);
+        gradeCodeMap.put("二年级数学上册", 21);
+        gradeCodeMap.put("二年级数学下册", 22);
+        gradeCodeMap.put("三年级数学上册", 31);
+        gradeCodeMap.put("三年级数学下册", 32);
+        gradeCodeMap.put("四年级数学上册", 41);
+        gradeCodeMap.put("四年级数学下册", 42);
+        gradeCodeMap.put("五年级数学上册", 51);
+        gradeCodeMap.put("五年级数学下册", 52);
+        gradeCodeMap.put("六年级数学上册", 61);
+        gradeCodeMap.put("六年级数学下册", 62);
+        gradeCodeMap.put("七年级数学上册", 71);
+        gradeCodeMap.put("七年级数学下册", 72);
+        gradeCodeMap.put("八年级数学上册", 81);
+        gradeCodeMap.put("八年级数学下册", 82);
+        gradeCodeMap.put("九年级数学上册", 91);
+        gradeCodeMap.put("九年级数学下册", 92);
+    }
+
     @Resource
     private BookresourceDao bookresourceDao;
 
@@ -119,6 +160,40 @@ public class BookresourceImpl implements BookresourceService {
         return bookresources.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Bookresource::getBookId, v->v, (k1,k2)->k1));
+    }
+
+    @Override
+    public Boolean setBookType() {
+        List<Bookresource> bookresources = bookresourceDao.fetchBookresourceInfos();
+        if(CollectionUtils.isEmpty(bookresources)) {
+            return true;
+        }
+
+        bookresources.forEach(bookresource -> {
+            String name = bookresource.getName();
+            String s = nameContainGradeString(name);
+            if (s != null) {
+                bookresource.setBookType(gradeCodeMap.get(s));
+            }
+            else {
+                bookresource.setBookType(0);
+            }
+            bookresourceDao.updateBookInfo(bookresource);
+        });
+        return true;
+    }
+
+    private String nameContainGradeString(String name) {
+        if(StringUtils.isEmpty(name)) {
+            return null;
+        }
+        Set<String> gradeStringSet = gradeCodeMap.keySet();
+        for (String s : gradeStringSet) {
+            if(name.contains(s)) {
+                return s;
+            }
+        }
+        return null;
     }
 
 }

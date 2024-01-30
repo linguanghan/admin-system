@@ -39,4 +39,6 @@ public interface BookresourceService {
      * @return java.util.Map<java.lang.Long, org.spring.springboot.domain.yldres.Bookresource>
      */
     Map<Long, Bookresource> fetchBookResourceByIds(List<Long> bookIds);
+
+    Boolean setBookType();
 }
