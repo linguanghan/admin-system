@@ -28,7 +28,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     private static final String LENGTH_10 = "LENGTH_10";
 
-   @Resource
+    @Resource
     private FeedbackDao feedbackDao;
 
     @Override
@@ -38,6 +38,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public PageInfo<FeedBackVO> selectAllPageQuery(int pageNum, int pageSize) {
+        PageHelper.startPage(1, Integer.MAX_VALUE);
+        int total = fetchList().size();
+
         PageHelper.startPage(pageNum, pageSize);
         List<Feedback> feedbacks = fetchList();
         if(CollectionUtils.isEmpty(feedbacks)) {
@@ -53,6 +56,9 @@ public class FeedbackServiceImpl implements FeedbackService {
             feedBackVO.setTime(date);
             return feedBackVO;
         }).collect(Collectors.toList());
-        return new PageInfo<>(feedBackVOS);
+
+        PageInfo<FeedBackVO> pageInfo = new PageInfo<>(feedBackVOS);
+        pageInfo.setTotal(total);
+        return pageInfo;
     }
 }
