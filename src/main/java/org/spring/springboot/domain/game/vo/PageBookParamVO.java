@@ -11,7 +11,6 @@ import java.io.Serializable;
  */
 public class PageBookParamVO implements Serializable {
 
-
     private static final long serialVersionUID = -7709807902974099062L;
     /**
      * 当前页
