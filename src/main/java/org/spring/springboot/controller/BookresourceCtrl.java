@@ -51,7 +51,6 @@ public class BookresourceCtrl {
     }
 
     // 查询书本列表--按编号或名称搜索
-    @JwtIgnore
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public AjaxResult searchBooklist(String name,String bookId,String keyword) {
         return AjaxResult.successResult(bookresourceService.searchBooklist(name,bookId,keyword));
