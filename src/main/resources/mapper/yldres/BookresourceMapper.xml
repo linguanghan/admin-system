@@ -136,6 +136,6 @@
 		delete from
 		    BookResource
 		where
-		bookId = #{bookId}
+		id = #{id}
 	</delete>
 </mapper>
