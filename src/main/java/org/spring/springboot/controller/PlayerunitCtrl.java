@@ -293,7 +293,11 @@ public class PlayerunitCtrl {
 
     }
 
-
+    // 按照包查询充值数量
+    @RequestMapping(value = "/queryPackage", method = RequestMethod.GET)
+    public AjaxResult findRegisterNumGroupbyDate(@RequestParam Long packageIdx, @RequestParam Date startTime, @RequestParam Date endTime) {
+        return AjaxResult.successResult(playerunitService.queryRechargeByPackage(packageIdx, startTime, endTime));
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {

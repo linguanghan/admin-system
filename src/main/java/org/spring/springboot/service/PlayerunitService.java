@@ -68,4 +68,13 @@ public interface PlayerunitService {
     void updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query);
 
     List<Option> queryBookResourceOptions(Long pid);
+
+    /**
+     *
+     * 按包查询充值记录
+     * @param packageIdx, startTime, endTime
+     * @author cdh
+     * @return list
+     */
+    List<Playerunit> queryRechargeByPackage(Long packageIdx, Date startTime, Date endTime);
 }

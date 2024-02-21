@@ -729,6 +729,23 @@ public class PlayerunitServiceImpl implements PlayerunitService {
                 }).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Playerunit> queryRechargeByPackage(Long packageIdx, Date startTime, Date endTime) {
+//        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+//        String t = df.format(startTime);
+//        String e = df.format(endTime);
+//        long start = 0;
+//        long end = 0;
+//        try {
+//            start = df.parse(t).getTime() / 1000;
+//            end = df.parse(e).getTime() / 1000;
+//        } catch (ParseException pe) {
+//            LOGGER.error(pe.getMessage(), pe);
+//        }
+//        return playerunitDao.queryRechargeByPackage(packageIdx, start, end);
+        return null;
+    }
+
 
     private Boolean checkUnlockShow(Long playerUnitId) {
         Playerunit playerunit = playerunitDao.selectByPrimaryKey(playerUnitId);
