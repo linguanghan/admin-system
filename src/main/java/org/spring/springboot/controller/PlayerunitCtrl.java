@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
 import org.spring.springboot.bean.Option;
-import org.spring.springboot.common.anno.JwtIgnore;
 import org.spring.springboot.common.enums.BusiCodeEnum;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
@@ -291,6 +290,11 @@ public class PlayerunitCtrl {
 
         return Result.buildFailure();
 
+    }
+
+    @RequestMapping("/queryPackage")
+    public AjaxResult queryPackageIdxRecharge(@RequestParam Long packageIdx, @RequestParam Date startTime, @RequestParam Date endTime) {
+        return AjaxResult.successResult(playerunitService.queryPackageIdxRecharge(packageIdx, startTime, endTime));
     }
 
 
