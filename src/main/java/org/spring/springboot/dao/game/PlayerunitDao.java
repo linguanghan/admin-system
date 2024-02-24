@@ -2,6 +2,7 @@ package org.spring.springboot.dao.game;
 
 import generator.PlayerunitExample;
 import org.apache.ibatis.annotations.Param;
+import org.spring.springboot.domain.game.PackageQuery;
 import org.spring.springboot.domain.game.playerunit.Playerunit;
 
 import java.util.List;
@@ -62,6 +63,8 @@ public interface PlayerunitDao {
                                      @Param("pidList") List<Long> pidList,
                                      @Param("orderTime") Long orderTime,
                                      @Param("unlock") Integer unlock);
+
+    List<PackageQuery> queryPackageIdxRecharge(@Param("packageIdx") Long packageIdx, @Param("startTime") Long startTime, @Param("endTime") Long endTime);
 
 
 }

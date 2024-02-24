@@ -21,6 +21,16 @@ public class PageParamVo {
      */
     private Integer pageSize = 20;
 
+    private Long packageIdx;
+
+    public Long getPackageIdx() {
+        return packageIdx;
+    }
+
+    public void setPackageIdx(Long packageIdx) {
+        this.packageIdx = packageIdx;
+    }
+
     /**
      * 开始时间
      */

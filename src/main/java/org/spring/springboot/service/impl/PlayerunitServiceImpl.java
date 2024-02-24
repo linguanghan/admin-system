@@ -14,6 +14,7 @@ import org.spring.springboot.dao.game.PlayerRechargeDao;
 import org.spring.springboot.dao.game.PlayerunitDao;
 import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.dao.yldres.ChangeRechargeRecordDao;
+import org.spring.springboot.domain.game.PackageQuery;
 import org.spring.springboot.domain.game.Player;
 import org.spring.springboot.domain.game.palyerlearntime.PlayerLearnTimePO;
 import org.spring.springboot.domain.game.playerunit.*;
@@ -730,20 +731,45 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
-    public List<Playerunit> queryRechargeByPackage(Long packageIdx, Date startTime, Date endTime) {
-//        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
-//        String t = df.format(startTime);
-//        String e = df.format(endTime);
-//        long start = 0;
-//        long end = 0;
-//        try {
-//            start = df.parse(t).getTime() / 1000;
-//            end = df.parse(e).getTime() / 1000;
-//        } catch (ParseException pe) {
-//            LOGGER.error(pe.getMessage(), pe);
+    public List<PackageQuery> queryPackageIdxRecharge(Long packageIdx, Date startTime, Date endTime) {
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        String s = df.format(startTime);
+        String e = df.format(endTime);
+        String substring = e.substring(0, 10);
+        e = substring + time_end_suffix;
+        long start = 0;
+        long end = 0;
+        try {
+            start = df.parse(s).getTime();
+            end = df.parse(e).getTime();
+        } catch (ParseException pe) {
+            LOGGER.error(pe.getMessage(), pe);
+        }
+
+        List<String> dates = DateUtil.getBetweenDates(s, e);
+        List<PackageQuery> rechargeNum = new ArrayList<>();
+        List<PackageQuery> result = playerunitDao.queryPackageIdxRecharge(packageIdx, start / 1000, end / 1000);
+        if (CollectionUtils.isEmpty(result)) {
+            return Collections.emptyList();
+        } else {
+            Map<String, Integer> map = result.stream()
+                    .collect(Collectors.toMap(PackageQuery::getTimedate, PackageQuery::getNum));
+            for (String date : dates) {
+                int num = 0;
+                if (map.containsKey(date)) {
+                    num = map.get(date);
+                }
+                rechargeNum.add(new PackageQuery(date, num));
+            }
+        }
+
+//        for (PackageQuery packageQuery : result) {
+//            if (dates.contains(packageQuery.getTimedate())) {
+//                rechargeNum.add(packageQuery);
+//            }
 //        }
-//        return playerunitDao.queryRechargeByPackage(packageIdx, start, end);
-        return null;
+
+        return rechargeNum;
     }
 
 

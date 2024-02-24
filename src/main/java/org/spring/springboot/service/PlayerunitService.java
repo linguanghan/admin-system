@@ -2,6 +2,7 @@ package org.spring.springboot.service;
 
 import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.game.PackageQuery;
 import org.spring.springboot.domain.game.playerunit.*;
 import org.spring.springboot.domain.game.vo.PageParamVo;
 
@@ -69,12 +70,5 @@ public interface PlayerunitService {
 
     List<Option> queryBookResourceOptions(Long pid);
 
-    /**
-     *
-     * 按包查询充值记录
-     * @param packageIdx, startTime, endTime
-     * @author cdh
-     * @return list
-     */
-    List<Playerunit> queryRechargeByPackage(Long packageIdx, Date startTime, Date endTime);
+    List<PackageQuery> queryPackageIdxRecharge(Long packageIdx, Date starTime, Date endTime);
 }

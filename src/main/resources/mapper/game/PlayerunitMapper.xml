@@ -722,4 +722,15 @@
 
   </select>
 
+  <select id="queryPackageIdxRecharge" resultType="org.spring.springboot.domain.game.PackageQuery">
+    SELECT COUNT(*) AS num, timedate
+    FROM (
+    SELECT *, FROM_UNIXTIME(createTime, '%Y-%m-%d') AS timedate
+    FROM playerUnit AS p
+    WHERE createTime BETWEEN #{startTime} AND #{endTime} AND packageIdx = #{packageIdx}
+    ORDER BY createTime
+    ) tmp
+    GROUP BY timedate
+  </select>
+
 </mapper>
