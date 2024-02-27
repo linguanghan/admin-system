@@ -1,5 +1,9 @@
 package org.spring.springboot.domain.yldres.active;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 /**
  * TODO
  *
@@ -11,7 +15,7 @@ public class DailyActiveUserLogQuery {
     /**
      * 統計日期
      */
-    private String countTime;
+//    private String countTime;
     /**
      * 頁數
      */
@@ -26,13 +30,35 @@ public class DailyActiveUserLogQuery {
      */
     private Integer pageSize = 10;
 
-    public String getCountTime() {
-        return countTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date endTime;
+
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setCountTime(String countTime) {
-        this.countTime = countTime;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+
+//    public String getCountTime() {
+//        return countTime;
+//    }
+
+//    public void setCountTime(String countTime) {
+//        this.countTime = countTime;
+//    }
 
     public Integer getPageNo() {
         return pageNo;

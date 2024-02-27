@@ -9,12 +9,15 @@ import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
 import org.spring.springboot.service.DailyActiveUserLogService;
+import org.spring.springboot.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +36,9 @@ public class DailyActiveUserLogCtrl {
 
     private static final Logger logger = LoggerFactory.getLogger(DailyActiveUserLogCtrl.class);
 
+    @Autowired
+    private PlayerService playerService;
+
     /**
      *
      * 分页查询日活记录
@@ -40,7 +46,7 @@ public class DailyActiveUserLogCtrl {
      * @date 2023-07-22 15:05 
      * @return java.util.List<org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO>
      */
-    @RequestMapping(value = "/fetchDailyActiveUserLogByPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/fetchRangeActiveUserLogByPage", method = RequestMethod.POST)
     public Result<?> fetchDailyActiveUserLogByPage(DailyActiveUserLogQuery query){
         try {
             List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogService.fetchDailyActiveUserLogByPage(query);
@@ -53,7 +59,6 @@ public class DailyActiveUserLogCtrl {
             logger.error("DailyActiveUserLogCtrl#fetchDailyActiveUserLogByPage error query:{}", JSONUtil.toJsonStr(query), e);
             return Result.buildFailure(SysCodeEnum.BusinessError);
         }
-
     }
 
     /**
@@ -78,16 +83,17 @@ public class DailyActiveUserLogCtrl {
 
     }
 
-    @RequestMapping("/queryDailyActiveUserLog")
-    public Result<?> queryDailyActiveUserLog(@RequestParam("startTime") Date startTime,@RequestParam("endTime") Date endTime) {
-        try {
-            List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogService.queryDailyActiveUserLog(startTime, endTime);
-
-        }catch (Exception e) {
-            logger.error("DailyActiveUserLogCtrl#queryDailyActiveUserLog error startTime{}, endTime{}", JSONUtil.toJsonStr(startTime), JSONUtil.toJsonStr(endTime));
-        }
-
-        return Result.buildFailure();
-
-    }
+//    @RequestMapping("/queryDailyActiveUserLog")
+////    public Result<?> queryDailyActiveUserLog(@RequestParam("startTime") Date startTime,@RequestParam("endTime") Date endTime)
+//    public Result<?> queryDailyActiveUserLog(@RequestParam Date startTime, @RequestParam Date endTime) {
+////        try {
+////            List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogService.queryDailyActiveUserLog(startTime, endTime);
+////
+////        }catch (Exception e) {
+////            logger.error("DailyActiveUserLogCtrl#queryDailyActiveUserLog error startTime{}, endTime{}", JSONUtil.toJsonStr(startTime), JSONUtil.toJsonStr(endTime));
+////        }
+////
+////        return Result.buildFailure();
+//        return AjaxResult.successResult(playerService.findActiveNumGroupbyDate(startTime, endTime));
+//    }
 }

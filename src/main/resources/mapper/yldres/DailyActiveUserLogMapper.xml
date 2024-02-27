@@ -30,11 +30,14 @@
         select
         count(1)
         from `daily_active_user_log`
-        <where>
-            <if test="countTime != null">
-                count_time = #{countTime}
-            </if>
-        </where>
+        <!--        <where>-->
+        <!--            <if test="countTime != null">-->
+        <!--                count_time = #{countTime}-->
+        <!--            </if>-->
+        <!--        </where>-->
+        where STR_TO_DATE(count_time, '%Y-%m-%d') &gt;= #{startTime}
+        and STR_TO_DATE(count_time, '%Y-%m-%d') &lt;= #{endTime}
+        order by id
     </select>
 
     <select id="queryDailyActiveUserLog"
