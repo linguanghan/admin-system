@@ -1,7 +1,7 @@
 package org.spring.springboot.service;
 
-import org.spring.springboot.domain.game.playerext.PlayerExtQuery;
-import org.spring.springboot.domain.game.playerext.PlayerExtVO;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExtQuery;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExtVO;
 
 import java.util.List;
 

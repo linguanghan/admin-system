@@ -1,8 +1,8 @@
 package org.spring.springboot.service;
 
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.game.Playervideo;
-import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.pelbsData.Playervideo;
+import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;

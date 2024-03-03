@@ -1,6 +1,6 @@
 package org.spring.springboot.service;
 
-import org.spring.springboot.domain.game.PlayerAgentInfo;
+import org.spring.springboot.domain.pelbsData.PlayerAgentInfo;
 
 import java.util.List;
 

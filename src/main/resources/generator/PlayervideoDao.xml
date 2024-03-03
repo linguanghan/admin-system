@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.spring.springboot.dao.game.PlayervideoDao">
-  <resultMap id="BaseResultMap" type="org.spring.springboot.domain.game.Playervideo">
+  <resultMap id="BaseResultMap" type="org.spring.springboot.domain.pelbsData.Playervideo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="createTime" jdbcType="INTEGER" property="createtime" />
@@ -107,13 +107,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.game.Playervideo" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.pelbsData.Playervideo" useGeneratedKeys="true">
     insert into PlayerVideo (pid, createTime, bookIdx, 
       `state`)
     values (#{pid,jdbcType=BIGINT}, #{createtime,jdbcType=INTEGER}, #{bookidx,jdbcType=INTEGER}, 
       #{state,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.game.Playervideo" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.pelbsData.Playervideo" useGeneratedKeys="true">
     insert into PlayerVideo
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="pid != null">
@@ -184,7 +184,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="org.spring.springboot.domain.game.Playervideo">
+  <update id="updateByPrimaryKeySelective" parameterType="org.spring.springboot.domain.pelbsData.Playervideo">
     update PlayerVideo
     <set>
       <if test="pid != null">
@@ -202,7 +202,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.spring.springboot.domain.game.Playervideo">
+  <update id="updateByPrimaryKey" parameterType="org.spring.springboot.domain.pelbsData.Playervideo">
     update PlayerVideo
     set pid = #{pid,jdbcType=BIGINT},
       createTime = #{createtime,jdbcType=INTEGER},

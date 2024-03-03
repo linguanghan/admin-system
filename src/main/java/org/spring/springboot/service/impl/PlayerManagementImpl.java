@@ -20,6 +20,7 @@ import org.spring.springboot.domain.pelbsData.PlayerManagement;
 import org.spring.springboot.domain.pelbsData.vo.PagePlayerParamVO;;
 import org.spring.springboot.service.PlayerManagementService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -84,6 +85,7 @@ public class PlayerManagementImpl implements PlayerManagementService{
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updatePlayerInfo(PlayerManagement playerInfo) {
         PlayerManagementDao.updatePlayerManagementInfo(playerInfo);
         PlayerManagementDao.updatePlayerIdentityInfo(playerInfo);
@@ -103,7 +105,7 @@ public class PlayerManagementImpl implements PlayerManagementService{
             playerInfo.setCreateTime((int) currentTimestamp);
         }
 
-        PlayerManagementDao.savePlayerIdentityInfo(playerInfo);
+
         PlayerManagementDao.savePlayerManagementInfo(playerInfo);
     }
 

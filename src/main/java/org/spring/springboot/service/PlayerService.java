@@ -1,9 +1,9 @@
 package org.spring.springboot.service;
 
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.game.Player;
-import org.spring.springboot.domain.game.DayPlayer;
-import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.pelbsData.Player;
+import org.spring.springboot.domain.pelbsData.DayPlayer;
+import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;

@@ -3,14 +3,12 @@ package org.spring.springboot.controller;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spring.springboot.common.anno.JwtIgnore;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.game.playerext.PlayerExtQuery;
-import org.spring.springboot.domain.game.playerext.PlayerExtVO;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExtQuery;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExtVO;
 import org.spring.springboot.service.PlayerExtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

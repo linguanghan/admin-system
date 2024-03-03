@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.service.PlayervideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
