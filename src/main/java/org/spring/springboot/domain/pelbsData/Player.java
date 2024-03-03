@@ -174,6 +174,8 @@ public class Player implements Serializable {
 
     private Integer fake;
 
+    private Integer identity;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -446,6 +448,14 @@ public class Player implements Serializable {
 
     public void setFake(Integer fake) {
         this.fake = fake;
+    }
+
+    public Integer getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(Integer identity) {
+        this.identity = identity;
     }
 
     @Override

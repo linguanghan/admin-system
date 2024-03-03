@@ -15,19 +15,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
+import org.spring.springboot.dao.pelbsData.PlayerDao;
 import org.spring.springboot.dao.pelbsData.PlayerManagementDao;
+import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.PlayerManagement;
 import org.spring.springboot.domain.pelbsData.vo.PagePlayerParamVO;;
 import org.spring.springboot.service.PlayerManagementService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Date;
 
 @Service
 public class PlayerManagementImpl implements PlayerManagementService{
@@ -38,6 +38,10 @@ public class PlayerManagementImpl implements PlayerManagementService{
     private static final String time_end_suffix = " 23:59:59";
     @Resource
     private PlayerManagementDao PlayerManagementDao;
+
+    @Resource
+    private PlayerDao playerDao;
+
     @Override
     public Result<?> fetchList(PagePlayerParamVO vo) {
         List<PlayerManagement> playerResources = Collections.emptyList();
@@ -85,28 +89,34 @@ public class PlayerManagementImpl implements PlayerManagementService{
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void updatePlayerInfo(PlayerManagement playerInfo) {
         PlayerManagementDao.updatePlayerManagementInfo(playerInfo);
-        PlayerManagementDao.updatePlayerIdentityInfo(playerInfo);
     }
 
     @Override
     public void deletePlayerInfo(PlayerManagement playerInfo) {
         PlayerManagementDao.deletePlayerManagementInfo(playerInfo);
-        PlayerManagementDao.deletePlayerIdentityInfo(playerInfo);
     }
 
     @Override
-    public void savePlayerManagementInfo(PlayerManagement playerInfo) {
-
+    public String savePlayerManagementInfo(PlayerManagement playerInfo) {
         if (playerInfo.getCreateTime() == null) {
             long currentTimestamp = System.currentTimeMillis() / 1000L; // 转换为十位数时间戳
             playerInfo.setCreateTime((int) currentTimestamp);
         }
-
-
+        Long agentPid = playerInfo.getAgentPid();
+        List<Player> players = playerDao.batchQueryPlayerInfosById(Collections.singletonList(agentPid));
+        if(CollectionUtils.isEmpty(players)) {
+            return "代理编号不存在，请检查代理编号是否正确~";
+        }
+        Player player = players.get(0);
+        playerInfo.setAgentName(player.getName());
+        List<PlayerManagement> playerManagements = PlayerManagementDao.fetchPlayerManagementInfosByPlayerId(String.valueOf(playerInfo.getAgentPid()));
+        if (!CollectionUtils.isEmpty(playerManagements)) {
+            return String.format("代理编号为%s的代理身份已存在，如需更换请编辑~", playerInfo.getAgentPid());
+        }
         PlayerManagementDao.savePlayerManagementInfo(playerInfo);
+        return null;
     }
 
     @Override

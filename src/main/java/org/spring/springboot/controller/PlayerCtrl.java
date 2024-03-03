@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +141,20 @@ public class PlayerCtrl {
 //    public List<Player> findPlyersHistoryDetail(@RequestParam Date startTime, @RequestParam Date endTime) {
 //        return playerService.findPlyersHistory(startTime, endTime);
 //    }
+
+    @RequestMapping(value = "/getPlayerInfoById", method = RequestMethod.GET)
+    public Result<?> getPlayerInfoById(@RequestParam Long playerId) {
+        if (playerId == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            Player player = playerService.getPlayerInfoById(playerId);
+            return Result.buildSuccess().add("data", player);
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#getPlayerInfoById playerId :{}", playerId, e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {

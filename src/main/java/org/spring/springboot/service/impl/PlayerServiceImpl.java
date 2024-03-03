@@ -268,6 +268,15 @@ public class PlayerServiceImpl implements PlayerService {
         return players;
     }
 
+    @Override
+    public Player getPlayerInfoById(Long playerId) {
+        List<Player> players = playerDao.batchQueryPlayerInfosById(Collections.singletonList(playerId));
+        if(CollectionUtils.isEmpty(players)) {
+            return null;
+        }
+        return players.get(0);
+    }
+
 //    @Override
 //    public List<Player> findPlyersBetweenTime(Date startTime, Date endTime) {
 //        DateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

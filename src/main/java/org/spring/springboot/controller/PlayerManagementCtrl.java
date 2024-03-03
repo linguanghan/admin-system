@@ -10,15 +10,19 @@
 package org.spring.springboot.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
+import org.spring.springboot.common.enums.AgentIdentityEnum;
+import org.spring.springboot.common.enums.BusiCodeEnum;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.pelbsData.vo.PagePlayerParamVO;
 import org.spring.springboot.domain.pelbsData.PlayerManagement;
 import org.spring.springboot.service.PlayerManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -60,9 +64,18 @@ public class PlayerManagementCtrl {
 
     // 编辑玩家信息
     @RequestMapping(value = "/update/info", method = RequestMethod.POST)
-    public AjaxResult updatePlayerInfo(@RequestBody PlayerManagement playerManagement) {
-        playerManagementService.updatePlayerInfo(playerManagement);
-        return AjaxResult.emptySuccessResult();
+    public Result<?> updatePlayerInfo(@RequestBody PlayerManagement playerManagement) {
+        if(playerManagement == null || playerManagement.getAgentPid() == null) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            playerManagementService.updatePlayerInfo(playerManagement);
+            return Result.buildSuccess();
+        }catch (Exception e) {
+            logger.error("PlayerManagementCtrl#updatePlayerInfo playerManagement:{}",
+                    JSON.toJSONString(playerManagement), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     // 删除玩家信息
@@ -74,9 +87,25 @@ public class PlayerManagementCtrl {
 
     // 添加玩家信息
     @RequestMapping(value = "/save/info", method = RequestMethod.POST)
-    public AjaxResult savePlayerManagementInfo(@RequestBody PlayerManagement playerManagement) {
-        playerManagementService.savePlayerManagementInfo(playerManagement);
-        return AjaxResult.emptySuccessResult();
+    public Result<?> savePlayerManagementInfo(@RequestBody PlayerManagement playerManagement) {
+        if (playerManagement == null
+                || playerManagement.getAgentPid() == null
+                || playerManagement.getAgentName() == null
+                || playerManagement.getState() == null
+        ) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            String errMess = playerManagementService.savePlayerManagementInfo(playerManagement);
+            if (!StringUtils.isEmpty(errMess)) {
+                return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, errMess);
+            }
+            return Result.buildSuccess();
+        } catch (Exception e) {
+            logger.error("PlayerManagementCtrl#savePlayerManagementInfo error playerManagement:{}",
+                    JSON.toJSONString(playerManagement), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 
     // 获取玩家信息

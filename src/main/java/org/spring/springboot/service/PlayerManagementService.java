@@ -30,7 +30,7 @@ public interface PlayerManagementService {
 
     void deletePlayerInfo(PlayerManagement playerInfo);
 
-    void savePlayerManagementInfo(PlayerManagement playerInfo);
+    String savePlayerManagementInfo(PlayerManagement playerInfo);
 
     List<Option> queryPlayerResourceOptions();
 

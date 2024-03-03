@@ -102,7 +102,7 @@
     vipExp, totalRecharge, crystal, gold, roomCard, fastCard, cheatTimes, banned_ChatExpiredTime, 
     banned_LoginExpiredTime, bannedTimes, lastLogin, lastLogout, currentGameType, referer, 
     familyID, onelevel_agents_id, top_agents_id, realName, realNumber, zleRoomCard, real_referer, 
-    wx_unionid, fake
+    wx_unionid, fake, `identity`
   </sql>
     <select id="selectByExample" parameterType="generator.PlayerExample" resultMap="BaseResultMap">
         select
