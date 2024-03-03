@@ -2,8 +2,8 @@ package org.spring.springboot.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spring.springboot.dao.game.PlayerAgentInfoDao;
-import org.spring.springboot.domain.game.PlayerAgentInfo;
+import org.spring.springboot.dao.pelbsData.PlayerAgentInfoDao;
+import org.spring.springboot.domain.pelbsData.PlayerAgentInfo;
 import org.spring.springboot.service.PlayerAgentInfoService;
 import org.springframework.stereotype.Service;
 

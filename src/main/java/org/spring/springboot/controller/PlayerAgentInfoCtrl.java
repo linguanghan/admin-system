@@ -1,7 +1,7 @@
 package org.spring.springboot.controller;
 
 import org.spring.springboot.bean.AjaxResult;
-import org.spring.springboot.domain.game.PlayerAgentInfo;
+import org.spring.springboot.domain.pelbsData.PlayerAgentInfo;
 import org.spring.springboot.service.PlayerAgentInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

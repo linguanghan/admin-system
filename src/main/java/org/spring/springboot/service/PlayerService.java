@@ -1,9 +1,9 @@
 package org.spring.springboot.service;
 
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.game.Player;
-import org.spring.springboot.domain.game.DayPlayer;
-import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.pelbsData.Player;
+import org.spring.springboot.domain.pelbsData.DayPlayer;
+import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 
 import java.util.Date;
 import java.util.List;
@@ -80,4 +80,15 @@ public interface PlayerService {
     List<Player> findActiveDetail(Date dateTime);
     Result<?> findActiveDetailBetweenDate(PageParamVo vo);
     List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime);
+
+    /**
+     * 根据id获取用户信息
+     *
+     * @param playerId
+     * @author 13540
+     * @date 2024-03-03 15:40
+     * @return org.spring.springboot.domain.pelbsData.Player
+     */
+
+    Player getPlayerInfoById(Long playerId);
 }

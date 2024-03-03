@@ -5,11 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.dao.game.PlayerDao;
+import org.spring.springboot.dao.pelbsData.PlayerDao;
 import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
-import org.spring.springboot.domain.game.Player;
-import org.spring.springboot.domain.game.DayPlayer;
-import org.spring.springboot.domain.game.vo.PageParamVo;
+import org.spring.springboot.domain.pelbsData.Player;
+import org.spring.springboot.domain.pelbsData.DayPlayer;
+import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.domain.user.UserHolder;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
 import org.spring.springboot.service.PlayerService;
@@ -266,6 +266,15 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         return players;
+    }
+
+    @Override
+    public Player getPlayerInfoById(Long playerId) {
+        List<Player> players = playerDao.batchQueryPlayerInfosById(Collections.singletonList(playerId));
+        if(CollectionUtils.isEmpty(players)) {
+            return null;
+        }
+        return players.get(0);
     }
 
 //    @Override
