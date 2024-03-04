@@ -97,6 +97,7 @@ public class PlayerManagementImpl implements PlayerManagementService{
     @Override
     public void deletePlayerInfo(PlayerManagement playerInfo) {
         PlayerManagementDao.deletePlayerManagementInfo(playerInfo);
+        PlayerManagementDao.deletePlayerIdentityInfo(playerInfo);
     }
 
     @Override
@@ -117,6 +118,7 @@ public class PlayerManagementImpl implements PlayerManagementService{
             return String.format("代理编号为%s的代理身份已存在，如需更换请编辑~", playerInfo.getAgentPid());
         }
         PlayerManagementDao.savePlayerManagementInfo(playerInfo);
+        PlayerManagementDao.updatePlayerIdentityInfo(playerInfo);
         return null;
     }
 
