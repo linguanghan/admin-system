@@ -19,7 +19,7 @@ import org.spring.springboot.dao.pelbsData.PlayerDao;
 import org.spring.springboot.dao.pelbsData.PlayerManagementDao;
 import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.PlayerManagement;
-import org.spring.springboot.domain.pelbsData.vo.PagePlayerParamVO;;
+import org.spring.springboot.domain.pelbsData.vo.PagePlayerParamVO;
 import org.spring.springboot.service.PlayerManagementService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -91,6 +91,7 @@ public class PlayerManagementImpl implements PlayerManagementService{
     @Override
     public void updatePlayerInfo(PlayerManagement playerInfo) {
         PlayerManagementDao.updatePlayerManagementInfo(playerInfo);
+        PlayerManagementDao.updatePlayerIdentityInfo(playerInfo);
     }
 
     @Override
