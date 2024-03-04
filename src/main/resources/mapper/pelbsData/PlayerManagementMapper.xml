@@ -132,15 +132,15 @@
         where id = #{agentPid};
     </update>
 
+    <update id="deletePlayerIdentityInfo" parameterType="java.lang.Long">
+        update player set identity = 0 where id = #{agentPid}
+    </update>
+
     <delete id="deletePlayerManagementInfo" parameterType="java.lang.Long">
         delete from playerAgentInfo
         where agentPid = #{agentPid}
     </delete>
 
-    <delete id="deletePlayerIdentityInfo" parameterType="java.lang.Long">
-        delete from player
-        where id = #{agentPid};
-    </delete>
 
     <insert id="savePlayerIdentityInfo" parameterType="org.spring.springboot.domain.pelbsData.PlayerManagement" useGeneratedKeys="false" keyProperty="id">
         insert into player (id, identity)
