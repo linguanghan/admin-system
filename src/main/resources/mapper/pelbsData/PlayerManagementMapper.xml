@@ -125,6 +125,9 @@
     <update id="updatePlayerIdentityInfo" parameterType="org.spring.springboot.domain.pelbsData.PlayerManagement">
         update player
         <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
             <if test="identity != null">
                 identity = #{identity,jdbcType=INTEGER},
             </if>
