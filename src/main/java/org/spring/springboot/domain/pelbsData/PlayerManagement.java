@@ -24,6 +24,8 @@ public class PlayerManagement {
 
     private Integer identity;
 
+    private String name;
+
     public Long getId() {
         return id;
     }
