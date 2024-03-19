@@ -35,7 +35,6 @@
         <result column="zleRoomCard" jdbcType="INTEGER" property="zleroomcard"/>
         <result column="real_referer" jdbcType="INTEGER" property="realReferer"/>
         <result column="wx_unionid" jdbcType="VARCHAR" property="wxUnionid"/>
-        <result column="fake" jdbcType="INTEGER" property="fake"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -101,8 +100,8 @@
     id, accountID, sid, `name`, icon, sex, headImageUrl, createTime, lv, gmLevel, vipLevel, 
     vipExp, totalRecharge, crystal, gold, roomCard, fastCard, cheatTimes, banned_ChatExpiredTime, 
     banned_LoginExpiredTime, bannedTimes, lastLogin, lastLogout, currentGameType, referer, 
-    familyID, onelevel_agents_id, top_agents_id, realName, realNumber, zleRoomCard, real_referer, 
-    wx_unionid, fake, `identity`
+    familyID, onelevel_agents_id, top_agents_id, realName, realNumber, zleRoomCard, real_referer,
+        wx_unionid, `identity`
   </sql>
     <select id="selectByExample" parameterType="generator.PlayerExample" resultMap="BaseResultMap">
         select
@@ -153,8 +152,8 @@
       banned_LoginExpiredTime, bannedTimes, lastLogin, 
       lastLogout, currentGameType, referer, 
       familyID, onelevel_agents_id, top_agents_id, 
-      realName, realNumber, zleRoomCard, 
-      real_referer, wx_unionid, fake
+      realName, realNumber, zleRoomCard,
+        real_referer, wx_unionid
       )
     values (#{accountid,jdbcType=BIGINT}, #{sid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
       #{icon,jdbcType=INTEGER}, #{sex,jdbcType=INTEGER}, #{headimageurl,jdbcType=VARCHAR}, 
@@ -165,8 +164,8 @@
       #{bannedLoginexpiredtime,jdbcType=INTEGER}, #{bannedtimes,jdbcType=INTEGER}, #{lastlogin,jdbcType=INTEGER}, 
       #{lastlogout,jdbcType=INTEGER}, #{currentgametype,jdbcType=INTEGER}, #{referer,jdbcType=INTEGER}, 
       #{familyid,jdbcType=BIGINT}, #{onelevelAgentsId,jdbcType=INTEGER}, #{topAgentsId,jdbcType=INTEGER}, 
-      #{realname,jdbcType=VARCHAR}, #{realnumber,jdbcType=VARCHAR}, #{zleroomcard,jdbcType=INTEGER}, 
-      #{realReferer,jdbcType=INTEGER}, #{wxUnionid,jdbcType=VARCHAR}, #{fake,jdbcType=INTEGER}
+      #{realname,jdbcType=VARCHAR}, #{realnumber,jdbcType=VARCHAR}, #{zleroomcard,jdbcType=INTEGER},
+        #{realReferer,jdbcType=INTEGER}, #{wxUnionid,jdbcType=VARCHAR}
       )
   </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.spring.springboot.domain.pelbsData.Player"
@@ -269,9 +268,6 @@
             <if test="wxUnionid != null">
                 wx_unionid,
             </if>
-            <if test="fake != null">
-                fake,
-            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="accountid != null">
@@ -369,9 +365,6 @@
             </if>
             <if test="wxUnionid != null">
                 #{wxUnionid,jdbcType=VARCHAR},
-            </if>
-            <if test="fake != null">
-                #{fake,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -483,9 +476,6 @@
             <if test="record.wxUnionid != null">
                 wx_unionid = #{record.wxUnionid,jdbcType=VARCHAR},
             </if>
-            <if test="record.fake != null">
-                fake = #{record.fake,jdbcType=INTEGER},
-            </if>
         </set>
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -525,8 +515,7 @@
         realNumber = #{record.realnumber,jdbcType=VARCHAR},
         zleRoomCard = #{record.zleroomcard,jdbcType=INTEGER},
         real_referer = #{record.realReferer,jdbcType=INTEGER},
-        wx_unionid = #{record.wxUnionid,jdbcType=VARCHAR},
-        fake = #{record.fake,jdbcType=INTEGER}
+        wx_unionid = #{record.wxUnionid,jdbcType=VARCHAR}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -630,9 +619,6 @@
             <if test="wxUnionid != null">
                 wx_unionid = #{wxUnionid,jdbcType=VARCHAR},
             </if>
-            <if test="fake != null">
-                fake = #{fake,jdbcType=INTEGER},
-            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -670,7 +656,6 @@
       zleRoomCard = #{zleroomcard,jdbcType=INTEGER},
       real_referer = #{realReferer,jdbcType=INTEGER},
       wx_unionid = #{wxUnionid,jdbcType=VARCHAR},
-      fake = #{fake,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
