@@ -19,9 +19,9 @@ public interface DailyVipRechargeUserLogService {
 
     /**
      *
-     * 计算总数 
+     * 计算总数
      * @author 13540
-     * @date 2023-07-22 14:59 
+     * @date 2023-07-22 14:59
      * @return java.lang.Integer
      */
     Integer fetchDailyVipRechargeUserLogByPageCount(DailyVipRechargeUserLogQuery query);

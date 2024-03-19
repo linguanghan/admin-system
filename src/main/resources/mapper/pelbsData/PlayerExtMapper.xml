@@ -40,6 +40,33 @@
         </if>
     </select>
 
+    <select id="fetchDailyVipRechargeUserLogByPage"
+            parameterType="org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery"
+            resultMap="BaseResultMap">
+        SELECT count(1)
+        FROM player_ext
+        <where>
+            <if test="countTime != null">
+                createTime1 > #{countTime} and createTime1 &lt; #{countTime} + 86400
+            </if>
+        </where>
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <select id="fetchDailyVipRechargeUserLogByPageCount"
+            parameterType="org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery"
+            resultType="java.lang.Integer">
+        select
+        count(1)
+        from `player_ext`
+        <where>
+            <if test="countTime != null">
+                createTime1 > #{countTime} and createTime1 &lt; #{countTime} + 86400
+            </if>
+        </where>
+    </select>
+
+
     <select id="countByExample" parameterType="org.spring.springboot.domain.pelbsData.playerext.PlayerExtDaoQuery" resultType="java.lang.Long">
         select count(*) from `player_ext`
         <trim prefix="where" suffixOverrides="and">

@@ -21,6 +21,16 @@ public class DailyVipRechargeUserLogQuery {
      * 起始數據
      */
     private Integer startRow;
+
+    private Integer endTime;
+
+    public Integer getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Integer endTime) {
+        this.endTime = endTime;
+    }
     /**
      * 頁大小
      */
