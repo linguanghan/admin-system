@@ -19,4 +19,7 @@ public class PlayerRechargeUnLockQuery {
      * 是否解锁
      */
     private Integer unlock;
+
+    // 用户账号，用于操作绘本
+    private Long pid;
 }

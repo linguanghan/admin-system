@@ -1,6 +1,7 @@
 package org.spring.springboot.dao.pelbsData;
 
 import org.apache.ibatis.annotations.Param;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtDaoQuery;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtPO;
 
@@ -14,4 +15,8 @@ public interface PlayerExtDao {
 
     long countDailyPlayerRecharge(@Param("startTime") Long startTime,
                                   @Param("endTime") Long endTime);
+
+    PlayerExt selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(PlayerExt record);
 }
