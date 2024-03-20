@@ -568,9 +568,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         Playerunit playerunit = new Playerunit();
         playerunit.setId(playerRechargeUnLockQuery.getId());
         Integer unlock = playerRechargeUnLockQuery.getUnlock();
-        if (unlock == 1) {
+        if (unlock == 0) {
             PictureBookLock(playerRechargeUnLockQuery.getPid());
-        } else if (unlock == 0) {
+        } else if (unlock == 1) {
             PictureBookUnLock(playerRechargeUnLockQuery.getPid());
         }
         playerunit.setUnit3(unlock);
@@ -592,6 +592,90 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerunit.setUnit19(unlock);
         playerunit.setUnit20(unlock);
         return playerunitDao.updateByPrimaryKeySelective(playerunit);
+    }
+
+    /*
+     * 绘本表的过期时间和解锁状态查询
+     * @param id
+     */
+    private int CheckPictureBookLock(Long id) {
+        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
+        if (playerExt == null) {
+            return -1;  // 不存在
+        }
+        long overdueTime = playerExt.getHuibenVipOverdueTime();
+        if (overdueTime == 0 || overdueTime < System.currentTimeMillis() / 1000) {
+            return 1;  // 已锁定
+        }
+        long currentTime = System.currentTimeMillis() / 1000;
+        if (overdueTime > currentTime) {
+            return 0;  // 未锁定
+        }
+        return -1;
+    }
+
+    /**
+     * 绘本锁定
+     * 几种情况：
+     * 一：不是绘本或者不是vip，那么不会在表中出现
+     * 二：在表中，已锁定，overduetime为0,此时应该解锁，根据type和createTime计算overduetime
+     * 三：在表中，已锁定，overduetime不为0，且overduetime大于当前时间，此时加锁，将overduetime置为0
+     *
+     * @param id
+     * @return java.lang.Void
+     */
+    private Void PictureBookLock(Long id) {
+        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
+        if (playerExt == null) {
+            return null;
+        }
+        playerExt.setHuibenVipOverdueTime(0);
+        playerExtDao.updateByPrimaryKeySelective(playerExt);
+        return null;
+    }
+
+    /*
+     * 绘本解锁
+     */
+    private Void PictureBookUnLock(Long id) {
+        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
+        if (playerExt == null) {
+            return null;
+        }
+        long overdueTime = 0L;
+        Long createTime1 = Long.valueOf(playerExt.getCreateTime1());
+        Long createTime2 = Long.valueOf(playerExt.getCreateTime2());
+        Long createTime3 = Long.valueOf(playerExt.getCreateTime3());
+        long maxCreateTime = Math.max(createTime1, Math.max(createTime2, createTime3));
+
+        Integer type1 = playerExt.getType1();
+        Integer type2 = playerExt.getType2();
+        Integer type3 = playerExt.getType3();
+        int maxType = Math.max(type1, Math.max(type2, type3));
+
+        switch (maxType) {
+            case 1:  // 1个月
+                overdueTime = maxCreateTime + 30 * 24 * 60 * 60;
+                break;
+            case 2:  // 3个月
+                overdueTime = maxCreateTime + 3 * 30 * 24 * 60 * 60;
+                break;
+            case 3:  // 6个月
+                overdueTime = maxCreateTime + 6 * 30 * 24 * 60 * 60;
+                break;
+            case 4:  // 9个月
+                overdueTime = maxCreateTime + 9 * 30 * 24 * 60 * 60;
+                break;
+            case 5:  // 12个月
+                overdueTime = maxCreateTime + 12 * 30 * 24 * 60 * 60;
+                break;
+            default:
+                break;
+        }
+
+        playerExt.setHuibenVipOverdueTime((int) overdueTime);
+        playerExtDao.updateByPrimaryKeySelective(playerExt);
+        return null;
     }
 
     @Override
@@ -785,70 +869,6 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         Date now = new Date();
         Date createTime = DateUtil.timeStampToDate(playerunit.getCreatetime(), LENGTH_10);
         return !now.after(bookDeadLineTime) && now.after(createTime);
-    }
-
-    /**
-     * 绘本锁定
-     * 几种情况：
-     * 一：不是绘本或者不是vip，那么不会在表中出现
-     * 二：在表中，已锁定，overduetime为0,此时应该解锁，根据type和createTime计算overduetime
-     * 三：在表中，已锁定，overduetime不为0，且overduetime大于当前时间，此时加锁，将overduetime置为0
-     *
-     * @param id
-     * @return java.lang.Void
-     */
-    private Void PictureBookLock(Long id) {
-        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
-        if (playerExt == null) {
-            return null;
-        }
-        playerExt.setHuibenVipOverdueTime(0);
-        playerExtDao.updateByPrimaryKeySelective(playerExt);
-        return null;
-    }
-
-    /*
-     * 绘本解锁
-     */
-    private Void PictureBookUnLock(Long id) {
-        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
-        if (playerExt == null) {
-            return null;
-        }
-        long overdueTime = 0L;
-        Long createTime1 = Long.valueOf(playerExt.getCreateTime1());
-        Long createTime2 = Long.valueOf(playerExt.getCreateTime2());
-        Long createTime3 = Long.valueOf(playerExt.getCreateTime3());
-        long maxCreateTime = Math.max(createTime1, Math.max(createTime2, createTime3));
-
-        Integer type1 = playerExt.getType1();
-        Integer type2 = playerExt.getType2();
-        Integer type3 = playerExt.getType3();
-        int maxType = Math.max(type1, Math.max(type2, type3));
-
-        switch (maxType) {
-            case 1:  // 1个月
-                overdueTime = maxCreateTime + 30 * 24 * 60 * 60;
-                break;
-            case 2:  // 3个月
-                overdueTime = maxCreateTime + 3 * 30 * 24 * 60 * 60;
-                break;
-            case 3:  // 6个月
-                overdueTime = maxCreateTime + 6 * 30 * 24 * 60 * 60;
-                break;
-            case 4:  // 9个月
-                overdueTime = maxCreateTime + 9 * 30 * 24 * 60 * 60;
-                break;
-            case 5:  // 12个月
-                overdueTime = maxCreateTime + 12 * 30 * 24 * 60 * 60;
-                break;
-            default:
-                break;
-        }
-
-        playerExt.setHuibenVipOverdueTime((int) overdueTime);
-        playerExtDao.updateByPrimaryKeySelective(playerExt);
-        return null;
     }
 
 
