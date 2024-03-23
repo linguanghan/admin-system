@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.spring.springboot.dao.pelbsData.PlayerExtDao">
-    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.pelbsData.playerext.PlayerExt">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.pelbsData.playerext.PlayerExtPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="accountID" jdbcType="BIGINT" property="accountID"/>
+        <id column="huibenVipOverdueTime" jdbcType="INTEGER" property="huibenVipOverdueTime"/>
+        <id column="createTime1" jdbcType="INTEGER" property="createTime1"/>
+        <id column="createTime2" jdbcType="INTEGER" property="createTime2"/>
+        <id column="createTime3" jdbcType="INTEGER" property="createTime3"/>
+        <id column="type1" jdbcType="INTEGER" property="type1"/>
+        <id column="type2" jdbcType="INTEGER" property="type2"/>
+        <id column="type3" jdbcType="INTEGER" property="type3"/>
+    </resultMap>
+
+    <resultMap id="ExtResultMap" type="org.spring.springboot.domain.pelbsData.playerext.PlayerExt">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <id column="accountID" jdbcType="BIGINT" property="accountID"/>
         <id column="huibenVipOverdueTime" jdbcType="INTEGER" property="huibenVipOverdueTime"/>
@@ -16,7 +28,7 @@
     <sql id="Base_Column_List">
     `id`, `accountID`, `huibenVipOverdueTime`, `createTime1`, `createTime2`, `createTime3`, `type1`, `type2`, `type3`
   </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ExtResultMap">
         select
         <include refid="Base_Column_List"/>
         from `player_ext`
