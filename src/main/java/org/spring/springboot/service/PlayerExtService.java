@@ -1,5 +1,6 @@
 package org.spring.springboot.service;
 
+import org.spring.springboot.domain.pelbsData.playerext.PictureBookDailyRecharge;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtQuery;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtVO;
 
@@ -21,5 +22,7 @@ public interface PlayerExtService {
      * @return long
      */
     Long countDailyPlayerRecharge(Long startTime, Long endTime);
+
+    List<PictureBookDailyRecharge> GET_PICTURE_BOOK_DAILY_RECHARGES();
 
 }

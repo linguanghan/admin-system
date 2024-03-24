@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +29,29 @@ public class PlayerExtServiceImpl implements PlayerExtService {
     private PlayerExtDao playerExtDao;
 
     private static final String LENGTH_10 = "LENGTH_10";
+
+    @Override
+    public List<PictureBookDailyRecharge> GET_PICTURE_BOOK_DAILY_RECHARGES() {
+//        return playerExtDao.PICTURE_BOOK_DAILY_RECHARGES();
+        List<PictureBookDailyRecharge> rechargeList = playerExtDao.PICTURE_BOOK_DAILY_RECHARGES();
+        // 去除时区信息，只保留年月日信息
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for (PictureBookDailyRecharge recharge : rechargeList) {
+            Date timedate = recharge.getTimedate();
+//            String dateString = dateFormat.format(timedate);
+            try {
+//               timedate = dateFormat.parse(dateString);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String datef = sdf.format(timedate);
+                recharge.setfTime(datef);
+            } catch (Exception e) {
+                // 处理日期解析异常
+                e.printStackTrace();
+                System.out.println("日期解析异常");
+            }
+        }
+        return rechargeList;
+    }
 
     @Override
     public List<PlayerExtVO> queryPlayerExtVOs(PlayerExtQuery playerExtQuery) {

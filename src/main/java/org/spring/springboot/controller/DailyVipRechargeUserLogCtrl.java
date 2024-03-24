@@ -5,19 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
 import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogPO;
 import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery;
-import org.spring.springboot.service.DailyActiveUserLogService;
 import org.spring.springboot.service.DailyVipRechargeUserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,7 +53,6 @@ public class DailyVipRechargeUserLogCtrl {
             logger.error("DailyActiveUserLogCtrl#fetchDailyActiveUserLogByPage error query:{}", JSONUtil.toJsonStr(query), e);
             return Result.buildFailure(SysCodeEnum.BusinessError);
         }
-
     }
 
 }
