@@ -35,7 +35,7 @@
     <sql id="Base_Column_List">
     `id`, `accountID`, `huibenVipOverdueTime`, `createTime1`, `createTime2`, `createTime3`, `type1`, `type2`, `type3`
     </sql>
-    <select id="PictureBookDailyRecharge" resultMap="PictureBookDailyRecharge">
+    <select id="PICTURE_BOOK_DAILY_RECHARGES" resultMap="PictureBookDailyRecharge">
         SELECT DATE(FROM_UNIXTIME(GREATEST(createTime1, createTime2, createTime3))) AS timedate,
         COUNT(DISTINCT accountID) AS num,
         SUM(CASE WHEN type1 = 1 THEN 3
