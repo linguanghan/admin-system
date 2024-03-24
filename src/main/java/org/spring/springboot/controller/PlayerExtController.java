@@ -10,10 +10,12 @@ import org.spring.springboot.domain.pelbsData.playerext.PlayerExtQuery;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtVO;
 import org.spring.springboot.service.PlayerExtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,10 +34,20 @@ public class PlayerExtController {
     @Autowired
     private PlayerExtService playerExtService;
 
-    @RequestMapping("/countDailyPlayerRecharge")
-    public ResponseEntity<List<PictureBookDailyRecharge>> GET_PICTURE_BOOK_DAILY_RECHARGES() {
-        List<PictureBookDailyRecharge> pictureBookDailyRecharges = playerExtService.GET_PICTURE_BOOK_DAILY_RECHARGES();
-        return ResponseEntity.ok(pictureBookDailyRecharges);
+    @RequestMapping(value = "/getPictureBookDailyRecharges", method = RequestMethod.POST)
+    public Result<?> GET_PICTURE_BOOK_DAILY_RECHARGES() {
+//        List<PictureBookDailyRecharge> pictureBookDailyRecharges = playerExtService.GET_PICTURE_BOOK_DAILY_RECHARGES();
+//        return ResponseEntity.ok(pictureBookDailyRecharges);
+        try {
+            List<PictureBookDailyRecharge> pictureBookDailyRecharges = playerExtService.GET_PICTURE_BOOK_DAILY_RECHARGES();
+            if (CollectionUtils.isEmpty(pictureBookDailyRecharges)) {
+                return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+            }
+            return Result.buildSuccess().add("data", pictureBookDailyRecharges);
+        } catch (Exception e) {
+            logger.error("PlayerExtController#GET_PICTURE_BOOK_DAILY_RECHARGES error", e);
+            return Result.buildFailure(SysCodeEnum.SysError);
+        }
     }
 
     @RequestMapping("/queryPlayerExt")
