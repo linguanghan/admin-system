@@ -7,6 +7,16 @@ public class PictureBookDailyRecharge {
     private int num;
     private int fund;
 
+    private String fTime;
+
+    public String getfTime() {
+        return fTime;
+    }
+
+    public void setfTime(String fTime) {
+        this.fTime = fTime;
+    }
+
     public Date getTimedate() {
         return timedate;
     }
