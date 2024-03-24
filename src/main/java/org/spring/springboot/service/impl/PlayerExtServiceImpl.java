@@ -29,6 +29,11 @@ public class PlayerExtServiceImpl implements PlayerExtService {
     private static final String LENGTH_10 = "LENGTH_10";
 
     @Override
+    public List<PictureBookDailyRecharge> GET_PICTURE_BOOK_DAILY_RECHARGES() {
+        return playerExtDao.PICTURE_BOOK_DAILY_RECHARGES();
+    }
+
+    @Override
     public List<PlayerExtVO> queryPlayerExtVOs(PlayerExtQuery playerExtQuery) {
         PlayerExtDaoQuery playerExtDaoQuery = new PlayerExtDaoQuery();
         BeanUtils.copyProperties(playerExtQuery, playerExtDaoQuery);

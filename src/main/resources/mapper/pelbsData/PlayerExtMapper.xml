@@ -25,9 +25,40 @@
         <id column="type3" jdbcType="INTEGER" property="type3"/>
     </resultMap>
 
+    <resultMap id="PictureBookDailyRecharge"
+               type="org.spring.springboot.domain.pelbsData.playerext.PictureBookDailyRecharge">
+        <id column="timedate" property="timedate" jdbcType="DATE" javaType="java.util.Date"/>
+        <id column="num" property="num" jdbcType="INTEGER" javaType="int"/>
+        <id column="fund" property="fund" jdbcType="INTEGER" javaType="int"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
     `id`, `accountID`, `huibenVipOverdueTime`, `createTime1`, `createTime2`, `createTime3`, `type1`, `type2`, `type3`
-  </sql>
+    </sql>
+    <select id="PictureBookDailyRecharge" resultMap="PictureBookDailyRecharge">
+        SELECT DATE(FROM_UNIXTIME(GREATEST(createTime1, createTime2, createTime3))) AS timedate,
+        COUNT(DISTINCT accountID) AS num,
+        SUM(CASE WHEN type1 = 1 THEN 3
+        WHEN type2 = 1 THEN 3
+        WHEN type3 = 1 THEN 3
+        WHEN type1 = 2 THEN 6
+        WHEN type2 = 2 THEN 6
+        WHEN type3 = 2 THEN 6
+        WHEN type1 = 3 THEN 9
+        WHEN type2 = 3 THEN 9
+        WHEN type3 = 3 THEN 9
+        WHEN type1 = 4 THEN 15
+        WHEN type2 = 4 THEN 15
+        WHEN type3 = 4 THEN 15
+        WHEN type1 = 5 THEN 30
+        WHEN type2 = 5 THEN 30
+        WHEN type3 = 5 THEN 30
+        ELSE 0 END) AS fund
+        FROM player_ext
+        WHERE NOT (createTime1 = 0 AND createTime2 = 0 AND createTime3 = 0)
+        GROUP BY timedate
+        ORDER BY timedate DESC;
+    </select>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ExtResultMap">
         select
         <include refid="Base_Column_List"/>
