@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.pelbsData.StudyClassDao">
+
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO">
+        <id column="id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="classInviteID" property="classInviteID" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="classNumber" property="classNumber" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="school_name" property="schoolName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="grade" property="grade" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="state" property="state" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+        <result column="createTime" property="createTime" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="ownerPid" property="ownerPid" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="mem_data" property="memData" jdbcType="LONGVARCHAR" javaType="java.lang.String"/>
+    </resultMap>
+
+    <resultMap id="StudyClassResultMap" type="org.spring.springboot.domain.pelbsData.studyclass.StudyClassPO">
+        <result column="userName" property="userName" javaType="java.lang.String"/>
+        <result column="className" property="className" javaType="java.lang.String"/>
+        <result column="classNumber" property="classNumber" javaType="int"/>
+        <result column="studentInfo" property="studentInfo" javaType="java.lang.String"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        `id`, `classInviteID`, `classNumber`, `teacher_name`, `school_name`, `grade`, `state`, `createTime`, `ownerPid`,
+        `mem_data`
+    </sql>
+
+    <select id="selectStudyClassByID" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM study_class
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectStudyClass" resultMap="StudyClassResultMap">
+        SELECT
+        player.name AS userName,
+        studyClass.teacher_name AS className,
+        studyClass.classNumber AS classNumber,
+        studyClass.mem_data AS studentInfo
+        FROM
+        player
+        JOIN
+        studyClass ON player.id = studyClass.ownerPid
+        WHERE
+        player.Identity = 4;
+    </select>
+
+</mapper>
