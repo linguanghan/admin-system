@@ -240,6 +240,41 @@ public class PlayerunitCtrl {
 
     }
 
+    @RequestMapping("/picLock")
+    public Result<?> PicLock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        if (playerRechargeUnLockQuery == null
+                || playerRechargeUnLockQuery.getId() == null
+                || playerRechargeUnLockQuery.getUnlock() == null
+        ) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            playerunitService.PicLock(playerRechargeUnLockQuery);
+            return Result.buildSuccess();
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#updateUnlockStatus error playerRechargeUnLockQuery is {}", JSONUtil.toJsonStr(playerRechargeUnLockQuery), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+    }
+
+    @RequestMapping("/picUnlock")
+    public Result<?> PicUnlock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        if (playerRechargeUnLockQuery == null
+                || playerRechargeUnLockQuery.getId() == null
+                || playerRechargeUnLockQuery.getUnlock() == null
+        ) {
+            return Result.buildFailure(SysCodeEnum.ParamError);
+        }
+        try {
+            playerunitService.PicUnlock(playerRechargeUnLockQuery);
+            return Result.buildSuccess();
+        } catch (Exception e) {
+            logger.info("PlayerCtrl#updateUnlockStatus error playerRechargeUnLockQuery is {}", JSONUtil.toJsonStr(playerRechargeUnLockQuery), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
+    }
+
+
     @RequestMapping("/addBookUnit")
     public Result<?> addBookUnit(PlayerUnitQuery query) {
         if(query == null

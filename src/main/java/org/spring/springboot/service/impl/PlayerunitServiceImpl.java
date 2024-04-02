@@ -594,6 +594,22 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         return playerunitDao.updateByPrimaryKeySelective(playerunit);
     }
 
+    @Override
+    public void PicLock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setId(playerRechargeUnLockQuery.getId());
+        Integer unlock = playerRechargeUnLockQuery.getUnlock();
+        PictureBookLock(playerRechargeUnLockQuery.getPid());
+    }
+
+    @Override
+    public void PicUnlock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setId(playerRechargeUnLockQuery.getId());
+        Integer unlock = playerRechargeUnLockQuery.getUnlock();
+        PictureBookUnLock(playerRechargeUnLockQuery.getPid());
+    }
+
     /*
      * 绘本表的过期时间和解锁状态查询
      * @param id
