@@ -40,6 +40,10 @@ public interface PlayerunitService {
 
     String changeRecharge(PlayerRechargeOperateVO playerRechargeOperateVO);
 
+    void PicLock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery);
+
+    void PicUnlock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery);
+
     /**
      *
      * 更新书本锁定状态
