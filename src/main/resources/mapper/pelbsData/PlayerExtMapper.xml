@@ -11,12 +11,90 @@
         <id column="type1" jdbcType="INTEGER" property="type1"/>
         <id column="type2" jdbcType="INTEGER" property="type2"/>
         <id column="type3" jdbcType="INTEGER" property="type3"/>
+    </resultMap>
 
+    <resultMap id="ExtResultMap" type="org.spring.springboot.domain.pelbsData.playerext.PlayerExt">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="accountID" jdbcType="BIGINT" property="accountID"/>
+        <id column="huibenVipOverdueTime" jdbcType="INTEGER" property="huibenVipOverdueTime"/>
+        <id column="createTime1" jdbcType="INTEGER" property="createTime1"/>
+        <id column="createTime2" jdbcType="INTEGER" property="createTime2"/>
+        <id column="createTime3" jdbcType="INTEGER" property="createTime3"/>
+        <id column="type1" jdbcType="INTEGER" property="type1"/>
+        <id column="type2" jdbcType="INTEGER" property="type2"/>
+        <id column="type3" jdbcType="INTEGER" property="type3"/>
+    </resultMap>
+
+    <resultMap id="PictureBookDailyRecharge"
+               type="org.spring.springboot.domain.pelbsData.playerext.PictureBookDailyRecharge">
+        <id column="timedate" property="timedate" jdbcType="DATE" javaType="java.util.Date"/>
+        <id column="num" property="num" jdbcType="INTEGER" javaType="int"/>
+        <id column="fund" property="fund" jdbcType="INTEGER" javaType="int"/>
     </resultMap>
 
     <sql id="Base_Column_List">
     `id`, `accountID`, `huibenVipOverdueTime`, `createTime1`, `createTime2`, `createTime3`, `type1`, `type2`, `type3`
-  </sql>
+    </sql>
+    <select id="PICTURE_BOOK_DAILY_RECHARGES" resultMap="PictureBookDailyRecharge">
+        SELECT DATE(FROM_UNIXTIME(GREATEST(createTime1, createTime2, createTime3))) AS timedate,
+        COUNT(DISTINCT accountID) AS num,
+        SUM(CASE WHEN type1 = 1 THEN 3
+        WHEN type2 = 1 THEN 3
+        WHEN type3 = 1 THEN 3
+        WHEN type1 = 2 THEN 6
+        WHEN type2 = 2 THEN 6
+        WHEN type3 = 2 THEN 6
+        WHEN type1 = 3 THEN 9
+        WHEN type2 = 3 THEN 9
+        WHEN type3 = 3 THEN 9
+        WHEN type1 = 4 THEN 15
+        WHEN type2 = 4 THEN 15
+        WHEN type3 = 4 THEN 15
+        WHEN type1 = 5 THEN 30
+        WHEN type2 = 5 THEN 30
+        WHEN type3 = 5 THEN 30
+        ELSE 0 END) AS fund
+        FROM player_ext
+        WHERE NOT (createTime1 = 0 AND createTime2 = 0 AND createTime3 = 0)
+        GROUP BY timedate
+        ORDER BY timedate DESC;
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ExtResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `player_ext`
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <update id="updateByPrimaryKeySelective" parameterType="org.spring.springboot.domain.pelbsData.playerext.PlayerExt">
+        update `player_ext`
+        <set>
+            <if test="accountID != null">
+                accountID = #{accountID,jdbcType=BIGINT},
+            </if>
+            <if test="huibenVipOverdueTime != null">
+                huibenVipOverdueTime = #{huibenVipOverdueTime,jdbcType=INTEGER},
+            </if>
+            <if test="createTime1 != null">
+                createTime1 = #{createTime1,jdbcType=INTEGER},
+            </if>
+            <if test="createTime2 != null">
+                createTime2 = #{createTime2,jdbcType=INTEGER},
+            </if>
+            <if test="createTime3 != null">
+                createTime3 = #{createTime3,jdbcType=INTEGER},
+            </if>
+            <if test="type1 != null">
+                type1 = #{type1,jdbcType=INTEGER},
+            </if>
+            <if test="type2 != null">
+                type2 = #{type2,jdbcType=INTEGER},
+            </if>
+            <if test="type3 != null">
+                type3 = #{type3,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
     <select id="selectByExample" parameterType="org.spring.springboot.domain.pelbsData.playerext.PlayerExtDaoQuery" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

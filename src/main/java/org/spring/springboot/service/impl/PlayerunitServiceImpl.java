@@ -8,15 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.dao.pelbsData.PlayerDao;
-import org.spring.springboot.dao.pelbsData.PlayerLearnTimeDao;
-import org.spring.springboot.dao.pelbsData.PlayerRechargeDao;
-import org.spring.springboot.dao.pelbsData.PlayerunitDao;
+import org.spring.springboot.dao.pelbsData.*;
 import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.dao.yldres.ChangeRechargeRecordDao;
 import org.spring.springboot.domain.pelbsData.PackageQuery;
 import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.palyerlearntime.PlayerLearnTimePO;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerunit.*;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.domain.yldres.Bookresource;
@@ -59,6 +57,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
     @Resource
     private BookresourceDao bookresourceDao;
+
+    @Resource
+    private PlayerExtDao playerExtDao;
 
     @Resource
     private PlayerDao playerDao;
@@ -567,6 +568,11 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         Playerunit playerunit = new Playerunit();
         playerunit.setId(playerRechargeUnLockQuery.getId());
         Integer unlock = playerRechargeUnLockQuery.getUnlock();
+        if (unlock == 0) {
+            PictureBookLock(playerRechargeUnLockQuery.getPid());
+        } else if (unlock == 1) {
+            PictureBookUnLock(playerRechargeUnLockQuery.getPid());
+        }
         playerunit.setUnit3(unlock);
         playerunit.setUnit4(unlock);
         playerunit.setUnit5(unlock);
@@ -586,6 +592,106 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         playerunit.setUnit19(unlock);
         playerunit.setUnit20(unlock);
         return playerunitDao.updateByPrimaryKeySelective(playerunit);
+    }
+
+    @Override
+    public void PicLock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setId(playerRechargeUnLockQuery.getId());
+        Integer unlock = playerRechargeUnLockQuery.getUnlock();
+        PictureBookLock(playerRechargeUnLockQuery.getPid());
+    }
+
+    @Override
+    public void PicUnlock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
+        Playerunit playerunit = new Playerunit();
+        playerunit.setId(playerRechargeUnLockQuery.getId());
+        Integer unlock = playerRechargeUnLockQuery.getUnlock();
+        PictureBookUnLock(playerRechargeUnLockQuery.getPid());
+    }
+
+    /*
+     * 绘本表的过期时间和解锁状态查询
+     * @param id
+     */
+    private int CheckPictureBookLock(Long id) {
+        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
+        if (playerExt == null) {
+            return -1;  // 不存在
+        }
+        long overdueTime = playerExt.getHuibenVipOverdueTime();
+        if (overdueTime == 0 || overdueTime < System.currentTimeMillis() / 1000) {
+            return 1;  // 已锁定
+        }
+        long currentTime = System.currentTimeMillis() / 1000;
+        if (overdueTime > currentTime) {
+            return 0;  // 未锁定
+        }
+        return -1;
+    }
+
+    /**
+     * 绘本锁定
+     * 几种情况：
+     * 一：不是绘本或者不是vip，那么不会在表中出现
+     * 二：在表中，已锁定，overduetime为0,此时应该解锁，根据type和createTime计算overduetime
+     * 三：在表中，已锁定，overduetime不为0，且overduetime大于当前时间，此时加锁，将overduetime置为0
+     *
+     * @param id
+     * @return java.lang.Void
+     */
+    private Void PictureBookLock(Long id) {
+        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
+        if (playerExt == null) {
+            return null;
+        }
+        playerExt.setHuibenVipOverdueTime(0);
+        playerExtDao.updateByPrimaryKeySelective(playerExt);
+        return null;
+    }
+
+    /*
+     * 绘本解锁
+     */
+    private Void PictureBookUnLock(Long id) {
+        PlayerExt playerExt = playerExtDao.selectByPrimaryKey(id);
+        if (playerExt == null) {
+            return null;
+        }
+        long overdueTime = 0L;
+        Long createTime1 = Long.valueOf(playerExt.getCreateTime1());
+        Long createTime2 = Long.valueOf(playerExt.getCreateTime2());
+        Long createTime3 = Long.valueOf(playerExt.getCreateTime3());
+        long maxCreateTime = Math.max(createTime1, Math.max(createTime2, createTime3));
+
+        Integer type1 = playerExt.getType1();
+        Integer type2 = playerExt.getType2();
+        Integer type3 = playerExt.getType3();
+        int maxType = Math.max(type1, Math.max(type2, type3));
+
+        switch (maxType) {
+            case 1:  // 1个月
+                overdueTime = maxCreateTime + 30 * 24 * 60 * 60;
+                break;
+            case 2:  // 3个月
+                overdueTime = maxCreateTime + 3 * 30 * 24 * 60 * 60;
+                break;
+            case 3:  // 6个月
+                overdueTime = maxCreateTime + 6 * 30 * 24 * 60 * 60;
+                break;
+            case 4:  // 9个月
+                overdueTime = maxCreateTime + 9 * 30 * 24 * 60 * 60;
+                break;
+            case 5:  // 12个月
+                overdueTime = maxCreateTime + 12 * 30 * 24 * 60 * 60;
+                break;
+            default:
+                break;
+        }
+
+        playerExt.setHuibenVipOverdueTime((int) overdueTime);
+        playerExtDao.updateByPrimaryKeySelective(playerExt);
+        return null;
     }
 
     @Override
@@ -772,7 +878,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         return rechargeNum;
     }
 
-
+    // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考
     private Boolean checkUnlockShow(Long playerUnitId) {
         Playerunit playerunit = playerunitDao.selectByPrimaryKey(playerUnitId);
         Date bookDeadLineTime = getBookDeadLineTime(playerunit.getCreatetime(), playerunit.getPeriod());

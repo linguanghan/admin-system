@@ -1,6 +1,8 @@
 package org.spring.springboot.dao.pelbsData;
 
 import org.apache.ibatis.annotations.Param;
+import org.spring.springboot.domain.pelbsData.playerext.PictureBookDailyRecharge;
+import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtDaoQuery;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtPO;
 import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogPO;
@@ -20,4 +22,9 @@ public interface PlayerExtDao {
     List<DailyVipRechargeUserLogPO> fetchDailyVipRechargeUserLogByPage(DailyVipRechargeUserLogQuery query);
 
     Integer fetchDailyVipRechargeUserLogByPageCount(DailyVipRechargeUserLogQuery query);
+    PlayerExt selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(PlayerExt record);
+
+    List<PictureBookDailyRecharge> PICTURE_BOOK_DAILY_RECHARGES();
 }
