@@ -95,4 +95,17 @@ public class BookresourceCtrl {
         return Result.buildFailure();
     }
 
+
+    /**
+     *
+     * 设置书本类型
+     * @author 13540
+     * @date 2024-01-30 22:08 
+     * @return org.spring.springboot.common.result.Result<?>
+     */
+    @RequestMapping(value = "/setBookType", method = RequestMethod.GET)
+    public Result<?> setBookType() {
+        bookresourceService.setBookType();
+        return Result.buildSuccess();
+    }
 }
