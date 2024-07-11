@@ -18,7 +18,9 @@
         id,`name`,`idx`, `folder`, `path`, `version`, `create_time`, `update_time`
     </sql>
 
-    <select id="searchFuncBundleVersionLogByKeyWord" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultMap="BaseResultMap">
+    <select id="searchFuncBundleVersionLogByKeyWord"
+            parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `func_bundle_vertion_log` b
@@ -28,27 +30,29 @@
                 or b.name like concat('%',#{keyWord},'%')
             </trim>
         </if>
+        ORDER BY b.idx ASC
         limit #{startRow}, #{pageSize}
     </select>
 
-    <select id="searchFuncBundleVersionLogByKeyWordCount" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultType="java.lang.Integer">
-        select
-        count(1)
+
+    <select id="searchFuncBundleVersionLogByKeyWordCount"
+            parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery"
+            resultType="java.lang.Integer">
+        select count(1)
         from `func_bundle_vertion_log` b
-        where
-        b.idx like concat('%',#{keyWord},'%')
-        or b.name like concat('%',#{keyWord},'%')
+        where b.idx like concat('%', #{keyWord}, '%')
+           or b.name like concat('%', #{keyWord}, '%')
     </select>
 
-    <insert id="saveFuncBundleVersionLog" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO" useGeneratedKeys="true"
+    <insert id="saveFuncBundleVersionLog"
+            parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO" useGeneratedKeys="true"
             keyProperty="id">
-		insert into
-        `func_bundle_vertion_log`(`name`,`idx`,`folder`,`path`,`version`,`create_time`,`update_time`)
-		values
-		(#{name},#{idx},#{folder},#{path},#{version},#{createTime},#{updateTime})
-	</insert>
+        insert into `func_bundle_vertion_log`(`name`, `idx`, `folder`, `path`, `version`, `create_time`, `update_time`)
+        values (#{name}, #{idx}, #{folder}, #{path}, #{version}, #{createTime}, #{updateTime})
+    </insert>
 
-    <update id="updateFuncBundleVersionLog" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO">
+    <update id="updateFuncBundleVersionLog"
+            parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogPO">
         update
         `func_bundle_vertion_log`
         <trim prefix="set" suffixOverrides=",">
@@ -79,12 +83,14 @@
     </update>
 
     <delete id="deleteFuncBundleVersionLog" parameterType="long">
-		delete from
-            `func_bundle_vertion_log`
-		where id = #{id}
-	</delete>
+        delete
+        from `func_bundle_vertion_log`
+        where id = #{id}
+    </delete>
 
-    <select id="searchFuncBundleVersionLogByIdx" parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery" resultMap="BaseResultMap">
+    <select id="searchFuncBundleVersionLogByIdx"
+            parameterType="org.spring.springboot.domain.yldres.func.FuncBundleVersionLogQuery"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `func_bundle_vertion_log` b

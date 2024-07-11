@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Spring Boot 应用启动类
  * <p>
- * Created by github on 16/4/26.
+ * Created by GitHub on 16/4/26.
  */
 // Spring Boot 应用的标识
 @EnableScheduling
