@@ -5,6 +5,8 @@ import org.spring.springboot.domain.pelbsData.playerext.PictureBookDailyRecharge
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtDaoQuery;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExtPO;
+import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogPO;
+import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery;
 
 import java.util.List;
 
@@ -17,6 +19,9 @@ public interface PlayerExtDao {
     long countDailyPlayerRecharge(@Param("startTime") Long startTime,
                                   @Param("endTime") Long endTime);
 
+    List<DailyVipRechargeUserLogPO> fetchDailyVipRechargeUserLogByPage(DailyVipRechargeUserLogQuery query);
+
+    Integer fetchDailyVipRechargeUserLogByPageCount(DailyVipRechargeUserLogQuery query);
     PlayerExt selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(PlayerExt record);

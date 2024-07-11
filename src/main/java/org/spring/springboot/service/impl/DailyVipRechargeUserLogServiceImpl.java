@@ -1,21 +1,15 @@
 package org.spring.springboot.service.impl;
 
-import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
+import org.spring.springboot.dao.pelbsData.PlayerExtDao;
 import org.spring.springboot.dao.yldres.DailyVipRechargeUserLogDao;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogQuery;
-import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
 import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogPO;
 import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogQuery;
 import org.spring.springboot.domain.yldres.vip.DailyVipRechargeUserLogVO;
-import org.spring.springboot.service.DailyActiveUserLogService;
 import org.spring.springboot.service.DailyVipRechargeUserLogService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,14 +24,18 @@ public class DailyVipRechargeUserLogServiceImpl implements DailyVipRechargeUserL
     @Resource
     private DailyVipRechargeUserLogDao dailyVipRechargeUserLogDao;
 
+    @Resource
+    private PlayerExtDao PlayerExtDao;
+
     @Override
     public List<DailyVipRechargeUserLogPO> fetchDailyVipRechargeUserLogByPage(DailyVipRechargeUserLogQuery query){
-        return dailyVipRechargeUserLogDao.fetchDailyVipRechargeUserLogByPage(query);
+//        return dailyVipRechargeUserLogDao.fetchDailyVipRechargeUserLogByPage(query);
+        return PlayerExtDao.fetchDailyVipRechargeUserLogByPage(query);
     }
 
     @Override
     public Integer fetchDailyVipRechargeUserLogByPageCount(DailyVipRechargeUserLogQuery query) {
-        return dailyVipRechargeUserLogDao.fetchDailyVipRechargeUserLogByPageCount(query);
+        return PlayerExtDao.fetchDailyVipRechargeUserLogByPageCount(query);
     }
 
     @Override
