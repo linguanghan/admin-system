@@ -887,6 +887,14 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         return !now.after(bookDeadLineTime) && now.after(createTime);
     }
 
+    // 根据书本Id修改书本类型和packageidx
+
+
+    public void updateBookPackageAndType(Playerunit playerunit)
+    {
+        playerunitDao.updateBookPackageAndType(playerunit.getPackageidx(), playerunit.getBookidx(), playerunit.getPid(), playerunit.getBooktype());
+    }
+
 
     /**
      * date类型转为Long时间戳

@@ -733,4 +733,11 @@
     GROUP BY timedate
   </select>
 
+
+  <update id="updateBookPackageAndType" parameterType="org.spring.springboot.domain.pelbsData.playerunit.Playerunit" >
+    UPDATE playerUnit
+    SET packageIdx = #{packageIdx}, bookType = #{bookType}
+    WHERE bookIdx = #{bookIdx} AND pid = #{pid}
+  </update>
+
 </mapper>

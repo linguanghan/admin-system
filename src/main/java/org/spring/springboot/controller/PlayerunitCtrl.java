@@ -340,4 +340,11 @@ public class PlayerunitCtrl {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
     }
+
+    @RequestMapping(value = "/updateBookPackageAndType", method = RequestMethod.POST)
+    public AjaxResult updateBookPackageAndType(@RequestBody Playerunit playerunit){
+        System.out.println(playerunit);
+        playerunitService.updateBookPackageAndType(playerunit);
+        return AjaxResult.emptySuccessResult();
+    }
 }

@@ -44,6 +44,8 @@ public interface PlayerunitService {
 
     void PicUnlock(PlayerRechargeUnLockQuery playerRechargeUnLockQuery);
 
+    void updateBookPackageAndType(Playerunit playerunit);
+
     /**
      *
      * 更新书本锁定状态

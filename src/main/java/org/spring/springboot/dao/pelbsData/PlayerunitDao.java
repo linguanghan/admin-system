@@ -65,6 +65,7 @@ public interface PlayerunitDao {
                                      @Param("unlock") Integer unlock);
 
     List<PackageQuery> queryPackageIdxRecharge(@Param("packageIdx") Long packageIdx, @Param("startTime") Long startTime, @Param("endTime") Long endTime);
+    void updateBookPackageAndType(@Param("packageIdx") Integer packageIdx, @Param("bookIdx") Integer bookIdx, @Param("pid") Long pid, @Param("bookType") Integer bookType);
 
 
 }
