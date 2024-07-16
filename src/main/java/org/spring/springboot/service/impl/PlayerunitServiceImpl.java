@@ -348,7 +348,10 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         List<Long> pids = new ArrayList<>();
         // 2、订单号不为空的时候再Recharge表根据订单查询pid
         if (!StringUtils.isEmpty(orderId)) {
+            // todo: 按照订单编号能查到东西，但是没有正确返回，POS的值是对的
+
             List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRechargeInfoByOrderId(orderId);
+            System.out.println(playerRechargePOS);
             if (!CollectionUtils.isEmpty(playerRechargePOS)) {
                 pidList = playerRechargePOS.stream().map(PlayerRechargePO::getPid).collect(Collectors.toList());
                 if (NumberUtil.isNumber(playerRechargePOS.get(0).getUpdateTime())) {
