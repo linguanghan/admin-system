@@ -140,15 +140,15 @@ public class PlayerunitCtrl {
     }
 
     /**
-     *
      * 根据用户id获取购买的书本option列表
-     * @author 13540
-     * @date 2023-09-03 11:03 
+     *
      * @return org.spring.springboot.common.result.Result<?>
+     * @author 13540
+     * @date 2023-09-03 11:03
      */
     @RequestMapping(value = "/getPlayerUnitOptionListByPid")
     public Result<?> getPlayerUnitOptionListByPid(Long pid) {
-        if(pid == null) {
+        if (pid == null) {
             return Result.buildFailure(SysCodeEnum.BusinessError);
         }
 
@@ -156,7 +156,7 @@ public class PlayerunitCtrl {
             List<Option> playerUnitOptions = playerunitService.getPlayerUnitOptionListByPid(pid);
             return Result.buildSuccess().add("data", playerUnitOptions);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("PlayerCtrl#getPlayerUnitOptionListByPid error pid is {}", pid, e);
         }
         return Result.buildFailure(SysCodeEnum.SysError);
@@ -164,18 +164,18 @@ public class PlayerunitCtrl {
 
 
     /**
-     *
      * 充值记录条件查询
+     *
      * @param query
+     * @return org.spring.springboot.common.result.Result<?>
      * @author 13540
      * @date 2023-09-03 15:33
-     * @return org.spring.springboot.common.result.Result<?>
      */
     @RequestMapping(value = "/queryRechargeByPage")
     public Result<?> queryRechargeByPage(PlayerRechargeQuery query) {
         try {
             return playerunitService.queryRechargeByPage(query);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("PlayerCtrl#queryRechargeByPage error query is {}", JSONUtil.toJsonStr(query), e);
         }
         return Result.buildFailure(SysCodeEnum.SysError);
@@ -183,28 +183,28 @@ public class PlayerunitCtrl {
     }
 
     /**
-     *
      * 订单转移
+     *
+     * @return org.spring.springboot.common.result.Result<?>
      * @author 13540
      * @date 2023-09-03 17:31
-     * @return org.spring.springboot.common.result.Result<?>
      */
     @RequestMapping(value = "/changeRecharge")
     public Result<?> changeRecharge(PlayerRechargeOperateVO playerRechargeOperateVO) {
-        if(playerRechargeOperateVO == null
+        if (playerRechargeOperateVO == null
                 || playerRechargeOperateVO.getOriginPid() == null
                 || playerRechargeOperateVO.getTargetPid() == null
                 || playerRechargeOperateVO.getBookIdx() == null
-        ){
+        ) {
             return Result.buildFailure(SysCodeEnum.ParamError);
         }
         try {
             String errorMess = playerunitService.changeRecharge(playerRechargeOperateVO);
-            if(StringUtils.isEmpty(errorMess)) {
+            if (StringUtils.isEmpty(errorMess)) {
                 return Result.buildSuccess();
             }
             return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, errorMess);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("PlayerCtrl#changeRecharge error playerRechargeOperateVO is {}", JSONUtil.toJsonStr(playerRechargeOperateVO), e);
         }
         return Result.buildFailure(SysCodeEnum.SysError);
@@ -213,27 +213,27 @@ public class PlayerunitCtrl {
 
 
     /**
-     *
      * 加减锁
-     * @author 13540
-     * @date 2023-09-10 13:12 
+     *
      * @return org.spring.springboot.common.result.Result<?>
+     * @author 13540
+     * @date 2023-09-10 13:12
      */
     @RequestMapping("/updateUnlockStatus")
     public Result<?> updateUnlockStatus(PlayerRechargeUnLockQuery playerRechargeUnLockQuery) {
-        if(playerRechargeUnLockQuery == null
+        if (playerRechargeUnLockQuery == null
                 || playerRechargeUnLockQuery.getId() == null
                 || playerRechargeUnLockQuery.getUnlock() == null
-        ){
+        ) {
             return Result.buildFailure(SysCodeEnum.ParamError);
         }
         try {
             Integer updateNum = playerunitService.updateUnlockStatus(playerRechargeUnLockQuery);
-            if(updateNum == null || updateNum <=0) {
+            if (updateNum == null || updateNum <= 0) {
                 return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR, "更新失败！");
             }
             return Result.buildSuccess();
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("PlayerCtrl#updateUnlockStatus error playerRechargeUnLockQuery is {}", JSONUtil.toJsonStr(playerRechargeUnLockQuery), e);
         }
         return Result.buildFailure(SysCodeEnum.SysError);
@@ -277,7 +277,7 @@ public class PlayerunitCtrl {
 
     @RequestMapping("/addBookUnit")
     public Result<?> addBookUnit(PlayerUnitQuery query) {
-        if(query == null
+        if (query == null
                 || query.getPid() == null
                 || query.getChannel() == null
                 || query.getPackageIdx() == null
@@ -288,10 +288,10 @@ public class PlayerunitCtrl {
         String errMsg = null;
         try {
             errMsg = playerunitService.addBookUnit(query);
-            if(StringUtils.isEmpty(errMsg)) {
+            if (StringUtils.isEmpty(errMsg)) {
                 return Result.buildSuccess();
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("PlayerCtrl#addBookUnit error query is {}", JSONUtil.toJsonStr(query), e);
         }
 
@@ -303,7 +303,7 @@ public class PlayerunitCtrl {
     public Result<?> queryBookResourceOptions(@RequestParam("pid") Long pid) {
         try {
             return Result.buildSuccess().add("data", playerunitService.queryBookResourceOptions(pid));
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("BookresourceCtrl#queryBookResourceOptions error e", e);
         }
         return Result.buildFailure();
@@ -311,7 +311,7 @@ public class PlayerunitCtrl {
 
     @RequestMapping("/updateBookUnitUpdateTimeOrLearnTime")
     public Result<?> updateBookUnitUpdateTimeOrLearnTime(PlayerUnitLearnQuery query) {
-        if(query == null
+        if (query == null
                 || query.getPid() == null
                 || query.getBookIdx() == null
         ) {
@@ -319,7 +319,7 @@ public class PlayerunitCtrl {
         }
         try {
             playerunitService.updateBookUnitUpdateTimeOrLearnTime(query);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.info("PlayerCtrl#updateBookUnitUpdateTimeOrLearnTime error query is {}", JSONUtil.toJsonStr(query), e);
         }
 
@@ -333,7 +333,6 @@ public class PlayerunitCtrl {
     }
 
 
-
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
         //转换日期 注意这里的转化要和传进来的字符串的格式一直 如2015-9-9 就应该为yyyy-MM-dd
@@ -342,7 +341,7 @@ public class PlayerunitCtrl {
     }
 
     @RequestMapping(value = "/updateBookPackageAndType", method = RequestMethod.POST)
-    public AjaxResult updateBookPackageAndType(@RequestBody Playerunit playerunit){
+    public AjaxResult updateBookPackageAndType(@RequestBody Playerunit playerunit) {
         System.out.println(playerunit);
         playerunitService.updateBookPackageAndType(playerunit);
         return AjaxResult.emptySuccessResult();
