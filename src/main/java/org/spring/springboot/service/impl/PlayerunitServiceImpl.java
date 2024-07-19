@@ -352,9 +352,6 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRechargeInfoByOrderId(orderId);
             if (!CollectionUtils.isEmpty(playerRechargePOS)) {
                 pidList = playerRechargePOS.stream().map(PlayerRechargePO::getPid).collect(Collectors.toList());
-                if (NumberUtil.isNumber(playerRechargePOS.get(0).getUpdateTime())) {
-                    query.setOrderTime(Long.parseLong(playerRechargePOS.get(0).getUpdateTime()) / 1000);
-                }
             }
         }
 
@@ -372,8 +369,8 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
         Map<String, Long> timeChangeMap = getTimeChangeMap(Arrays.asList(query.getStartTime(), query.getEndTime()), Arrays.asList("startTime", "endTime"));
-        List<Playerunit> playerunits = playerunitDao.queryRechargeByPage(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getStartRow(), query.getPageSize(), query.getOrderTime(), query.getUnlock());
-        Integer total = playerunitDao.queryRechargeByPageCount(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getOrderTime(), query.getUnlock());
+        List<Playerunit> playerunits = playerunitDao.queryRechargeByPage(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getStartRow(), query.getPageSize(), query.getUnlock());
+        Integer total = playerunitDao.queryRechargeByPageCount(timeChangeMap.get("startTime"), timeChangeMap.get("endTime"), pids, query.getUnlock());
         if (CollectionUtils.isEmpty(playerunits)) {
             return Result.buildSuccess().add("data", Collections.emptyList()).add("total", 0);
         }
