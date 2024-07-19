@@ -54,14 +54,12 @@ public interface PlayerunitDao {
                                          @Param("pidList") List<Long> pidList,
                                          @Param("startRow") Integer startRow,
                                          @Param("pageSize") Integer pageSize,
-                                         @Param("orderTime") Long orderTime,
                                          @Param("unlock") Integer unlock);
 
 
     Integer queryRechargeByPageCount(@Param("startTime") Long startTime,
                                      @Param("endTime") Long endTime,
                                      @Param("pidList") List<Long> pidList,
-                                     @Param("orderTime") Long orderTime,
                                      @Param("unlock") Integer unlock);
 
     List<PackageQuery> queryPackageIdxRecharge(@Param("packageIdx") Long packageIdx, @Param("startTime") Long startTime, @Param("endTime") Long endTime);
