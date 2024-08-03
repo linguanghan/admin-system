@@ -2,6 +2,8 @@ package org.spring.springboot.controller;
 
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.apache.ibatis.annotations.Param;
 import org.spring.springboot.common.anno.JwtIgnore;
 import org.spring.springboot.common.enums.BusiCodeEnum;
@@ -11,6 +13,7 @@ import org.spring.springboot.domain.user.UserInfo;
 import org.spring.springboot.domain.user.UserRegisterVO;
 import org.spring.springboot.domain.user.UserVO;
 import org.spring.springboot.service.UserService;
+import org.spring.springboot.util.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TODO
@@ -120,8 +125,26 @@ public class UserCtrl {
         return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR);
 
     }
-
-
-
+    @JwtIgnore
+    @RequestMapping(value = "/getAreaByIp")
+    public String getAreaByIp(@RequestParam("ip") String ip) {
+        String host = "https://api01.aliyun.venuscn.com";
+        String path = "/ip";
+        String method = "GET";
+        String appcode = "be807576f74b466399816449d5fc807d";
+        Map<String, String> headers = new HashMap<String, String>();
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+        headers.put("Authorization", "APPCODE " + appcode);
+        Map<String, String> querys = new HashMap<String, String>();
+        querys.put("ip", ip);
+        try {
+            HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
+            //获取response的body
+            return EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "请求失败";
+    }
 
 }
