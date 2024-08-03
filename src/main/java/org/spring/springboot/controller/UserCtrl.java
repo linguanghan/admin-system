@@ -125,8 +125,8 @@ public class UserCtrl {
         return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR);
 
     }
-    @RequestMapping(value = "/getAreaByApi")
-    public String getAreaByApi(@RequestParam("api") String api) {
+    @RequestMapping(value = "/getAreaByIp")
+    public String getAreaByIp(@RequestParam("ip") String ip) {
         String host = "https://api01.aliyun.venuscn.com";
         String path = "/ip";
         String method = "GET";
@@ -135,7 +135,7 @@ public class UserCtrl {
         //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
         headers.put("Authorization", "APPCODE " + appcode);
         Map<String, String> querys = new HashMap<String, String>();
-        querys.put("ip", api);
+        querys.put("ip", ip);
         try {
             HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
             //获取response的body
