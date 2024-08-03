@@ -125,6 +125,7 @@ public class UserCtrl {
         return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR);
 
     }
+    @JwtIgnore
     @RequestMapping(value = "/getAreaByIp")
     public String getAreaByIp(@RequestParam("ip") String ip) {
         String host = "https://api01.aliyun.venuscn.com";
