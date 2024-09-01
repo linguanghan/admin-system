@@ -30,6 +30,9 @@ public class UserServiceImpl implements UserService {
     public String login(UserVO userVO, HttpServletResponse response) throws Exception{
         //1、用户、密码验证
         UserPO userPO = userDao.fetchUseByUserName(userVO.getUserName());
+        if(userPO == null) {
+            return null;
+        }
         if (userPO.getPassword() == null) {
             return null;
         }
