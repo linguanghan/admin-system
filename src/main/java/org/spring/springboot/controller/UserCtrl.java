@@ -133,9 +133,18 @@ public class UserCtrl {
         return Result.buildFailure(BusiCodeEnum.BUSINESS_ERROR);
 
     }
+
+    /**
+     * 获取id归属地
+     *
+     * @param request
+     * @return java.lang.String
+     * @author 13540
+     * @date 2024-09-22 4:43
+     */
     @JwtIgnore
-    @RequestMapping(value = "/getAreaByIp")
-    public String getAreaByIp(HttpServletRequest request) {
+    @RequestMapping(value = "/queryAreaByIp")
+    public String queryAreaByIp(HttpServletRequest request) {
         String ipAddress;
         ipAddress = request.getHeader("x-forwarded-for");
         if (null == ipAddress || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
