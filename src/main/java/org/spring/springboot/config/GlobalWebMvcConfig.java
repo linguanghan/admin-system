@@ -21,7 +21,7 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
         // 添加映射路径
         registry.addMapping("/**")
                 // 放行哪些原始域
-                .allowedOrigins("*")
+                .allowedOrigins("https://wxwebpelbs.yfqp.shop", "http://mgrtest.yfqp.shop", "http://mgrylc.yfqp.shop")
                 // 是否发送Cookie信息
                 .allowCredentials(true)
                 // 放行哪些原始域(请求方式)

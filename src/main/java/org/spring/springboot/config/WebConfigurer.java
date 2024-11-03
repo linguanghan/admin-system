@@ -23,7 +23,10 @@ public class WebConfigurer implements ServletContextInitializer {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         //  你需要跨域的地址
         // * 表示对所有的地址都可以访问
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOrigin("https://wxwebpelbs.yfqp.shop");
+        corsConfiguration.addAllowedOrigin("http://mgrtest.yfqp.shop");
+        corsConfiguration.addAllowedOrigin("http://mgrylc.yfqp.shop");
+
         //  跨域的请求头
         corsConfiguration.addAllowedHeader("*");
         //  跨域的请求方法
