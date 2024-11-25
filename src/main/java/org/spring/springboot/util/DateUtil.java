@@ -3,7 +3,12 @@ package org.spring.springboot.util;
 import cn.hutool.core.date.DateTime;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 日期工具类
@@ -44,6 +49,35 @@ public class DateUtil {
             while (tempStart.before(tempEnd)||tempStart.equals(tempEnd)) {
                 result.add(sdf.format(tempStart.getTime()));
                 tempStart.add(Calendar.DAY_OF_YEAR, 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * 获取两个月份之间的所有月份 (年月)
+     * @param start
+     * @param end
+     * @return
+     */
+    public static List<String> getBetweenMonths(String start, String end) {
+        List<String> result = new ArrayList<>();
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");  // 修改格式化器，仅包含年和月
+            YearMonth startMonth = YearMonth.parse(start.substring(0, 7), formatter);
+            YearMonth endMonth = YearMonth.parse(end.substring(0, 7), formatter);
+
+            if (startMonth.isAfter(endMonth)) {
+                throw new IllegalArgumentException("开始月份不能晚于结束月份");
+            }
+
+            YearMonth current = startMonth;
+            while (!current.isAfter(endMonth)) {
+                result.add(current.format(formatter));  // 使用适合 YearMonth 的格式化器
+                current = current.plusMonths(1);
             }
         } catch (Exception e) {
             e.printStackTrace();

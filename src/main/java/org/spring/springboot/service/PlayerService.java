@@ -1,8 +1,8 @@
 package org.spring.springboot.service;
 
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.DayPlayer;
+import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 
 import java.util.Date;
@@ -80,6 +80,7 @@ public interface PlayerService {
     List<Player> findActiveDetail(Date dateTime);
     Result<?> findActiveDetailBetweenDate(PageParamVo vo);
     List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime);
+    List<DayPlayer> findActiveNumGroupbyMonth(Date startTime, Date endTime);
 
     /**
      * 根据id获取用户信息
