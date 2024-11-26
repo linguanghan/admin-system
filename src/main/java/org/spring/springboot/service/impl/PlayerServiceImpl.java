@@ -168,6 +168,74 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public List<DayPlayer> findRegisterNumGroupbyMonth(Date startTime, Date endTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        // 获取startTime当月第一天和endTime当月最后一天时间
+        Date firstDayOfMonth = this.getFirstDayOfMonth(startTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(endTime);
+        String s = df.format(firstDayOfMonth);
+        String e = df.format(lastDayOfMonth);
+
+        long start = 0;
+        long end = 0;
+        try {
+            start = df.parse(s).getTime();
+            end = df.parse(e).getTime();
+        } catch (ParseException pe) {
+            LOGGER.error(pe.getMessage(), pe);
+        }
+
+        List<String> dates = DateUtil.getBetweenMonths(s, e);
+        List<DayPlayer> players = new ArrayList<>();
+        List<DayPlayer> resultList = new ArrayList<>();
+        List<DayPlayer> result = playerDao.findRegisterNumGroupbyDate(start, end);
+        if (CollectionUtils.isEmpty(result)){
+            for (String date:dates){
+                players.add(new DayPlayer(date,0));
+            }
+        } else {
+            // 按月汇总
+            Map<String, Integer> map = new HashMap<>();
+            List<String> list = new ArrayList<>();
+            for (DayPlayer dayPlayer : result) {
+                String substring = dayPlayer.getTimedate().substring(0, 7);
+
+                if (list.contains(substring)){
+                    Integer i = map.get(substring);
+                    Integer count = i + dayPlayer.getNum();
+                    map.put(substring, count);
+                    continue;
+                }
+                list.add(substring);
+                map.put(substring, dayPlayer.getNum());
+            }
+
+            for (String date:dates){
+                int num = 0;
+                if (map.containsKey(date)){
+                    num = map.get(date);
+                }
+                players.add(new DayPlayer(date,num));
+            }
+
+            Map<String, Integer> resultMap = players.stream()
+                    .collect(Collectors.groupingBy(
+                            DayPlayer::getTimedate, // 直接使用 getTimedate 作为分组的键
+                            Collectors.summingInt(DayPlayer::getNum)
+                    ));
+            resultList = resultMap.entrySet().stream()
+                    .map(entry -> new DayPlayer(entry.getKey(), entry.getValue()))
+                    .sorted(Comparator.comparing(DayPlayer::getTimedate))
+                    .collect(Collectors.toList());
+        }
+
+        return resultList;
+    }
+
+    @Override
     public Integer findActiveNum(Date dateTime) {
         if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
             return 0;

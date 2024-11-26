@@ -76,6 +76,13 @@ public class PlayerCtrl {
         return AjaxResult.successResult(playerService.findRegisterNumGroupbyDate(startTime, endTime));
     }
 
+    // 查询该日期范围注册人数--按月归类
+    @RequestMapping(value = "/register/num/month", method = RequestMethod.GET)
+    public AjaxResult findRegisterNumGroupbyMonth(@RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startTime,
+                                                  @RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endTime) {
+        return AjaxResult.successResult(playerService.findRegisterNumGroupbyMonth(startTime, endTime));
+    }
+
     /***************分隔线*******************/
 
     // 查询该日期活跃人数

@@ -73,6 +73,7 @@ public interface PlayerService {
      * @return
      */
     List<DayPlayer> findRegisterNumGroupbyDate(Date startTime, Date endTime);
+    List<DayPlayer> findRegisterNumGroupbyMonth(Date startTime, Date endTime);
 
     /**一下查询活跃人数，类似注册人数查询逻辑**/
     Integer findActiveNum(Date dateTime);
