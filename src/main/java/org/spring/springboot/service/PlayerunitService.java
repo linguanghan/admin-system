@@ -2,6 +2,7 @@ package org.spring.springboot.service;
 
 import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.result.Result;
+import org.spring.springboot.domain.pelbsData.DayPlayerRecharge;
 import org.spring.springboot.domain.pelbsData.PackageQuery;
 import org.spring.springboot.domain.pelbsData.playerunit.*;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
@@ -77,4 +78,6 @@ public interface PlayerunitService {
     List<Option> queryBookResourceOptions(Long pid);
 
     List<PackageQuery> queryPackageIdxRecharge(Long packageIdx, Date starTime, Date endTime);
+
+    List<DayPlayerRecharge> queryPlayerRecharge(Date startTime, Date endTime);
 }

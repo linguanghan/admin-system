@@ -47,5 +47,14 @@
       </if>
     </trim>
   </select>
+  <select id="queryPlayerRecharge"
+          resultType="org.spring.springboot.domain.pelbsData.playerunit.PlayerRechargePO">
+    select
+    <include refid="Base_Column_List"/>
+    from playerrecharge
+    where `updatetime` &gt;= #{startTime}
+    and `updatetime` &lt;= #{endTime}
+    order by `id`
+  </select>
 
 </mapper>

@@ -346,4 +346,15 @@ public class PlayerunitCtrl {
         playerunitService.updateBookPackageAndType(playerunit);
         return AjaxResult.emptySuccessResult();
     }
+
+    /**
+     * 统计玩家充值信息
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping(value = "/queryPlayerRecharge", method = RequestMethod.GET)
+    public AjaxResult queryPlayerRecharge(@RequestParam Date startTime, @RequestParam Date endTime) {
+        return AjaxResult.successResult(playerunitService.queryPlayerRecharge(startTime, endTime));
+    }
 }

@@ -11,4 +11,6 @@ public interface PlayerRechargeDao {
 
     List<PlayerRechargePO> batchQueryPlayerRechargeInfByUpdateTimeAndPid(@Param("playerRechargePOS") List<PlayerRechargePO> playerRechargePOS);
 
+    List<PlayerRechargePO> queryPlayerRecharge(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
 }
