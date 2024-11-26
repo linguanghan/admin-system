@@ -44,6 +44,13 @@ public interface PlayerService {
     Integer findRegisterNum(Date dateTime);
 
     /**
+     * 查询某日期月份注册人数
+     * @param dateTime
+     * @return 注册人数
+     */
+    Integer findRegisterNumMonth(Date dateTime);
+
+    /**
      * 查询两个日期之间注册人数
      * @param startTime
      * @param endTime
@@ -77,6 +84,7 @@ public interface PlayerService {
 
     /**一下查询活跃人数，类似注册人数查询逻辑**/
     Integer findActiveNum(Date dateTime);
+    Integer findActiveNumMonth(Date dateTime);
     Integer findActiveNumBetweenDate(Date startTime, Date endTime);
     List<Player> findActiveDetail(Date dateTime);
     Result<?> findActiveDetailBetweenDate(PageParamVo vo);

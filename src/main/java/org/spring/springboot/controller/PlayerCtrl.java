@@ -42,6 +42,12 @@ public class PlayerCtrl {
         return AjaxResult.successResult(playerService.findRegisterNum(dateTime));
     }
 
+    // 查询该日期月份注册人数
+    @RequestMapping(value = "/register/num-month", method = RequestMethod.GET)
+    public AjaxResult findRegisterNumMonth(@RequestParam Date dateTime) {
+        return AjaxResult.successResult(playerService.findRegisterNumMonth(dateTime));
+    }
+
     // 查询该日期范围注册人数
     @RequestMapping(value = "/register/rangedate/num", method = RequestMethod.GET)
     public AjaxResult findRegisterNumBetweenDate(@RequestParam Date startTime, @RequestParam Date endTime) {
@@ -89,6 +95,12 @@ public class PlayerCtrl {
     @RequestMapping(value = "/active/num", method = RequestMethod.GET)
     public AjaxResult findActiveNum(@RequestParam Date dateTime) {
         return AjaxResult.successResult(playerService.findActiveNum(dateTime));
+    }
+
+    // 查询该日期月份活跃人数
+    @RequestMapping(value = "/active/num-month", method = RequestMethod.GET)
+    public AjaxResult findActiveNumMonth(@RequestParam Date dateTime) {
+        return AjaxResult.successResult(playerService.findActiveNumMonth(dateTime));
     }
 
     // 查询该日期范围活跃人数

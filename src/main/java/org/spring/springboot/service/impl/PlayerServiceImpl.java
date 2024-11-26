@@ -70,6 +70,32 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public Integer findRegisterNumMonth(Date dateTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
+        }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        if (null == dateTime) {
+            dateTime = new Date();
+        }
+        Date firstDayOfMonth = this.getFirstDayOfMonth(dateTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(dateTime);
+        String t = df.format(firstDayOfMonth);
+        String e = df.format(lastDayOfMonth);
+
+        long start = 0;
+        long end = 0;
+        try {
+            start = df.parse(t).getTime();
+            end = df.parse(e).getTime();
+        } catch (ParseException pe) {
+            LOGGER.error(pe.getMessage(), pe);
+        }
+
+        return playerDao.findRegisterNumBetweenDate(start, end);
+    }
+
+    @Override
     public Integer findRegisterNumBetweenDate(Date startTime, Date endTime) {
         DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         String s = df.format(startTime);
@@ -245,6 +271,21 @@ public class PlayerServiceImpl implements PlayerService {
             return 0;
         }
         return dailyActiveUserLogPOS.get(0).getActiveCount().intValue();
+    }
+
+    @Override
+    public Integer findActiveNumMonth(Date dateTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
+        }
+        Date firstDayOfMonth = this.getFirstDayOfMonth(dateTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(dateTime);
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(firstDayOfMonth, lastDayOfMonth);
+        if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)){
+            return 0;
+        }
+        long sum = dailyActiveUserLogPOS.stream().mapToLong(DailyActiveUserLogPO::getActiveCount).sum();
+        return (int) sum;
     }
 
     @Override
