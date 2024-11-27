@@ -890,8 +890,8 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             }
         }
 
+        return resultList.stream().sorted(Comparator.comparing(DayPlayerRecharge::getTimedate)).collect(Collectors.toList());
 
-        return resultList;
     }
 
     // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考

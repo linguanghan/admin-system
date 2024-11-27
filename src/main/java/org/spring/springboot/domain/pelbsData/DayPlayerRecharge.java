@@ -8,25 +8,25 @@ package org.spring.springboot.domain.pelbsData;
  */
 public class DayPlayerRecharge {
 
-    private String timeDate;
+    private String timedate;
     private Integer num;
     private Integer rechargeNum;
 
     public DayPlayerRecharge() {
     }
 
-    public DayPlayerRecharge(String timeDate, Integer num, Integer rechargeNum) {
-        this.timeDate = timeDate;
+    public DayPlayerRecharge(String timedate, Integer num, Integer rechargeNum) {
+        this.timedate = timedate;
         this.num = num;
         this.rechargeNum = rechargeNum;
     }
 
-    public String getTimeDate() {
-        return timeDate;
+    public String getTimedate() {
+        return timedate;
     }
 
-    public void setTimeDate(String timeDate) {
-        this.timeDate = timeDate;
+    public void setTimedate(String timedate) {
+        this.timedate = timedate;
     }
 
     public Integer getNum() {
