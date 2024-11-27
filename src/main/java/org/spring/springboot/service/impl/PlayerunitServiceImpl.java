@@ -871,34 +871,27 @@ public class PlayerunitServiceImpl implements PlayerunitService {
                 resultList.add(new DayPlayerRecharge(date, 0, 0));
             }
         } else {
-            // 统计充值玩家数量
-            Map<String, Integer> map = new HashMap<>();
-            for (PlayerRechargePO po : playerRechargePOS) {
-                int count = 1;
-                String updateTime = po.getUpdateTime().substring(0, 10);
+            // 统计充值玩家数量和充值次数
+            Map<String, Set<Long>> playerMap = new HashMap<>();
+            Map<String, Integer> countMap = new HashMap<>();
 
-                if (map.containsKey(updateTime)) {
-                    Integer i = map.get(updateTime);
-                    i += 1;
-                    map.put(updateTime, i);
-                }
-                map.put(updateTime, count);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (PlayerRechargePO record : playerRechargePOS) {
+                String format = dateFormat.format(new Date(Long.parseLong(record.getUpdateTime())));
+                Long accountId = record.getAccountId();
+
+                playerMap.computeIfAbsent(format, k -> new HashSet<>()).add(accountId);
+                countMap.put(format, countMap.getOrDefault(format, 0) + 1);
             }
 
-            for (String date : dates) {
-                int num = 0;
-                if (map.containsKey(date)) {
-                    num = map.get(date);
-                }
-                resultList.add(new DayPlayerRecharge(date, num, 0));
+            for (String date : playerMap.keySet()) {
+                resultList.add(new DayPlayerRecharge(date, playerMap.get(date).size(), countMap.get(date)));
             }
-
-            // TODO 统计玩家充值次数
-
         }
 
 
-        return Collections.emptyList();
+        return resultList;
     }
 
     // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考
