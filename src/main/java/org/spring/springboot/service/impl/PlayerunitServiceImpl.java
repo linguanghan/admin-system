@@ -965,8 +965,10 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
         // 当天所有APP的玩家充值数据
         List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(startTime, endTime);
+        // 获取所有APP
+        List<Integer> appList = playerunitDao.queryAPPAll();
         if (CollectionUtils.isEmpty(playerRechargePOS)) {
-            return Collections.emptyList();
+            appList.forEach(t -> resultList.add(new DayPlayer(t + "", 0)));
         } else {
             Map<Integer, Integer> countMap = new HashMap<>();
             for (PlayerRechargePO rechargePO : playerRechargePOS) {
@@ -978,9 +980,14 @@ public class PlayerunitServiceImpl implements PlayerunitService {
                 }
                 countMap.put(packageIdx, appPrice);
             }
-            countMap.forEach((k, v) -> {
-                resultList.add(new DayPlayer(k + "", v));
+
+            appList.forEach(t -> {
+                resultList.add(new DayPlayer(t + "", countMap.getOrDefault(t, 0)));
             });
+
+//            countMap.forEach((k, v) -> {
+//                resultList.add(new DayPlayer(k + "", v));
+//            });
         }
 
         return resultList;

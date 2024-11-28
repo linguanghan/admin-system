@@ -724,9 +724,13 @@
     ) tmp
     GROUP BY timedate
   </select>
+  <select id="queryAPPAll" resultType="java.lang.Integer">
+    SELECT DISTINCT packageIdx
+    FROM playerrecharge
+  </select>
 
 
-  <update id="updateBookPackageAndType" parameterType="org.spring.springboot.domain.pelbsData.playerunit.Playerunit" >
+    <update id="updateBookPackageAndType" parameterType="org.spring.springboot.domain.pelbsData.playerunit.Playerunit" >
     UPDATE playerUnit
     SET packageIdx = #{packageIdx}, bookType = #{bookType}
     WHERE bookIdx = #{bookIdx} AND pid = #{pid}

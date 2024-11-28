@@ -66,4 +66,5 @@ public interface PlayerunitDao {
     void updateBookPackageAndType(@Param("packageIdx") Integer packageIdx, @Param("bookIdx") Integer bookIdx, @Param("pid") Long pid, @Param("bookType") Integer bookType);
 
 
+    List<Integer> queryAPPAll();
 }
