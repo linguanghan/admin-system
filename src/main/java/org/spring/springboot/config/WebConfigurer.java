@@ -26,6 +26,8 @@ public class WebConfigurer implements ServletContextInitializer {
         corsConfiguration.addAllowedOrigin("https://wxwebpelbs.yfqp.shop");
         corsConfiguration.addAllowedOrigin("http://mgrtest.yfqp.shop");
         corsConfiguration.addAllowedOrigin("http://mgrylc.yfqp.shop");
+        corsConfiguration.addAllowedOrigin("http://localhost:7456");
+        corsConfiguration.addAllowedOrigin("http://127.0.0.1:7456");
 
         //  跨域的请求头
         corsConfiguration.addAllowedHeader("*");
