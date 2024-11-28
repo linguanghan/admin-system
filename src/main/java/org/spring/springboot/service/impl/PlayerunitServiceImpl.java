@@ -936,6 +936,56 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         return resultList.stream().sorted(Comparator.comparing(DayPlayer::getTimedate)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<DayPlayer> queryAppRechargeCount() {
+        List<DayPlayer> resultList = new ArrayList<>();
+        Date currentDate = new Date();
+
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTime(currentDate);
+        // 重置时间部分为0
+        calendarStart.set(Calendar.HOUR_OF_DAY, 0);
+        calendarStart.set(Calendar.MINUTE, 0);
+        calendarStart.set(Calendar.SECOND, 0);
+        calendarStart.set(Calendar.MILLISECOND, 0);
+        // 获取设定好的日期对象
+        Date startDate = calendarStart.getTime();
+
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTime(currentDate);
+        // 设置时间部分为一天中的最后一刻
+        calendarEnd.set(Calendar.HOUR_OF_DAY, 23);
+        calendarEnd.set(Calendar.MINUTE, 59);
+        calendarEnd.set(Calendar.SECOND, 59);
+        calendarEnd.set(Calendar.MILLISECOND, 999);
+        Date endDate = calendarEnd.getTime();
+
+        long startTime = startDate.getTime();
+        long endTime = endDate.getTime();
+
+        // 当天所有APP的玩家充值数据
+        List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(startTime, endTime);
+        if (CollectionUtils.isEmpty(playerRechargePOS)) {
+            return Collections.emptyList();
+        } else {
+            Map<Integer, Integer> countMap = new HashMap<>();
+            for (PlayerRechargePO rechargePO : playerRechargePOS) {
+                Integer packageIdx = rechargePO.getPackageIdx();
+                Integer appPrice = rechargePO.getAppPrice();
+                if (countMap.containsKey(packageIdx)) {
+                    countMap.put(packageIdx, countMap.get(packageIdx) + appPrice);
+                    continue;
+                }
+                countMap.put(packageIdx, appPrice);
+            }
+            countMap.forEach((k, v) -> {
+                resultList.add(new DayPlayer(k + "", v));
+            });
+        }
+
+        return resultList;
+    }
+
     // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考
     private Boolean checkUnlockShow(Long playerUnitId) {
         Playerunit playerunit = playerunitDao.selectByPrimaryKey(playerUnitId);

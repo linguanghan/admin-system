@@ -368,4 +368,13 @@ public class PlayerunitCtrl {
     public AjaxResult queryPlayerRecharge(@RequestParam Date startTime, @RequestParam Date endTime) {
         return AjaxResult.successResult(playerunitService.queryPlayerRecharge(startTime, endTime));
     }
+
+    /**
+     * 统计每个app当日充值额
+     * @return
+     */
+    @RequestMapping(value = "/queryAppRechargeCount", method = RequestMethod.GET)
+    public AjaxResult queryAppRechargeCount() {
+        return AjaxResult.successResult(playerunitService.queryAppRechargeCount());
+    }
 }

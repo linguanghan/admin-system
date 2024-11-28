@@ -13,11 +13,13 @@
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="packageIdx" jdbcType="INTEGER" property="packageIdx" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
   </resultMap>
 
   <sql id="Base_Column_List">
     id, accountID, updatetime, referer, familyID, onelevel_agents_id, top_agents_id, app_price, order_id, pid,
-    `name`
+    `name`, packageIdx, channel
   </sql>
 
   <select id="queryPlayerRechargeInfoByOrderId"
