@@ -851,7 +851,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
-    public List<DayPlayerRecharge> queryPlayerRecharge(Date startTime, Date endTime) {
+    public List<DayPlayerRecharge> queryPlayerRecharge2(Date startTime, Date endTime) {
         if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
             return Collections.emptyList();
         }
@@ -892,6 +892,48 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
         return resultList.stream().sorted(Comparator.comparing(DayPlayerRecharge::getTimedate)).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<DayPlayer> queryPlayerRecharge(Date startTime, Date endTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        List<DayPlayer> resultList = new ArrayList<>();
+
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        String s = df.format(startTime);
+        String e = df.format(endTime);
+        List<String> dates = DateUtil.getBetweenDates(s, e);
+
+        Long start = startTime.getTime();
+        Long end = endTime.getTime();
+        // 获取日期范围内的玩家充值信息
+        List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(start, end);
+
+        if (CollectionUtils.isEmpty(playerRechargePOS)) {
+            for (String date : dates) {
+                resultList.add(new DayPlayer(date, 0));
+            }
+        } else {
+            // 统计充值额
+            Map<String, Integer> countMap = new HashMap<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (PlayerRechargePO record : playerRechargePOS) {
+                String format = dateFormat.format(new Date(Long.parseLong(record.getUpdateTime())));
+                Integer appPrice = record.getAppPrice();
+                if (countMap.containsKey(format)) {
+                    countMap.put(format, countMap.get(format) + appPrice);
+                    continue;
+                }
+                countMap.put(format, appPrice);
+            }
+
+            countMap.forEach((k, v) -> resultList.add(new DayPlayer(k, v)));
+        }
+
+        return resultList.stream().sorted(Comparator.comparing(DayPlayer::getTimedate)).collect(Collectors.toList());
     }
 
     // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考

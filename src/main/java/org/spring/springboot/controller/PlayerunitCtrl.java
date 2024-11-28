@@ -353,6 +353,17 @@ public class PlayerunitCtrl {
      * @param endTime
      * @return
      */
+    @RequestMapping(value = "/queryPlayerRecharge2", method = RequestMethod.GET)
+    public AjaxResult queryPlayerRecharge2(@RequestParam Date startTime, @RequestParam Date endTime) {
+        return AjaxResult.successResult(playerunitService.queryPlayerRecharge2(startTime, endTime));
+    }
+
+    /**
+     * 统计所有app充值数
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     @RequestMapping(value = "/queryPlayerRecharge", method = RequestMethod.GET)
     public AjaxResult queryPlayerRecharge(@RequestParam Date startTime, @RequestParam Date endTime) {
         return AjaxResult.successResult(playerunitService.queryPlayerRecharge(startTime, endTime));
