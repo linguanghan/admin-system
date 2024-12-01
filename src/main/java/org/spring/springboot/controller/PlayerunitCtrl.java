@@ -346,4 +346,35 @@ public class PlayerunitCtrl {
         playerunitService.updateBookPackageAndType(playerunit);
         return AjaxResult.emptySuccessResult();
     }
+
+    /**
+     * 统计玩家充值信息
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping(value = "/queryPlayerRecharge2", method = RequestMethod.GET)
+    public AjaxResult queryPlayerRecharge2(@RequestParam Date startTime, @RequestParam Date endTime) {
+        return AjaxResult.successResult(playerunitService.queryPlayerRecharge2(startTime, endTime));
+    }
+
+    /**
+     * 统计所有app充值数
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping(value = "/queryPlayerRecharge", method = RequestMethod.GET)
+    public AjaxResult queryPlayerRecharge(@RequestParam Date startTime, @RequestParam Date endTime) {
+        return AjaxResult.successResult(playerunitService.queryPlayerRecharge(startTime, endTime));
+    }
+
+    /**
+     * 统计每个app当日充值额
+     * @return
+     */
+    @RequestMapping(value = "/queryAppRechargeCount", method = RequestMethod.GET)
+    public AjaxResult queryAppRechargeCount() {
+        return AjaxResult.successResult(playerunitService.queryAppRechargeCount());
+    }
 }

@@ -7,17 +7,22 @@ import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.Option;
+import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.pelbsData.*;
 import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.dao.yldres.ChangeRechargeRecordDao;
+import org.spring.springboot.domain.pelbsData.DayPlayer;
+import org.spring.springboot.domain.pelbsData.DayPlayerRecharge;
 import org.spring.springboot.domain.pelbsData.PackageQuery;
 import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.palyerlearntime.PlayerLearnTimePO;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerunit.*;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
+import org.spring.springboot.domain.user.UserHolder;
 import org.spring.springboot.domain.yldres.Bookresource;
+import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
 import org.spring.springboot.domain.yldres.recharge.ChangeRechargeRecordPO;
 import org.spring.springboot.service.PlayerunitService;
 import org.spring.springboot.util.DateUtil;
@@ -843,6 +848,149 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 //        }
 
         return rechargeNum;
+    }
+
+    @Override
+    public List<DayPlayerRecharge> queryPlayerRecharge2(Date startTime, Date endTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        List<DayPlayerRecharge> resultList = new ArrayList<>();
+
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        String s = df.format(startTime);
+        String e = df.format(endTime);
+        List<String> dates = DateUtil.getBetweenDates(s, e);
+
+        Long start = startTime.getTime();
+        Long end = endTime.getTime();
+        // 获取日期范围内的玩家充值信息
+        List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(start, end);
+        if (CollectionUtils.isEmpty(playerRechargePOS)) {
+            for (String date : dates) {
+                resultList.add(new DayPlayerRecharge(date, 0, 0));
+            }
+        } else {
+            // 统计充值玩家数量和充值次数
+            Map<String, Set<Long>> playerMap = new HashMap<>();
+            Map<String, Integer> countMap = new HashMap<>();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (PlayerRechargePO record : playerRechargePOS) {
+                String format = dateFormat.format(new Date(Long.parseLong(record.getUpdateTime())));
+                Long accountId = record.getAccountId();
+
+                playerMap.computeIfAbsent(format, k -> new HashSet<>()).add(accountId);
+                countMap.put(format, countMap.getOrDefault(format, 0) + 1);
+            }
+
+            for (String date : playerMap.keySet()) {
+                resultList.add(new DayPlayerRecharge(date, playerMap.get(date).size(), countMap.get(date)));
+            }
+        }
+
+        return resultList.stream().sorted(Comparator.comparing(DayPlayerRecharge::getTimedate)).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<DayPlayer> queryPlayerRecharge(Date startTime, Date endTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        List<DayPlayer> resultList = new ArrayList<>();
+
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        String s = df.format(startTime);
+        String e = df.format(endTime);
+        List<String> dates = DateUtil.getBetweenDates(s, e);
+
+        Long start = startTime.getTime();
+        Long end = endTime.getTime();
+        // 获取日期范围内的玩家充值信息
+        List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(start, end);
+
+        if (CollectionUtils.isEmpty(playerRechargePOS)) {
+            for (String date : dates) {
+                resultList.add(new DayPlayer(date, 0));
+            }
+        } else {
+            // 统计充值额
+            Map<String, Integer> countMap = new HashMap<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (PlayerRechargePO record : playerRechargePOS) {
+                String format = dateFormat.format(new Date(Long.parseLong(record.getUpdateTime())));
+                Integer appPrice = record.getAppPrice();
+                if (countMap.containsKey(format)) {
+                    countMap.put(format, countMap.get(format) + appPrice);
+                    continue;
+                }
+                countMap.put(format, appPrice);
+            }
+
+            countMap.forEach((k, v) -> resultList.add(new DayPlayer(k, v)));
+        }
+
+        return resultList.stream().sorted(Comparator.comparing(DayPlayer::getTimedate)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DayPlayer> queryAppRechargeCount() {
+        List<DayPlayer> resultList = new ArrayList<>();
+        Date currentDate = new Date();
+
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTime(currentDate);
+        // 重置时间部分为0
+        calendarStart.set(Calendar.HOUR_OF_DAY, 0);
+        calendarStart.set(Calendar.MINUTE, 0);
+        calendarStart.set(Calendar.SECOND, 0);
+        calendarStart.set(Calendar.MILLISECOND, 0);
+        // 获取设定好的日期对象
+        Date startDate = calendarStart.getTime();
+
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTime(currentDate);
+        // 设置时间部分为一天中的最后一刻
+        calendarEnd.set(Calendar.HOUR_OF_DAY, 23);
+        calendarEnd.set(Calendar.MINUTE, 59);
+        calendarEnd.set(Calendar.SECOND, 59);
+        calendarEnd.set(Calendar.MILLISECOND, 999);
+        Date endDate = calendarEnd.getTime();
+
+        long startTime = startDate.getTime();
+        long endTime = endDate.getTime();
+
+        // 当天所有APP的玩家充值数据
+        List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(startTime, endTime);
+        // 获取所有APP
+        List<Integer> appList = playerunitDao.queryAPPAll();
+        if (CollectionUtils.isEmpty(playerRechargePOS)) {
+            appList.forEach(t -> resultList.add(new DayPlayer(t + "", 0)));
+        } else {
+            Map<Integer, Integer> countMap = new HashMap<>();
+            for (PlayerRechargePO rechargePO : playerRechargePOS) {
+                Integer packageIdx = rechargePO.getPackageIdx();
+                Integer appPrice = rechargePO.getAppPrice();
+                if (countMap.containsKey(packageIdx)) {
+                    countMap.put(packageIdx, countMap.get(packageIdx) + appPrice);
+                    continue;
+                }
+                countMap.put(packageIdx, appPrice);
+            }
+
+            appList.forEach(t -> {
+                resultList.add(new DayPlayer(t + "", countMap.getOrDefault(t, 0)));
+            });
+
+//            countMap.forEach((k, v) -> {
+//                resultList.add(new DayPlayer(k + "", v));
+//            });
+        }
+
+        return resultList;
     }
 
     // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考

@@ -7,8 +7,8 @@ import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.pelbsData.PlayerDao;
 import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
-import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.DayPlayer;
+import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.domain.user.UserHolder;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
@@ -57,6 +57,32 @@ public class PlayerServiceImpl implements PlayerService {
         String substring = t.substring(0, 10);
         String e = substring + time_end_suffix;
         t = substring + time_start_suffix;
+        long start = 0;
+        long end = 0;
+        try {
+            start = df.parse(t).getTime();
+            end = df.parse(e).getTime();
+        } catch (ParseException pe) {
+            LOGGER.error(pe.getMessage(), pe);
+        }
+
+        return playerDao.findRegisterNumBetweenDate(start, end);
+    }
+
+    @Override
+    public Integer findRegisterNumMonth(Date dateTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
+        }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        if (null == dateTime) {
+            dateTime = new Date();
+        }
+        Date firstDayOfMonth = this.getFirstDayOfMonth(dateTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(dateTime);
+        String t = df.format(firstDayOfMonth);
+        String e = df.format(lastDayOfMonth);
+
         long start = 0;
         long end = 0;
         try {
@@ -168,6 +194,74 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public List<DayPlayer> findRegisterNumGroupbyMonth(Date startTime, Date endTime) {
+        if(RoleEnum.MANAGER.getCode().equals( UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        // 获取startTime当月第一天和endTime当月最后一天时间
+        Date firstDayOfMonth = this.getFirstDayOfMonth(startTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(endTime);
+        String s = df.format(firstDayOfMonth);
+        String e = df.format(lastDayOfMonth);
+
+        long start = 0;
+        long end = 0;
+        try {
+            start = df.parse(s).getTime();
+            end = df.parse(e).getTime();
+        } catch (ParseException pe) {
+            LOGGER.error(pe.getMessage(), pe);
+        }
+
+        List<String> dates = DateUtil.getBetweenMonths(s, e);
+        List<DayPlayer> players = new ArrayList<>();
+        List<DayPlayer> resultList = new ArrayList<>();
+        List<DayPlayer> result = playerDao.findRegisterNumGroupbyDate(start, end);
+        if (CollectionUtils.isEmpty(result)){
+            for (String date:dates){
+                players.add(new DayPlayer(date,0));
+            }
+        } else {
+            // 按月汇总
+            Map<String, Integer> map = new HashMap<>();
+            List<String> list = new ArrayList<>();
+            for (DayPlayer dayPlayer : result) {
+                String substring = dayPlayer.getTimedate().substring(0, 7);
+
+                if (list.contains(substring)){
+                    Integer i = map.get(substring);
+                    Integer count = i + dayPlayer.getNum();
+                    map.put(substring, count);
+                    continue;
+                }
+                list.add(substring);
+                map.put(substring, dayPlayer.getNum());
+            }
+
+            for (String date:dates){
+                int num = 0;
+                if (map.containsKey(date)){
+                    num = map.get(date);
+                }
+                players.add(new DayPlayer(date,num));
+            }
+
+            Map<String, Integer> resultMap = players.stream()
+                    .collect(Collectors.groupingBy(
+                            DayPlayer::getTimedate, // 直接使用 getTimedate 作为分组的键
+                            Collectors.summingInt(DayPlayer::getNum)
+                    ));
+            resultList = resultMap.entrySet().stream()
+                    .map(entry -> new DayPlayer(entry.getKey(), entry.getValue()))
+                    .sorted(Comparator.comparing(DayPlayer::getTimedate))
+                    .collect(Collectors.toList());
+        }
+
+        return resultList;
+    }
+
+    @Override
     public Integer findActiveNum(Date dateTime) {
         if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
             return 0;
@@ -177,6 +271,21 @@ public class PlayerServiceImpl implements PlayerService {
             return 0;
         }
         return dailyActiveUserLogPOS.get(0).getActiveCount().intValue();
+    }
+
+    @Override
+    public Integer findActiveNumMonth(Date dateTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return 0;
+        }
+        Date firstDayOfMonth = this.getFirstDayOfMonth(dateTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(dateTime);
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(firstDayOfMonth, lastDayOfMonth);
+        if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)){
+            return 0;
+        }
+        long sum = dailyActiveUserLogPOS.stream().mapToLong(DailyActiveUserLogPO::getActiveCount).sum();
+        return (int) sum;
     }
 
     @Override
@@ -266,6 +375,91 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         return players;
+    }
+
+    @Override
+    public List<DayPlayer> findActiveNumGroupbyMonth(Date startTime, Date endTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        // 获取startTime当月第一天和endTime当月最后一天时间
+        Date firstDayOfMonth = this.getFirstDayOfMonth(startTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(endTime);
+        String s = df.format(firstDayOfMonth);
+        String e = df.format(lastDayOfMonth);
+        List<String> dates = DateUtil.getBetweenMonths(s, e);
+        List<DayPlayer> players = new ArrayList<>();
+        List<DayPlayer> resultList = new ArrayList<>();
+        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(firstDayOfMonth, lastDayOfMonth);
+        if (CollectionUtils.isEmpty(dailyActiveUserLogPOS)) {
+            for (String date : dates) {
+                resultList.add(new DayPlayer(date, 0));
+            }
+        } else {
+            // 按月汇总
+            Map<String, Long> map = new HashMap<>();
+            List<String> list = new ArrayList<>();
+            for (DailyActiveUserLogPO t : dailyActiveUserLogPOS) {
+                String substring = t.getCountTime().substring(0, 7);
+
+                if (list.contains(substring)) {
+                    Long l = map.get(substring);
+                    Long count = l + t.getActiveCount();
+                    map.put(substring, count);
+                    continue;
+                }
+                list.add(substring);
+                map.put(substring, t.getActiveCount());
+
+            }
+
+            for (String date : dates) {
+                long num = 0;
+                if (map.containsKey(date)) {
+                    num = map.get(date);
+                }
+                players.add(new DayPlayer(date, (int) num));
+            }
+
+            Map<String, Integer> result = players.stream()
+                    .collect(Collectors.groupingBy(
+                            DayPlayer::getTimedate, // 直接使用 getTimedate 作为分组的键
+                            Collectors.summingInt(DayPlayer::getNum)
+                    ));
+            resultList = result.entrySet().stream()
+                    .map(entry -> new DayPlayer(entry.getKey(), entry.getValue()))
+                    .sorted(Comparator.comparing(DayPlayer::getTimedate))
+                    .collect(Collectors.toList());
+        }
+
+        return resultList;
+    }
+
+    public Date getFirstDayOfMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
+    public Date getLastDayOfMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+
+        return calendar.getTime();
     }
 
     @Override

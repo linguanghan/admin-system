@@ -55,5 +55,13 @@ public class PlayerRechargePO {
      * 账号昵称
      */
     private String name;
+    /**
+     * 包编号
+     */
+    private Integer packageIdx;
+    /**
+     * 频道
+     */
+    private String channel;
 
 }

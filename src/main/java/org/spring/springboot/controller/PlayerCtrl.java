@@ -1,6 +1,7 @@
 package org.spring.springboot.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
@@ -11,6 +12,7 @@ import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -38,6 +40,12 @@ public class PlayerCtrl {
 
 
         return AjaxResult.successResult(playerService.findRegisterNum(dateTime));
+    }
+
+    // 查询该日期月份注册人数
+    @RequestMapping(value = "/register/num-month", method = RequestMethod.GET)
+    public AjaxResult findRegisterNumMonth(@RequestParam Date dateTime) {
+        return AjaxResult.successResult(playerService.findRegisterNumMonth(dateTime));
     }
 
     // 查询该日期范围注册人数
@@ -74,12 +82,25 @@ public class PlayerCtrl {
         return AjaxResult.successResult(playerService.findRegisterNumGroupbyDate(startTime, endTime));
     }
 
+    // 查询该日期范围注册人数--按月归类
+    @RequestMapping(value = "/register/num/month", method = RequestMethod.GET)
+    public AjaxResult findRegisterNumGroupbyMonth(@RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startTime,
+                                                  @RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endTime) {
+        return AjaxResult.successResult(playerService.findRegisterNumGroupbyMonth(startTime, endTime));
+    }
+
     /***************分隔线*******************/
 
     // 查询该日期活跃人数
     @RequestMapping(value = "/active/num", method = RequestMethod.GET)
     public AjaxResult findActiveNum(@RequestParam Date dateTime) {
         return AjaxResult.successResult(playerService.findActiveNum(dateTime));
+    }
+
+    // 查询该日期月份活跃人数
+    @RequestMapping(value = "/active/num-month", method = RequestMethod.GET)
+    public AjaxResult findActiveNumMonth(@RequestParam Date dateTime) {
+        return AjaxResult.successResult(playerService.findActiveNumMonth(dateTime));
     }
 
     // 查询该日期范围活跃人数
@@ -116,6 +137,12 @@ public class PlayerCtrl {
         return AjaxResult.successResult(playerService.findActiveNumGroupbyDate(startTime, endTime));
     }
 
+    // 查询该日期范围活跃人数--按月归类
+    @RequestMapping(value = "/active/num/month", method = RequestMethod.GET)
+    public AjaxResult findActiveNumGroupbyMonth(@RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startTime,
+                                                @RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endTime) {
+        return AjaxResult.successResult(playerService.findActiveNumGroupbyMonth(startTime, endTime));
+    }
 
 //    @RequestMapping(value = "/current", method = RequestMethod.GET)
 //    public AjaxResult findPlyersCurrentNum() {
