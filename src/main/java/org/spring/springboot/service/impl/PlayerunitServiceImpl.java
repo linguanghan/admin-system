@@ -937,9 +937,11 @@ public class PlayerunitServiceImpl implements PlayerunitService {
     }
 
     @Override
-    public List<DayPlayer> queryAppRechargeCount() {
+    public List<DayPlayer> queryAppRechargeCount(Date currentDate) {
         List<DayPlayer> resultList = new ArrayList<>();
-        Date currentDate = new Date();
+        if (currentDate == null) {
+            currentDate = new Date();
+        }
 
         Calendar calendarStart = Calendar.getInstance();
         calendarStart.setTime(currentDate);
@@ -985,9 +987,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
                 resultList.add(new DayPlayer(t + "", countMap.getOrDefault(t, 0)));
             });
 
-//            countMap.forEach((k, v) -> {
-//                resultList.add(new DayPlayer(k + "", v));
-//            });
+            resultList.sort(Comparator.comparing(DayPlayer::getNum).reversed());
         }
 
         return resultList;
