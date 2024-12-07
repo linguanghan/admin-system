@@ -1,5 +1,6 @@
 package org.spring.springboot.controller;
 
+import org.spring.springboot.common.anno.JwtIgnore;
 import org.spring.springboot.domain.yldres.AppInfoConfig;
 import org.spring.springboot.service.AppInfoConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class AppInfoConfigCtrl {
      * 获取包配置
      * @return
      */
+    @JwtIgnore
     @GetMapping("/getMPkgInfo")
     public List<AppInfoConfig> getMPkgInfo() {
         return appInfoConfigService.findAll();
@@ -28,6 +30,7 @@ public class AppInfoConfigCtrl {
      * @param appInfoConfig
      * @return
      */
+    @JwtIgnore
     @PutMapping("/update")
     public Integer updateAppInfoConfig(@RequestBody AppInfoConfig appInfoConfig) {
         return appInfoConfigService.update(appInfoConfig);
@@ -38,7 +41,7 @@ public class AppInfoConfigCtrl {
         return appInfoConfigService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping("/insert")
     public Integer createAppInfoConfig(@RequestBody AppInfoConfig appInfoConfig) {
         return appInfoConfigService.save(appInfoConfig);
     }

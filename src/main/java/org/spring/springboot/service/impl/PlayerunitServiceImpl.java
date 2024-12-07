@@ -10,6 +10,7 @@ import org.spring.springboot.bean.Option;
 import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.pelbsData.*;
+import org.spring.springboot.dao.yldres.AppInfoConfigDao;
 import org.spring.springboot.dao.yldres.BookresourceDao;
 import org.spring.springboot.dao.yldres.ChangeRechargeRecordDao;
 import org.spring.springboot.domain.pelbsData.DayPlayer;
@@ -21,6 +22,7 @@ import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerunit.*;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.domain.user.UserHolder;
+import org.spring.springboot.domain.yldres.AppInfoConfig;
 import org.spring.springboot.domain.yldres.Bookresource;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
 import org.spring.springboot.domain.yldres.recharge.ChangeRechargeRecordPO;
@@ -71,6 +73,9 @@ public class PlayerunitServiceImpl implements PlayerunitService {
 
     @Resource
     private ChangeRechargeRecordDao changeRechargeRecordDao;
+
+    @Resource
+    private AppInfoConfigDao appInfoConfigDao;
 
     private static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String time_start_suffix = " 00:00:00";
@@ -969,8 +974,15 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         List<PlayerRechargePO> playerRechargePOS = playerRechargeDao.queryPlayerRecharge(startTime, endTime);
         // 获取所有APP
         List<Integer> appList = playerunitDao.queryAPPAll();
+
+        List<AppInfoConfig> appInfoConfigs = appInfoConfigDao.selectAll();
+        Map<Integer, String> map = new HashMap<>();
+        if (!CollectionUtils.isEmpty(appInfoConfigs)) {
+            appInfoConfigs.forEach(t -> map.put(t.getPackageIdx(), t.getAppName()));
+        }
+
         if (CollectionUtils.isEmpty(playerRechargePOS)) {
-            appList.forEach(t -> resultList.add(new DayPlayer(t + "", 0)));
+            appList.forEach(t -> resultList.add(new DayPlayer(t + " " + map.getOrDefault(t, ""), 0)));
         } else {
             Map<Integer, Integer> countMap = new HashMap<>();
             for (PlayerRechargePO rechargePO : playerRechargePOS) {
@@ -984,7 +996,7 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             }
 
             appList.forEach(t -> {
-                resultList.add(new DayPlayer(t + "", countMap.getOrDefault(t, 0)));
+                resultList.add(new DayPlayer(t + " " + map.getOrDefault(t, ""), countMap.getOrDefault(t, 0)));
             });
 
             resultList.sort(Comparator.comparing(DayPlayer::getNum).reversed());
