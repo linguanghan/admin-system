@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="org.spring.springboot.dao.res">-->
+<mapper namespace="org.spring.springboot.dao.yldres.AppInfoConfigDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.AppInfoConfig">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="packageIdx" jdbcType="INTEGER" property="packageIdx"/>
+        <result column="appName" jdbcType="VARCHAR" property="appName"/>
+        <result column="recordNumber" jdbcType="VARCHAR" property="recordNumber"/>
+        <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+        <result column="bookParam" jdbcType="VARCHAR" property="bookParam"/>
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        `id`,`packageIdx`,`appName`, `recordNumber`, `companyName`, `bookParam`, `createTime`
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO appInfoConfig (packageIdx, appName, recordNumber, companyName, bookParam, createTime)
+        VALUES (#{packageIdx}, #{appName}, #{recordNumber}, #{companyName}, #{bookParam}, #{createTime})
+    </insert>
+
+    <select id="selectById" resultType="org.spring.springboot.domain.yldres.AppInfoConfig">
+        SELECT * FROM appInfoConfig WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="org.spring.springboot.domain.yldres.AppInfoConfig">
+        SELECT * FROM appInfoConfig
+    </select>
+
+    <update id="update">
+        UPDATE appInfoConfig
+        SET packageIdx = #{packageIdx},
+            appName = #{appName},
+            recordNumber = #{recordNumber},
+            companyName = #{companyName},
+            bookParam = #{bookParam},
+            createTime = #{createTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM appInfoConfig WHERE id = #{id}
+    </delete>
+
+</mapper>
