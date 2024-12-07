@@ -1,9 +1,14 @@
 package org.spring.springboot.dao.pelbsData;
 
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassPO;
+import org.apache.ibatis.annotations.Param;
+import org.spring.springboot.domain.pelbsData.studyclass.*;
 
 import java.util.List;
 
 public interface StudyClassDao {
     List<StudyClassPO> selectStudyClass();
+
+    List<StudyClassBasePO> queryPage(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
+    Long createStudyClass(StudyClassBasePO studyClassDTO);
 }

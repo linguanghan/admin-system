@@ -28,6 +28,14 @@
         `mem_data`
     </sql>
 
+    <insert id="createStudyClass" parameterType="org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into
+            `studyClass`(`id`,`classInviteID`,`classNumber`,`teacher_name`,`school_name`,`grade`,`state`,`createTime`,`ownerPid`,`mem_data`)
+        values
+            (#{id},#{classInviteID},#{classNumber},#{teacherName},#{schoolName},#{grade},#{state},#{createTime},#{ownerPid},#{memData})
+    </insert>
+
     <select id="selectStudyClassByID" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
@@ -47,6 +55,13 @@
         studyClass ON player.id = studyClass.ownerPid
         WHERE
         player.Identity = 4;
+    </select>
+    <select id="queryPage" resultType="org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO">
+        select
+        <include refid="Base_Column_List"/>
+        from `studyClass`
+        where createTime between #{startTime} and #{endTime}
+        order by createTime
     </select>
 
 </mapper>

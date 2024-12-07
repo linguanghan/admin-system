@@ -1,6 +1,7 @@
 package org.spring.springboot.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
@@ -13,6 +14,7 @@ import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -374,7 +376,7 @@ public class PlayerunitCtrl {
      * @return
      */
     @RequestMapping(value = "/queryAppRechargeCount", method = RequestMethod.GET)
-    public AjaxResult queryAppRechargeCount() {
-        return AjaxResult.successResult(playerunitService.queryAppRechargeCount());
+    public AjaxResult queryAppRechargeCount(@RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date queryTime) {
+        return AjaxResult.successResult(playerunitService.queryAppRechargeCount(queryTime));
     }
 }
