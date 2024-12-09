@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="org.spring.springboot.dao.res">-->
+<mapper namespace="org.spring.springboot.dao.yldres.MonthlyActiveUserLogDao">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="active_count" jdbcType="BIGINT" property="activeCount"/>
+        <result column="count_time" jdbcType="VARCHAR" property="countTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id,`active_count`,`count_time`
+	</sql>
+    <update id="update">
+        update `monthly_active_user_log`
+        <set>
+            <if test="activeCount != null">
+                active_count = #{activeCount},
+            </if>
+            <if test="countTime != null">
+                count_time = #{countTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="fetchMonthlyActiveUserLogByPage" parameterType="org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `monthly_active_user_log`
+        <where>
+            <if test="countTime != null">
+                count_time = #{countTime}
+            </if>
+        </where>
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <select id="fetchMonthlyActiveUserLogByPageCount" parameterType="org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogQuery" resultType="java.lang.Integer">
+        select
+        count(1)
+        from `monthly_active_user_log`
+        <!--        <where>-->
+        <!--            <if test="countTime != null">-->
+        <!--                count_time = #{countTime}-->
+        <!--            </if>-->
+        <!--        </where>-->
+        where STR_TO_DATE(count_time, '%Y-%m-%d') &gt;= #{startTime}
+        and STR_TO_DATE(count_time, '%Y-%m-%d') &lt;= #{endTime}
+        order by id
+    </select>
+
+    <select id="queryMonthlyActiveUserLog"
+            resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from `monthly_active_user_log`
+        where count_time &gt;= #{startTime}
+          and count_time &lt;= #{endTime}
+        order by id
+    </select>
+    <select id="queryMonthlyActiveUserLogCount"
+            resultType="org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogPO">
+        select
+        <include refid="Base_Column_List"/>
+        from `monthly_active_user_log`
+        where count_time = #{countTime}
+    </select>
+
+
+    <insert id="saveMonthlyActiveUserLog" parameterType="org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogPO" useGeneratedKeys="true"
+            keyProperty="id">
+		insert into
+            `monthly_active_user_log`(`id`,`active_count`,`count_time`)
+		values
+		(#{id},#{activeCount},#{countTime})
+	</insert>
+
+</mapper>

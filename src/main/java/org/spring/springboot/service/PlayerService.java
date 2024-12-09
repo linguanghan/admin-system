@@ -90,6 +90,7 @@ public interface PlayerService {
     Result<?> findActiveDetailBetweenDate(PageParamVo vo);
     List<DayPlayer> findActiveNumGroupbyDate(Date startTime, Date endTime);
     List<DayPlayer> findActiveNumGroupbyMonth(Date startTime, Date endTime);
+    List<DayPlayer> findActiveNumGroupbyMonth2(Date startTime, Date endTime);
 
     /**
      * 根据id获取用户信息

@@ -7,11 +7,13 @@ import org.spring.springboot.common.enums.RoleEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.pelbsData.PlayerDao;
 import org.spring.springboot.dao.yldres.DailyActiveUserLogDao;
+import org.spring.springboot.dao.yldres.MonthlyActiveUserLogDao;
 import org.spring.springboot.domain.pelbsData.DayPlayer;
 import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.domain.user.UserHolder;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogPO;
+import org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogPO;
 import org.spring.springboot.service.PlayerService;
 import org.spring.springboot.util.DateUtil;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Resource
     private DailyActiveUserLogDao dailyActiveUserLogDao;
+
+    @Resource
+    private MonthlyActiveUserLogDao monthlyActiveUserLogDao;
 
     @Override
     public Integer findRegisterNum(Date dateTime) {
@@ -431,6 +436,43 @@ public class PlayerServiceImpl implements PlayerService {
                     .map(entry -> new DayPlayer(entry.getKey(), entry.getValue()))
                     .sorted(Comparator.comparing(DayPlayer::getTimedate))
                     .collect(Collectors.toList());
+        }
+
+        return resultList;
+    }
+
+    @Override
+    public List<DayPlayer> findActiveNumGroupbyMonth2(Date startTime, Date endTime) {
+        if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
+            return Collections.emptyList();
+        }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
+        // 获取startTime当月第一天和endTime当月最后一天时间
+        Date firstDayOfMonth = this.getFirstDayOfMonth(startTime);
+        Date lastDayOfMonth = this.getLastDayOfMonth(endTime);
+        String s = df.format(firstDayOfMonth).substring(0, 7);
+        String e = df.format(lastDayOfMonth).substring(0, 7);
+        List<String> dates = DateUtil.getBetweenMonths(s, e);
+        List<DayPlayer> players = new ArrayList<>();
+        List<DayPlayer> resultList = new ArrayList<>();
+        List<MonthlyActiveUserLogPO> monthlyActiveUserLogPOS = monthlyActiveUserLogDao.queryMonthlyActiveUserLog(s, e);
+        if (CollectionUtils.isEmpty(monthlyActiveUserLogPOS)) {
+            for (String date : dates) {
+                resultList.add(new DayPlayer(date, 0));
+            }
+        } else {
+            Map<String, Long> map = monthlyActiveUserLogPOS.stream().collect(Collectors.toMap(MonthlyActiveUserLogPO::getCountTime, MonthlyActiveUserLogPO::getActiveCount, (k1, k2) -> k1));
+            for (String date : dates) {
+                long num = 0;
+                if (map.containsKey(date)) {
+                    num = map.get(date);
+                }
+                players.add(new DayPlayer(date, (int) num));
+            }
+
+            players.sort(Comparator.comparing(DayPlayer::getTimedate));
+
+            resultList = players;
         }
 
         return resultList;

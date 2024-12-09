@@ -144,6 +144,12 @@ public class PlayerCtrl {
         return AjaxResult.successResult(playerService.findActiveNumGroupbyMonth(startTime, endTime));
     }
 
+    @RequestMapping(value = "/active/num/month2", method = RequestMethod.GET)
+    public AjaxResult findActiveNumGroupbyMonth2(@RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startTime,
+                                                @RequestParam @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endTime) {
+        return AjaxResult.successResult(playerService.findActiveNumGroupbyMonth2(startTime, endTime));
+    }
+
 //    @RequestMapping(value = "/current", method = RequestMethod.GET)
 //    public AjaxResult findPlyersCurrentNum() {
 //        return AjaxResult.successResult(playerService.findPlyersCurrentNum(null));

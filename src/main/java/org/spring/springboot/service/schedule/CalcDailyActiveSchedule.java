@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.dao.pelbsData.PlayerDao;
 import org.spring.springboot.domain.yldres.active.DailyActiveUserLogVO;
+import org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogPO;
+import org.spring.springboot.domain.yldres.active.MonthlyActiveUserLogVO;
 import org.spring.springboot.service.DailyActiveUserLogService;
+import org.spring.springboot.service.MonthlyActiveUserLogService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,15 +35,22 @@ public class CalcDailyActiveSchedule {
     @Resource
     private DailyActiveUserLogService dailyActiveUserLogService;
 
+    @Resource
+    private MonthlyActiveUserLogService monthlyActiveUserLogService;
+
     @Scheduled(cron = "0 15 0 * * ?")
     private void calcDailyActiveUser() {
 
         //1、获取昨天的开始时间和结束时间的时间戳
         Map<String, Long> yesterdayTimeStamp = getYesterdayTimeStamp();
+        Map<String, Long> monthBeginAndEndTimeStamp = getMonthBeginAndEndTimeStamp();
         logger.info("calcDailyActiveUser 开始计算活跃度了！");
 
         //2、获取到昨天的活跃数
         Integer activeNum = playerDao.findActiveNumBetweenDate(yesterdayTimeStamp.get("beginOfYesterdayTime"), yesterdayTimeStamp.get("endOfYesterdayTime"));
+
+        // 获取本月的活跃数
+        Integer activeNumMonthly = playerDao.findActiveNumBetweenDate(monthBeginAndEndTimeStamp.get("beginOfMonthTime"), monthBeginAndEndTimeStamp.get("endOfMonthTime"));
 
         //3、数据封装
         DailyActiveUserLogVO dailyActiveUserLogVO = new DailyActiveUserLogVO();
@@ -54,6 +64,28 @@ public class CalcDailyActiveSchedule {
         if(insert == null || insert < 0) {
             logger.error("calcDailyActiveUser error insert :{}", insert);
         }
+
+        // 如果月份存在，更新月数据
+        MonthlyActiveUserLogPO queryMonthlyUserLogPO = monthlyActiveUserLogService.queryMonthlyActiveUserLogCount(countTime);
+        if(queryMonthlyUserLogPO == null) {
+            // 如果不存在，插入
+            MonthlyActiveUserLogVO monthlyActiveUserLogVO = new MonthlyActiveUserLogVO();
+            String monthlyTime = DateUtil.format(DateUtil.beginOfMonth(new Date()), "yyyy-MM");
+
+            monthlyActiveUserLogVO.setActiveCount(activeNumMonthly.longValue());
+            monthlyActiveUserLogVO.setCountTime(monthlyTime);
+            Long insertMonthlyUserLogPO = monthlyActiveUserLogService.saveMonthlyActiveUserLog(monthlyActiveUserLogVO);
+            if(insertMonthlyUserLogPO == null || insertMonthlyUserLogPO < 0) {
+                logger.error("calcMonthlyActiveUser error insert :{}", insert);
+            }
+        } else {
+            // 如果存在，更新
+            Long update = monthlyActiveUserLogService.update(queryMonthlyUserLogPO);
+            if (update == null || update < 0) {
+                logger.error("calcMonthlyActiveUser error update :{}", update);
+            }
+        }
+
     }
 
     /**
@@ -74,6 +106,22 @@ public class CalcDailyActiveSchedule {
         yesterdayMap.put("beginOfYesterdayTime", beginOfYesterdayTime);
         yesterdayMap.put("endOfYesterdayTime", endOfYesterdayTime);
         return yesterdayMap;
+    }
+
+    /**
+     * 获取本月的开始时间和结束时间的时间戳
+     * @return java.util.Map<java.lang.String, java.lang.Long>
+     */
+    public Map<String, Long> getMonthBeginAndEndTimeStamp() {
+        Date now = new Date();
+        DateTime beginOfMonth = DateUtil.beginOfMonth(now);
+        DateTime endOfMonth = DateUtil.endOfMonth(now);
+        long beginOfMonthTime = beginOfMonth.getTime() / 1000;
+        long endOfMonthTime = endOfMonth.getTime() / 1000;
+        Map<String, Long> monthMap = new HashMap<>();
+        monthMap.put("beginOfMonthTime", beginOfMonthTime);
+        monthMap.put("endOfMonthTime", endOfMonthTime);
+        return monthMap;
     }
 
     public static void main(String[] args) {
