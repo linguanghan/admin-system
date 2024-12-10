@@ -38,7 +38,14 @@ class StudyClassServiceImpl implements StudyClassService {
 
     @Override
     public Long createStudyClass(StudyClassBasePO studyClassDTO) {
-        Long result = studyClassDao.createStudyClass(studyClassDTO);
-        return result;
+        studyClassDTO.setState(0);
+        studyClassDTO.setCreateTime(System.currentTimeMillis());
+        studyClassDTO.setMemData("");
+        return studyClassDao.createStudyClass(studyClassDTO);
+    }
+
+    @Override
+    public Long updateStudyClass(StudyClassBasePO studyClassDTO) {
+        return studyClassDao.updateStudyClass(studyClassDTO);
     }
 }

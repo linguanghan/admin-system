@@ -15,4 +15,6 @@ public interface StudyClassService {
     Result<?> queryPage(StudyClassQuery query);
 
     Long createStudyClass(StudyClassBasePO studyClassDTO);
+
+    Long updateStudyClass(StudyClassBasePO studyClassDTO);
 }

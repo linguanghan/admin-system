@@ -11,4 +11,6 @@ public interface StudyClassDao {
     List<StudyClassBasePO> queryPage(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
 
     Long createStudyClass(StudyClassBasePO studyClassDTO);
+
+    Long updateStudyClass(StudyClassBasePO studyClassDTO);
 }

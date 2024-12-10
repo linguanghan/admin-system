@@ -31,10 +31,29 @@
     <insert id="createStudyClass" parameterType="org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO" useGeneratedKeys="true"
             keyProperty="id">
         insert into
-            `studyClass`(`id`,`classInviteID`,`classNumber`,`teacher_name`,`school_name`,`grade`,`state`,`createTime`,`ownerPid`,`mem_data`)
+            `studyClass`(`classInviteID`,`classNumber`,`teacher_name`,`school_name`,`grade`,`state`,`createTime`,`ownerPid`,`mem_data`)
         values
-            (#{id},#{classInviteID},#{classNumber},#{teacherName},#{schoolName},#{grade},#{state},#{createTime},#{ownerPid},#{memData})
+            (#{classInviteID},#{classNumber},#{teacherName},#{schoolName},#{grade},#{state},#{createTime},#{ownerPid},#{memData})
     </insert>
+
+    <update id="updateStudyClass" parameterType="org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO">
+        UPDATE `studyClass`
+        <set>
+            <if test="classNumber != null">
+                classNumber = #{classNumber},
+            </if>
+            <if test="teacherName != null">
+                teacher_name = #{teacherName},
+            </if>
+            <if test="schoolName != null">
+                school_name = #{schoolName},
+            </if>
+            <if test="grade != null">
+                grade = #{grade},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
     <select id="selectStudyClassByID" resultMap="BaseResultMap">
         SELECT
