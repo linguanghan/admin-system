@@ -283,13 +283,17 @@ public class PlayerServiceImpl implements PlayerService {
         if (RoleEnum.MANAGER.getCode().equals(UserHolder.getRole())) {
             return 0;
         }
+        DateFormat df = new SimpleDateFormat(FORMAT_PATTERN);
         Date firstDayOfMonth = this.getFirstDayOfMonth(dateTime);
         Date lastDayOfMonth = this.getLastDayOfMonth(dateTime);
-        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(firstDayOfMonth, lastDayOfMonth);
-        if(CollectionUtils.isEmpty(dailyActiveUserLogPOS)){
+        String s = df.format(firstDayOfMonth).substring(0, 7);
+        String e = df.format(lastDayOfMonth).substring(0, 7);
+//        List<DailyActiveUserLogPO> dailyActiveUserLogPOS = dailyActiveUserLogDao.queryDailyActiveUserLog(firstDayOfMonth, lastDayOfMonth);
+        List<MonthlyActiveUserLogPO> monthlyActiveUserLogPOS = monthlyActiveUserLogDao.queryMonthlyActiveUserLog(s, e);
+        if(CollectionUtils.isEmpty(monthlyActiveUserLogPOS)){
             return 0;
         }
-        long sum = dailyActiveUserLogPOS.stream().mapToLong(DailyActiveUserLogPO::getActiveCount).sum();
+        long sum = monthlyActiveUserLogPOS.stream().mapToLong(MonthlyActiveUserLogPO::getActiveCount).sum();
         return (int) sum;
     }
 
