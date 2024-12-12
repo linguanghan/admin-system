@@ -48,4 +48,10 @@ class StudyClassServiceImpl implements StudyClassService {
     public Long updateStudyClass(StudyClassBasePO studyClassDTO) {
         return studyClassDao.updateStudyClass(studyClassDTO);
     }
+
+    @Override
+    public Result<?> queryOne(Long id) {
+        StudyClassBasePO studyClassPO = studyClassDao.selectStudyClassByID(id);
+        return Result.buildSuccess().add("data", studyClassPO);
+    }
 }

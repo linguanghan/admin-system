@@ -13,4 +13,6 @@ public interface StudyClassDao {
     Long createStudyClass(StudyClassBasePO studyClassDTO);
 
     Long updateStudyClass(StudyClassBasePO studyClassDTO);
+
+    StudyClassBasePO selectStudyClassByID(@Param("id") Long id);
 }

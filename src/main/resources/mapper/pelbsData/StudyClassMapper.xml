@@ -58,7 +58,7 @@
     <select id="selectStudyClassByID" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM study_class
+        FROM `studyClass`
         WHERE id = #{id}
     </select>
 

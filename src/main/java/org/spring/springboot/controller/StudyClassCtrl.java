@@ -57,6 +57,16 @@ public class StudyClassCtrl {
     }
 
     /**
+     * 根据id获取班级
+     * @return
+     */
+    @RequestMapping(value = "/queryById")
+    public Result<?> queryOne(@RequestParam("id") Long id) {
+
+        return studyClassService.queryOne(id);
+    }
+
+    /**
      * 创建班级
      * @param studyClassDTO
      * @param request
