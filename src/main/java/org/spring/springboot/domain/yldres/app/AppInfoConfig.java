@@ -1,4 +1,4 @@
-package org.spring.springboot.domain.yldres;
+package org.spring.springboot.domain.yldres.app;
 
 import java.util.Date;
 
@@ -6,9 +6,9 @@ public class AppInfoConfig {
     private Long id;
     private Integer packageIdx;
     private String appName;
-    private String recordNumber;
+    private String registrationNum;
     private String companyName;
-    private String bookParam;
+    private String packagePara;
     private Date createTime;
 
     // Getters and Setters
@@ -37,12 +37,12 @@ public class AppInfoConfig {
         this.appName = appName;
     }
 
-    public String getRecordNumber() {
-        return recordNumber;
+    public String getRegistrationNum() {
+        return registrationNum;
     }
 
-    public void setRecordNumber(String recordNumber) {
-        this.recordNumber = recordNumber;
+    public void setRegistrationNum(String registrationNum) {
+        this.registrationNum = registrationNum;
     }
 
     public String getCompanyName() {
@@ -53,12 +53,12 @@ public class AppInfoConfig {
         this.companyName = companyName;
     }
 
-    public String getBookParam() {
-        return bookParam;
+    public String getPackagePara() {
+        return packagePara;
     }
 
-    public void setBookParam(String bookParam) {
-        this.bookParam = bookParam;
+    public void setPackagePara(String packagePara) {
+        this.packagePara = packagePara;
     }
 
     public Date getCreateTime() {
@@ -75,9 +75,9 @@ public class AppInfoConfig {
                 "id=" + id +
                 ", packageIdx=" + packageIdx +
                 ", appName='" + appName + '\'' +
-                ", recordNumber='" + recordNumber + '\'' +
+                ", registrationNum='" + registrationNum + '\'' +
                 ", companyName='" + companyName + '\'' +
-                ", bookParam='" + bookParam + '\'' +
+                ", packagePara='" + packagePara + '\'' +
                 ", createTime=" + createTime +
                 '}';
     }

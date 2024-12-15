@@ -1,6 +1,8 @@
 package org.spring.springboot.dao.yldres;
 
-import org.spring.springboot.domain.yldres.AppInfoConfig;
+import org.apache.ibatis.annotations.Param;
+import org.spring.springboot.domain.yldres.app.AppInfoConfig;
+import org.spring.springboot.domain.yldres.app.AppInfoConfigQuery;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface AppInfoConfigDao {
     Integer update(AppInfoConfig appInfoConfig);
 
     Integer deleteById(Integer id);
+
+    List<AppInfoConfig> queryPage(@Param("query") AppInfoConfigQuery query);
 }

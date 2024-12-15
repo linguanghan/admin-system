@@ -4,40 +4,53 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--<mapper namespace="org.spring.springboot.dao.res">-->
 <mapper namespace="org.spring.springboot.dao.yldres.AppInfoConfigDao">
-    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.AppInfoConfig">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.yldres.app.AppInfoConfig">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="packageIdx" jdbcType="INTEGER" property="packageIdx"/>
         <result column="appName" jdbcType="VARCHAR" property="appName"/>
-        <result column="recordNumber" jdbcType="VARCHAR" property="recordNumber"/>
+        <result column="registrationNum" jdbcType="VARCHAR" property="registrationNum"/>
         <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
-        <result column="bookParam" jdbcType="VARCHAR" property="bookParam"/>
+        <result column="packagePara" jdbcType="VARCHAR" property="packagePara"/>
         <result column="createTime" jdbcType="TIMESTAMP" property="createTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        `id`,`packageIdx`,`appName`, `recordNumber`, `companyName`, `bookParam`, `createTime`
+        `id`,`packageIdx`,`appName`, `registrationNum`, `companyName`, `packagePara`, `createTime`
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO appInfoConfig (packageIdx, appName, recordNumber, companyName, bookParam, createTime)
-        VALUES (#{packageIdx}, #{appName}, #{recordNumber}, #{companyName}, #{bookParam}, #{createTime})
+        INSERT INTO appInfoConfig (packageIdx, appName, registrationNum, companyName, packagePara, createTime)
+        VALUES (#{packageIdx}, #{appName}, #{registrationNum}, #{companyName}, #{packagePara}, #{createTime})
     </insert>
 
-    <select id="selectById" resultType="org.spring.springboot.domain.yldres.AppInfoConfig">
+    <select id="selectById" resultType="org.spring.springboot.domain.yldres.app.AppInfoConfig">
         SELECT * FROM appInfoConfig WHERE id = #{id}
     </select>
 
-    <select id="selectAll" resultType="org.spring.springboot.domain.yldres.AppInfoConfig">
+    <select id="selectAll" resultType="org.spring.springboot.domain.yldres.app.AppInfoConfig">
         SELECT * FROM appInfoConfig
+    </select>
+    <select id="queryPage" resultType="org.spring.springboot.domain.yldres.app.AppInfoConfig">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM appInfoConfig
+        <where>
+            <if test="query.packageIdx != null and query.packageIdx != ''">
+                AND packageIdx like CONCAT('%', #{query.packageIdx}, '%')
+            </if>
+            <if test="query.appName != null and query.appName != ''">
+                OR appName like CONCAT('%', #{query.appName}, '%')
+            </if>
+        </where>
     </select>
 
     <update id="update">
         UPDATE appInfoConfig
         SET packageIdx = #{packageIdx},
             appName = #{appName},
-            recordNumber = #{recordNumber},
+            registrationNum = #{registrationNum},
             companyName = #{companyName},
-            bookParam = #{bookParam},
+            packagePara = #{packagePara},
             createTime = #{createTime}
         WHERE id = #{id}
     </update>
