@@ -82,5 +82,18 @@
         where createTime between #{startTime} and #{endTime}
         order by createTime
     </select>
+    <select id="queryList" resultType="org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO">
+        select
+        <include refid="Base_Column_List"/>
+        from `studyClass`
+<!--        <where>-->
+<!--            <if test="startTime != null and endTime != null">-->
+<!--                createTime between #{startTime} and #{endTime}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        where createTime between #{startTime} and #{endTime}-->
+        order by createTime
+
+    </select>
 
 </mapper>

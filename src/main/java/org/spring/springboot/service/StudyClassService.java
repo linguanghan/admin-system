@@ -2,10 +2,7 @@ package org.spring.springboot.service;
 
 import com.github.pagehelper.PageInfo;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassDTO;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassQuery;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassVO;
+import org.spring.springboot.domain.pelbsData.studyclass.*;
 
 import java.util.List;
 
@@ -16,7 +13,7 @@ public interface StudyClassService {
 
     Long createStudyClass(StudyClassBasePO studyClassDTO);
 
-    Long updateStudyClass(StudyClassBasePO studyClassDTO);
+    Long updateStudyClass(StudyClassBaseVO studyClassDTO);
 
     Result<?> queryOne(Long id);
 }

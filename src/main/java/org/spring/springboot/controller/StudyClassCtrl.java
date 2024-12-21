@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.spring.springboot.bean.AjaxResult;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassDTO;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassQuery;
-import org.spring.springboot.domain.pelbsData.studyclass.StudyClassVO;
+import org.spring.springboot.domain.pelbsData.studyclass.*;
 import org.spring.springboot.domain.user.UserToken;
 import org.spring.springboot.service.StudyClassService;
 import org.spring.springboot.util.JwtTokenUtil;
@@ -43,11 +40,11 @@ public class StudyClassCtrl {
      */
     @RequestMapping(value = "/page")
     public Result<?> fetchStudyClassPage(StudyClassQuery query) {
-        if (query == null
-                || query.getEndTime() == null
-                || query.getStartTime() == null) {
-            return Result.buildFailure(SysCodeEnum.ParamError);
-        }
+//        if (query == null
+//                || query.getEndTime() == null
+//                || query.getStartTime() == null) {
+//            return Result.buildFailure(SysCodeEnum.ParamError);
+//        }
         try {
             return studyClassService.queryPage(query);
         } catch (Exception e) {
@@ -95,7 +92,7 @@ public class StudyClassCtrl {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Result<?> updateStudyClass(@RequestBody StudyClassBasePO studyClassDTO) {
+    public Result<?> updateStudyClass(@RequestBody StudyClassBaseVO studyClassDTO) {
         try {
             Long id = studyClassService.updateStudyClass(studyClassDTO);
             if (id == null || id < 0) {

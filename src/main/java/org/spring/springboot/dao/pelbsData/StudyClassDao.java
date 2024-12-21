@@ -15,4 +15,6 @@ public interface StudyClassDao {
     Long updateStudyClass(StudyClassBasePO studyClassDTO);
 
     StudyClassBasePO selectStudyClassByID(@Param("id") Long id);
+
+    List<StudyClassBasePO> queryList(StudyClassQuery query);
 }
