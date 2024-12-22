@@ -181,10 +181,13 @@ public class UserCtrl {
                 ipAddress = ipAddress.substring(0, ipAddress.indexOf(','));
             }
         }
-        String host = "https://api01.aliyun.venuscn.com";
-        String path = "/ip";
+//        String host = "https://api01.aliyun.venuscn.com";
+//        String path = "/ip";
+//        String appcode = "be807576f74b466399816449d5fc807d";
+        String host = "https://kzipquery.market.alicloudapi.com";
+        String path = "/api/ip/queryv2";
         String method = "GET";
-        String appcode = "be807576f74b466399816449d5fc807d";
+        String appcode = "f3456e5a111d4a3ebce7e7f8f0442bf2";
         Map<String, String> headers = new HashMap<String, String>();
         //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
         headers.put("Authorization", "APPCODE " + appcode);
