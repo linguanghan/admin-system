@@ -10,6 +10,7 @@ import org.spring.springboot.common.enums.BusiCodeEnum;
 import org.spring.springboot.common.enums.SysCodeEnum;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.domain.pelbsData.playerunit.*;
+import org.spring.springboot.domain.pelbsData.studyclass.StudyClassQuery;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.service.PlayerunitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -378,5 +379,20 @@ public class PlayerunitCtrl {
     @RequestMapping(value = "/queryAppRechargeCount", method = RequestMethod.GET)
     public AjaxResult queryAppRechargeCount(@RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date queryTime) {
         return AjaxResult.successResult(playerunitService.queryAppRechargeCount(queryTime));
+    }
+
+    /**
+     * 根据条件查询订单
+     * @param query
+     * @return
+     */
+    @RequestMapping(value = "/page")
+    public Result<?> queryPage(PlayerRechargeQuery query) {
+        try {
+            return playerunitService.queryPage(query);
+        } catch (Exception e) {
+            logger.info("PlayerunitCtrl#queryPage error vo is {}", JSONUtil.toJsonStr(query), e);
+        }
+        return Result.buildFailure(SysCodeEnum.SysError);
     }
 }

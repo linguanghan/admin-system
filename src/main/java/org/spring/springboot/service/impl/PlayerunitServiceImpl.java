@@ -19,6 +19,8 @@ import org.spring.springboot.domain.pelbsData.Player;
 import org.spring.springboot.domain.pelbsData.palyerlearntime.PlayerLearnTimePO;
 import org.spring.springboot.domain.pelbsData.playerext.PlayerExt;
 import org.spring.springboot.domain.pelbsData.playerunit.*;
+import org.spring.springboot.domain.pelbsData.studyclass.StudyClassBasePO;
+import org.spring.springboot.domain.pelbsData.studyclass.StudyClassBaseVO;
 import org.spring.springboot.domain.pelbsData.vo.PageParamVo;
 import org.spring.springboot.domain.user.UserHolder;
 import org.spring.springboot.domain.yldres.app.AppInfoConfig;
@@ -36,6 +38,10 @@ import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1001,6 +1007,23 @@ public class PlayerunitServiceImpl implements PlayerunitService {
         }
 
         return resultList;
+    }
+
+    @Override
+    public Result<?> queryPage(PlayerRechargeQuery query) {
+        if (query.getStartTime() != null && query.getEndTime() != null) {
+            Long startTime = query.getStartTime().getTime();
+            Long endTime = query.getEndTime().getTime();
+            query.setStartDate(startTime);
+            query.setEndDate(endTime);
+        }
+        List<PlayerRechargePO> studyClassVOS = playerRechargeDao.queryList(query);
+        List<PlayerRechargePO> page = ListUtil.page(query.getPageNo() - 1, query.getPageSize(), studyClassVOS);
+        if (CollectionUtils.isEmpty(page)) {
+            return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
+        }
+
+        return Result.buildSuccess().add("data", page).add("total", studyClassVOS.size());
     }
 
     // 此函数包含了从数据库中获取信息并进行中间处理的方法，用于后续参考

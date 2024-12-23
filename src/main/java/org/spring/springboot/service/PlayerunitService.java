@@ -85,4 +85,6 @@ public interface PlayerunitService {
     List<DayPlayer> queryPlayerRecharge(Date startTime, Date endTime);
 
     List<DayPlayer> queryAppRechargeCount(Date queryTime);
+
+    Result<?> queryPage(PlayerRechargeQuery query);
 }

@@ -58,5 +58,24 @@
     and `updatetime` &lt;= #{endTime}
     order by `id`
   </select>
+  <select id="queryList" resultType="org.spring.springboot.domain.pelbsData.playerunit.PlayerRechargePO">
+    select
+    <include refid="Base_Column_List"/>
+    from playerrecharge
+    <where>
+      <if test="orderId != null">
+        order_id = #{orderId}
+      </if>
+      <if test="pid != null">
+        and accountID = #{pid}
+      </if>
+      <if test="startDate != null and endDate != null">
+        and updatetime between #{startDate} and #{endDate}
+      </if>
+    </where>
+    order by id desc
+
+
+  </select>
 
 </mapper>

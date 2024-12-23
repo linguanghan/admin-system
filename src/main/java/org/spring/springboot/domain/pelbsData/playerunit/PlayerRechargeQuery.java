@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -62,4 +63,8 @@ public class PlayerRechargeQuery {
      * 是否解锁
      */
     private Integer unlock;
+
+    private Long startDate;
+
+    private Long endDate;
 }
