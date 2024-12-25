@@ -7,6 +7,8 @@ public class Feedback {
 
     private Integer time;
 
+    private Integer packageidx;
+
     public long getId() {
         return id;
     }
@@ -39,13 +41,22 @@ public class Feedback {
         this.time = time;
     }
 
+    public Integer getPackageidx() {
+        return packageidx;
+    }
+
+    public void setPackageidx(Integer packageidx) {
+        this.packageidx = packageidx;
+    }
+
     @Override
     public String toString() {
         return "Feedback{" +
                 "id=" + id +
                 ", pid=" + pid +
-                ", describe='" + describe +
-                ", time='" + time + '\'' +
+                ", describe='" + describe + '\'' +
+                ", time=" + time +
+                ", packageidx=" + packageidx +
                 '}';
     }
 }

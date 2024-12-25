@@ -9,11 +9,12 @@
         <result column="pid" jdbcType="BIGINT" property="pid"/>
         <result column="describe" jdbcType="VARCHAR" property="describe"/>
         <result column="time" jdbcType="INTEGER" property="time"/>
+        <result column="packageidx" javaType="INTEGER" property="packageidx" />
 
     </resultMap>
 
     <sql id="Base_Column_List">
-		id, pid,`describe`, `time`
+		id, pid,`describe`, `time`, packageidx
 	</sql>
 
     <select id="fetchFeedback" resultMap="BaseResultMap">
