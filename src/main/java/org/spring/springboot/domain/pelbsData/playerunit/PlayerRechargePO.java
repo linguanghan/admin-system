@@ -26,7 +26,7 @@ public class PlayerRechargePO {
     /**
      * 推荐人
      */
-    private String refer;
+    private Integer referer;
     /**
      * 工会ID
      */

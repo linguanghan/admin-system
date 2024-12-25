@@ -5,7 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="accountID" jdbcType="BIGINT" property="accountId" />
     <result column="updatetime" jdbcType="VARCHAR" property="updateTime"/>
-    <result column="referer" jdbcType="INTEGER" property="refer" />
+    <result column="referer" jdbcType="INTEGER" property="referer" />
     <result column="familyID" jdbcType="BIGINT" property="familyId" />
     <result column="onelevel_agents_id" jdbcType="INTEGER" property="oneLevelAgentsId" />
     <result column="top_agents_id" jdbcType="INTEGER" property="topAgentsId" />
@@ -63,10 +63,10 @@
     <include refid="Base_Column_List"/>
     from playerrecharge
     <where>
-      <if test="orderId != null">
+      <if test="orderId != null and orderId != ''">
         order_id = #{orderId}
       </if>
-      <if test="pid != null">
+      <if test="pid != null and pid != ''">
         and accountID = #{pid}
       </if>
       <if test="startDate != null and endDate != null">

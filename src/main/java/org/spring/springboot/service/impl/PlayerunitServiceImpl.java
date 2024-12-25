@@ -1023,6 +1023,23 @@ public class PlayerunitServiceImpl implements PlayerunitService {
             return Result.buildSuccess().add("data", Collections.EMPTY_LIST).add("total", 0);
         }
 
+        // 定义日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (PlayerRechargePO rechargePO : page) {
+            String updateTime = rechargePO.getUpdateTime();
+            long timestamp = Long.parseLong(updateTime);
+
+            // 将毫秒级时间戳转换为 Instant
+            Instant instant = Instant.ofEpochMilli(timestamp);
+
+            // 将 Instant 转换为 LocalDateTime，使用系统默认时区
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+
+            // 格式化 LocalDateTime
+            String formattedDate = localDateTime.format(formatter);
+            rechargePO.setUpdateTime(formattedDate);
+        }
+
         return Result.buildSuccess().add("data", page).add("total", studyClassVOS.size());
     }
 
