@@ -15,4 +15,5 @@ public class StudyClassBaseVO implements java.io.Serializable {
     private String createTime;
     private Long ownerPid;
     private String memData;
+    private Integer studentCount;
 }

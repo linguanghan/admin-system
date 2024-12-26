@@ -1,7 +1,10 @@
 package org.spring.springboot.service.impl;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.json.JSONObject;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.spring.springboot.common.result.Result;
 import org.spring.springboot.dao.pelbsData.StudyClassDao;
 import org.spring.springboot.domain.pelbsData.studyclass.*;
@@ -11,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +59,16 @@ class StudyClassServiceImpl implements StudyClassService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDate = localDateTime.format(formatter);
             baseVO.setCreateTime(formattedDate);
+
+            String memData = t.getMemData();
+            if (memData != null) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Map<String, Map<String, Object>>>(){}.getType();
+                Map<String, Map<String, Object>> memMap = gson.fromJson(memData, type);
+
+                baseVO.setStudentCount(memMap == null ? 0 : memMap.size());
+            }
+
             return baseVO;
         }).collect(Collectors.toList());
         return Result.buildSuccess().add("data", result).add("total", studyClassVOS.size());
