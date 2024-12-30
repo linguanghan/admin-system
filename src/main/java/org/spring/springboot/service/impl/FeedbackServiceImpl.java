@@ -44,11 +44,12 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public PageInfo<FeedBackVO> selectAllPageQuery(int pageNum, int pageSize) {
-        PageHelper.startPage(1, Integer.MAX_VALUE);
+//        PageHelper.startPage(1, Integer.MAX_VALUE);
         int total = fetchList().size();
 
-        PageHelper.startPage(pageNum, pageSize);
-        List<Feedback> feedbacks = fetchList();
+//        PageHelper.startPage(pageNum, pageSize);
+//        List<Feedback> feedbacks = fetchList();
+        List<Feedback> feedbacks = feedbackDao.fetchFeedbackPage((pageNum - 1) * pageSize, pageSize);
         if(CollectionUtils.isEmpty(feedbacks)) {
             return new PageInfo<>(Collections.emptyList());
         }

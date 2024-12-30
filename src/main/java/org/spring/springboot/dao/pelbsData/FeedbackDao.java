@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface FeedbackDao {
     List<Feedback> fetchFeedback();
+
+    List<Feedback> fetchFeedbackPage(int pageNum, int pageSize);
 }

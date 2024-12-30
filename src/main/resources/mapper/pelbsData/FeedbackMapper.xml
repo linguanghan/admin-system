@@ -23,4 +23,11 @@
         from feedback
         order by id DESC
     </select>
+    <select id="fetchFeedbackPage" resultType="org.spring.springboot.domain.pelbsData.feedback.Feedback">
+        select
+        <include refid="Base_Column_List"/>
+        from feedback
+        order by id DESC
+        LIMIT #{pageNum}, #{pageSize}
+    </select>
 </mapper>
