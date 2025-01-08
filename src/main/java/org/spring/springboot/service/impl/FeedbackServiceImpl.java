@@ -72,6 +72,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             Date date = DateUtil.timeStampToDate(feedback.getTime(), LENGTH_10);
             feedBackVO.setTime(date);
             feedBackVO.setAppName(map.get(feedback.getPackageidx()));
+            feedBackVO.setPackageIdx(feedback.getPackageidx());
             return feedBackVO;
         }).collect(Collectors.toList());
 

@@ -30,6 +30,8 @@ public class FeedBackVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date time;
 
+    private Integer packageIdx;
+
     private String appName;
 
     public long getId() {
@@ -62,6 +64,14 @@ public class FeedBackVO {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public Integer getPackageIdx() {
+        return packageIdx;
+    }
+
+    public void setPackageIdx(Integer packageIdx) {
+        this.packageIdx = packageIdx;
     }
 
     public String getAppName() {
