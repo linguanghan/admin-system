@@ -21,6 +21,7 @@ public class Bookresource {
     private String version;
     private String serverAddress;
     private Integer bookType;
+    private String videoPath;
 
     public Long getId() {
         return id;
@@ -86,6 +87,14 @@ public class Bookresource {
         this.serverAddress = serverAddress;
     }
 
+    public String getVideoPath() {
+        return videoPath;
+    }
+
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
     @Override
     public String toString() {
         return "Bookresource{" +
@@ -95,8 +104,9 @@ public class Bookresource {
                 ", release=" + release +
                 ", video=" + video +
                 ", version='" + version + '\'' +
-                ", bookType='" + bookType + '\'' +
                 ", serverAddress='" + serverAddress + '\'' +
+                ", bookType=" + bookType +
+                ", videoPath='" + videoPath + '\'' +
                 '}';
     }
 }

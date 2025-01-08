@@ -13,10 +13,11 @@
         <result column="version" jdbcType="VARCHAR" property="version"/>
         <result column="bookType" jdbcType="INTEGER" property="bookType"/>
         <result column="serverAddress" jdbcType="VARCHAR" property="serverAddress"/>
+        <result column="videoPath" jdbcType="VARCHAR" property="videoPath"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-		id,bookId,`name`,`release`,video,`version`,`bookType`, `serverAddress`
+		id,bookId,`name`,`release`,video,`version`,`bookType`, `serverAddress`, `videoPath`
 	</sql>
 
     <select id="fetchBookresourceInfos" resultMap="BaseResultMap">
@@ -71,9 +72,9 @@
     <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
             keyProperty="id">
 		insert into
-		BookResource(id,bookId,`name`,`release`,video,`version`,`bookType`,`serverAddress`)
+		BookResource(id,bookId,`name`,`release`,video,`version`,`bookType`,`serverAddress`,`videoPath`)
 		values
-		(#{id},#{bookId},#{name},#{release},#{video},#{version},#{bookType},#{serverAddress})
+		(#{id},#{bookId},#{name},#{release},#{video},#{version},#{bookType},#{serverAddress},#{videoPath})
 	</insert>
 
     <!--备用方案：为bookType添加默认值
@@ -125,6 +126,9 @@
             </if>
             <if test="serverAddress!=null">
                 `serverAddress` = #{serverAddress},
+            </if>
+            <if test="videoPath!=null">
+                `videoPath` = #{videoPath},
             </if>
         </trim>
 
