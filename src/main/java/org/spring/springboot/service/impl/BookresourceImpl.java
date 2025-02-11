@@ -123,6 +123,14 @@ public class BookresourceImpl implements BookresourceService {
 
     @Override
     public void updateBookInfo(Bookresource bookInfo) {
+        Bookresource bookresource = bookresourceDao.searchBookById(bookInfo.getId());
+        if (!bookresource.getBookId().equals(bookInfo.getBookId())) {
+            List<Bookresource> bookResources = bookresourceDao.fetchBookresourceInfosByBookId(String.valueOf(bookInfo.getBookId()));
+            if (!bookResources.isEmpty()) {
+                throw new RuntimeException("书本编号重复，请重新输入");
+            }
+        }
+
         bookresourceDao.updateBookInfo(bookInfo);
     }
 
@@ -133,6 +141,10 @@ public class BookresourceImpl implements BookresourceService {
 
     @Override
     public void saveBookInfo(Bookresource bookInfo) {
+        List<Bookresource> bookResources = bookresourceDao.fetchBookresourceInfosByBookId(String.valueOf(bookInfo.getBookId()));
+        if (!bookResources.isEmpty()) {
+            throw new RuntimeException("书本编号重复，请重新输入");
+        }
         bookresourceDao.saveBookInfo(bookInfo);
     }
 

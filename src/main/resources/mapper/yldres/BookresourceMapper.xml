@@ -68,6 +68,9 @@
         </trim>
 
     </select>
+    <select id="searchBookById" resultType="org.spring.springboot.domain.yldres.Bookresource">
+        SELECT * FROM BookResource WHERE id = #{id}
+    </select>
 
     <insert id="saveBookInfo" parameterType="org.spring.springboot.domain.yldres.Bookresource" useGeneratedKeys="true"
             keyProperty="id">

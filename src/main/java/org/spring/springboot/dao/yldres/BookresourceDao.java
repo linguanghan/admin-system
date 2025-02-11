@@ -20,6 +20,8 @@ public interface BookresourceDao {
 
     List<Bookresource> searchBooklist(@Param("keyword") String keyword);
 
+    Bookresource searchBookById(@Param("id") Long id);
+
     void updateBookInfo(Bookresource bookInfo);
 
     void deleteBookInfo(Bookresource bookInfo);
