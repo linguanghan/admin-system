@@ -465,7 +465,18 @@ public class PlayerServiceImpl implements PlayerService {
                 resultList.add(new DayPlayer(date, 0));
             }
         } else {
-            Map<String, Long> map = monthlyActiveUserLogPOS.stream().collect(Collectors.toMap(MonthlyActiveUserLogPO::getCountTime, MonthlyActiveUserLogPO::getActiveCount, (k1, k2) -> k1));
+//            Map<String, Long> map = monthlyActiveUserLogPOS.stream().collect(Collectors.toMap(MonthlyActiveUserLogPO::getCountTime, MonthlyActiveUserLogPO::getActiveCount, (k1, k2) -> k1));
+            Map<String, Long> map = new HashMap<>();
+            for (MonthlyActiveUserLogPO t : monthlyActiveUserLogPOS) {
+                if (map.containsKey(t.getCountTime())) {
+                    Long l = map.get(t.getCountTime());
+                    Long count = l + t.getActiveCount();
+                    map.put(t.getCountTime(), count);
+                    continue;
+                }
+                map.put(t.getCountTime(), t.getActiveCount());
+            }
+
             for (String date : dates) {
                 long num = 0;
                 if (map.containsKey(date)) {
